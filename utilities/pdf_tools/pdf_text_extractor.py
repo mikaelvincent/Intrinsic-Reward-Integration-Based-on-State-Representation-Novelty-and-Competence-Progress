@@ -1,6 +1,6 @@
 """Command-line utility for extracting text from a PDF file.
 
-This script reads a PDF file specified by the --input argument, extracts all text from each page, and writes the combined text to the file specified by the --output argument.
+This script reads a PDF file specified by the --input argument, extracts all text from each page, removes any NUL characters, and writes the combined text to the file specified by the --output argument.
 
 Usage:
     pdf_text_extractor.py --input /path/to/input.pdf --output /path/to/output.txt
@@ -25,6 +25,8 @@ def extract_text_from_pdf(input_path: str, output_path: str) -> None:
             with open(output_path, "w", encoding="utf-8") as txt_file:
                 for page in reader.pages:
                     text = page.extract_text() or ""
+                    # Remove NUL (ASCII 0) characters to avoid writing them in the output.
+                    text = text.replace("\x00", "")
                     txt_file.write(text)
                     txt_file.write("\n")
 
