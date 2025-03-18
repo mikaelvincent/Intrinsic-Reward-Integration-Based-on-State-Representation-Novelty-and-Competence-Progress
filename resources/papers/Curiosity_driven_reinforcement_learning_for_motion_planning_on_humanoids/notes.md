@@ -71,7 +71,7 @@
   - Uses **Value Iteration** with discount factor \(\gamma = 0.9\).  
   - Intrinsic reward decays as transitions become predictable (like “boredom”).  
   - Real-world iCub experiments last several hours or days due to physical motion times.  
-  - The controller enforces collisions/joint-limit constraints at 500 Hz, while RL transitions occur at a much slower rate (on the order of seconds per action).
+  - The controller enforces collisions/joint-limit constraints at a high frequency, while RL transitions occur at a much slower rate (on the order of seconds per action).
 
 ### Concise Summary of the Article
 
