@@ -15,7 +15,7 @@
 
   **Key objective**: The agent’s intrinsic reward \( r_t^i \) is the prediction error of a forward dynamics model in a learned feature space:  
   \[
-    r_t^i = \| \hat{\phi}(s_{t+1}) - \phi(s_{t+1}) \|^2,
+    r_t^i = \frac{\eta}{2}\| \hat{\phi}(s_{t+1}) - \phi(s_{t+1}) \|_2^2
   \]  
   where \(\phi(s)\) is a learned embedding of raw observations \(s\), and \(\hat{\phi}(s_{t+1})\) is the predicted embedding for next state \(s_{t+1}\).
 
@@ -23,12 +23,12 @@
   The approach, named **ICM** (Intrinsic Curiosity Module), uses:
   1. **Inverse Dynamics**:  
      \[
-       a_t = g(\phi(s_t), \phi(s_{t+1}); \mathbf{I}),
+       a_t = g(\phi(s_t), \phi(s_{t+1}); \theta_I),
      \]  
      to learn a feature space that focuses on aspects of the environment relevant to the agent’s actions.  
   2. **Forward Dynamics**:  
      \[
-       \hat{\phi}(s_{t+1}) = f\bigl(\phi(s_t), a_t; \mathbf{F}\bigr).
+       \hat{\phi}(s_{t+1}) = f(\phi(s_t), a_t; \theta_F).
      \]
   The agent is rewarded by the forward model’s error in this feature space:
   \[
@@ -74,7 +74,7 @@
      \]  
   3. **Curiosity Reward**:  
      \[
-       r_t^i = \|\hat{\phi}(s_{t+1}) - \phi(s_{t+1})\|^2.
+       r_t^i = \frac{\eta}{2}\|\hat{\phi}(s_{t+1}) - \phi(s_{t+1})\|_2^2
      \]
 
 ---
