@@ -38,9 +38,9 @@ Below are direct excerpts and paraphrased formulas preserving the article’s es
        i.e., the decrease in entropy about event distributions.  
      - *Distributional Surprise (DSM)*  
        \[
-         r(e_k) = C \cdot \frac{P(e_k)}{1 - P(e_k)},
+         r(e_k) = C \cdot \frac{1 - P(e_k)}{P(e_k)},
        \]
-       awarding events that strongly violate prior probabilities.  
+       awarding events that strongly violate prior probabilities (i.e., rare and unexpected events).  
      - *Distributional Familiarity (DFM)*  
        \[
          r(e_k) = C \cdot P(e_k),
@@ -94,9 +94,9 @@ Below are direct excerpts and paraphrased formulas preserving the article’s es
        awarding improved competence (akin to “optimal challenge” or Flow).  
      - *Maximizing Competence (CM)*:  
        \[
-         r \;\propto\;\ell_a(g_k),
+         r \;\propto\; \frac{1}{\ell_a(g_k)},
        \]
-       awarding highly mastered goals.
+       awarding highly mastered goals (smaller values of \(\ell_a(g_k)\) represent greater mastery).
 
    **(C) Morphological Models**  
    Based on *direct “shape” or correlation properties* of the sensorimotor flow itself (no reference to internal knowledge or goals).  
