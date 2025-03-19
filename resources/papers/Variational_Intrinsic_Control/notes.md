@@ -68,11 +68,11 @@
      - **Closed-loop** policy can adapt to partial noise, achieving higher empowerment in the large open region.
 
    - **3D Simulated Maze**:  
-     > “From purely visual 40×40 color images, the agent learns wide sweeping trajectories. We measure ~54 nats of empowerment—\(\exp(54) \approx 2.51\times10^{23}\) states, ignoring unreachable parts and noise.”
+     > “From purely visual 40×40 color images, the agent learns wide sweeping trajectories. We measure ~5.4 nats of empowerment—\(\exp(5.4) \approx 221\) states, ignoring unreachable parts and noise.”
 
    - **Blocks Pushing**:  
      - The agent can move around a grid and push blocks that cannot pass each other.  
-     - The agent learns complicated multi-push sequences, controlling block arrangements. Achieved ~71 nats (\(\approx\exp(71)\) states).
+     - The agent learns complicated multi-push sequences, controlling block arrangements. Achieved ~7.1 nats (\(\approx\exp(7.1) \approx 1200\) states).
 
    - **MNIST Pairs**:  
      - Each environment state is a 2×28 vertical stacking of MNIST digits. Five actions shift the digit classes up/down for each digit. The final digit shape is random within the chosen class.  
