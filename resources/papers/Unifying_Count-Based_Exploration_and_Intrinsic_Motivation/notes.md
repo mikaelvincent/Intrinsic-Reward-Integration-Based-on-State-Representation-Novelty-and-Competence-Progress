@@ -54,13 +54,13 @@
 - **Information Gain** (\(\mathrm{IG}\)): Kullback-Leibler difference between prior/posterior after seeing \(x\).
 - **Prediction Gain** (\(\mathrm{PG}\)): difference in negative log probabilities (\(\log \rho_n\) vs. \(\log \rho_n^+\)).
   \[
-    \mathrm{PG}_n(x) \;=\; \log \rho_n(x) \;-\; \log \rho_n^+(x).
+    \mathrm{PG}_n(x) \;=\; \log \rho_n^+(x) \;-\; \log \rho_n(x).
   \]
 - **Key Theorem**  
   1. \(\mathrm{IG}_n(x) \;\le\; \mathrm{PG}_n(x)\).  
-  2. \(\mathrm{PG}_n(x)\;\le\; N_n(x)-1\).  
+  2. \(\mathrm{PG}_n(x)\;\le\; \hat{N}_n(x)^{-1}\).  
   \[
-    \mathrm{IG}_n(x) \;\le\; \mathrm{PG}_n(x)\;\le\; N_n(x)-1.
+    \mathrm{IG}_n(x) \;\le\; \mathrm{PG}_n(x)\;\le\; \hat{N}_n(x)^{-1},\quad\text{and}\quad \mathrm{PG}_n(x)\le\hat{N}_n(x)^{-1/2}.
   \]
   Thus **pseudo-count** \(\sim\) exponent of “prediction gain,” bridging tabular counts and intrinsic motivation methods.  
   > “Maximizing immediate information (or prediction) gain is insufficient for near-optimal exploration; pseudo-count-based bonuses remain more powerful.”
