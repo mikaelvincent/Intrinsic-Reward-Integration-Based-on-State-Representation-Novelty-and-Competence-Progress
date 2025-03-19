@@ -27,7 +27,7 @@
      - Inverse dynamics: predict \(a_t\) from \(\phi(s_t)\) and \(\phi(s_{t+1})\).
   2. **Intrinsic Reward**:  
      \[
-       r^i_t \;=\; \frac{\|\phi(s_{t+1}) - \phi(s_t)\|_2}{N_{\text{ep}}(s_{t+1})}
+       r^i_t \;=\; \frac{\|\phi(s_{t+1}) - \phi(s_t)\|_2}{\sqrt{N_{\text{ep}}(s_{t+1})}}
      \]
      where \(N_{\text{ep}}(s_{t+1})\) is the number of times \(s_{t+1}\) has been visited **in the current episode**. This discounting by episode-level visitation aims to prevent back-and-forth toggling between two states that produce large embedding differences.
 
