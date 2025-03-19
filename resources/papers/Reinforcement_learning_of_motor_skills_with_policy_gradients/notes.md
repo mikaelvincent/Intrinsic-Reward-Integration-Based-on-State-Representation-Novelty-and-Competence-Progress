@@ -41,10 +41,19 @@
 
 - **Policy Gradient Approaches**  
   - **Finite-Difference (FD)**:  
+    Finite-difference gradient methods perturb policy parameters slightly (stored in matrix \(\Delta\Theta\)) and estimate the gradient from resulting changes in performance. Generally, the gradient estimation is formulated as a regression:
     \[
-      \nabla_\theta J \;\approx\; \frac{1}{2\Delta \theta} \bigl(J(\theta + \Delta \theta) - J(\theta - \Delta \theta)\bigr),
+      \begin{bmatrix}
+      \mathbf{g}_{\text{FD}}^T, J_{\text{ref}}
+      \end{bmatrix}^T 
+      = (\Delta\Theta^T\Delta\Theta)^{-1}\Delta\Theta^T\hat{J},
     \]  
-    or more general simultaneous perturbation forms (SPSA). Straightforward but can be high variance and prone to local minima in high-dimensional, noisy tasks.
+    where \(\Delta\Theta\) contains perturbations (each row a perturbation vector) and \(\hat{J}\) the corresponding measured returns \(J(\theta+\Delta\theta_i)\).  
+    A special, simpler symmetric finite-difference approximation is:
+    \[
+      \nabla_\theta J \approx \frac{J(\theta+\Delta\theta)-J(\theta-\Delta\theta)}{2\Delta\theta},
+    \]  
+    though the paper emphasizes the more general regression-based and simultaneous perturbation (SPSA) forms. This approach is straightforward but can exhibit high variance and become trapped in local minima in high-dimensional, noisy settings.
 
   - **Likelihood Ratio / REINFORCE** (Williams, 1992):  
     \[
