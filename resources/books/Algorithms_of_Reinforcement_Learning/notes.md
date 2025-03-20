@@ -1,8 +1,9 @@
 # Algorithms of Reinforcement Learning
 
-> **Authors**: Csaba Szepesvári
-> **Date**: 12 March 2019
-> **Link**: <https://sites.ualberta.ca/~szepesva/rlbook.html>
+> **Link**: <https://doi.org/10.1007/978-3-031-01551-9>
+
+> **Parenthetical**: (Szepesvári, 2010)
+> **Narrative**: Szepesvári (2010)
 
 ---
 

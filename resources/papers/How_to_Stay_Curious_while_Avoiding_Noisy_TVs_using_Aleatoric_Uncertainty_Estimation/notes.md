@@ -1,8 +1,9 @@
 # How to Stay Curious while Avoiding Noisy TVs using Aleatoric Uncertainty Estimation
 
-> **Authors**: Augustine N. Mavor-Parker, Kimberly A. Young, Caswell Barry, Lewis D. Griffin
-> **Date**: 5 July 2024
 > **Link**: <https://doi.org/10.48550/arXiv.2102.04399>
+
+> **Parenthetical**: (Mavor-Parker et al., 2021)
+> **Narrative**: Mavor-Parker et al. (2021)
 
 ---
 

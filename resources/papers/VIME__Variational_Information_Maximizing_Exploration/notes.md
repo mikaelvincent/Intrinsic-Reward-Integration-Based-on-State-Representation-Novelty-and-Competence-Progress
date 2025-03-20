@@ -1,8 +1,9 @@
 # VIME: Variational Information Maximizing Exploration
 
-> **Authors**: Rein Houthooft, Xi Chen, Yan Duan, John Schulman, Filip De Turck, Pieter Abbeel
-> **Date**: 27 January 2017
 > **Link**: <https://doi.org/10.48550/arXiv.1605.09674>
+
+> **Parenthetical**: (Houthooft et al., 2016)
+> **Narrative**: Houthooft et al. (2016)
 
 ---
 

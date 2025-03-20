@@ -1,8 +1,9 @@
 # Exploration by Random Network Distillation
 
-> **Authors**: Yuri Burda, Harrison Edwards, Amos Storkey, Oleg Klimov
-> **Date**: 30 October 2018
 > **Link**: <https://doi.org/10.48550/arXiv.1810.12894>
+
+> **Parenthetical**: (Burda et al., 2018)
+> **Narrative**: Burda et al. (2018)
 
 ---
 

@@ -1,8 +1,9 @@
 # Reinforcement learning of motor skills with policy gradients
 
-> **Authors**: Jan Peters, Stefan Schaal
-> **Date**: 26 April 2008
 > **Link**: <https://doi.org/10.1016/j.neunet.2008.02.003>
+
+> **Parenthetical**: (Peters & Schaal, 2008)
+> **Narrative**: Peters and Schaal (2008)
 
 ---
 

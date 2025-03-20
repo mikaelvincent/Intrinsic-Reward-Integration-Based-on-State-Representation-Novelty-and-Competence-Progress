@@ -1,8 +1,9 @@
 # An analysis of temporal-difference learning with function approximation
 
-> **Authors**: J.N. Tsitsiklis, B. Van Roy
-> **Date**: 6 August 2002
 > **Link**: <https://doi.org/10.1109/9.580874>
+
+> **Parenthetical**: (Tsitsiklis & Van Roy, 1997)
+> **Narrative**: Tsitsiklis and Van Roy (1997)
 
 ---
 

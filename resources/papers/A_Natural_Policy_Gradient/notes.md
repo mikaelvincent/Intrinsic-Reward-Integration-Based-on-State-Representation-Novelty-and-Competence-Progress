@@ -1,8 +1,9 @@
 # A Natural Policy Gradient
 
-> **Authors**: Sham M. Kakade
-> **Date**: 2001
 > **Link**: <https://papers.nips.cc/paper/2073-a-natural-policy-gradient>
+
+> **Parenthetical**: (Kakade, 2001)
+> **Narrative**: Kakade (2001)
 
 ---
 

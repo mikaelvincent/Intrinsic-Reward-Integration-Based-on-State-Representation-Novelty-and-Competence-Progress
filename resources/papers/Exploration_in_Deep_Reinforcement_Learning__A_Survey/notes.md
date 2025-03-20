@@ -1,8 +1,9 @@
 # Exploration in Deep Reinforcement Learning: A Survey
 
-> **Authors**: Pawel Ladosz, Lilian Weng, Minwoo Kim, Hyondong Oh
-> **Date**: 2 May 2022
-> **Link**: <https://doi.org/10.48550/arXiv.2205.00824>
+> **Link**: <https://doi.org/10.1016/j.inffus.2022.03.003>
+
+> **Parenthetical**: (Ladosz et al., 2022)
+> **Narrative**: Ladosz et al. (2022)
 
 ---
 

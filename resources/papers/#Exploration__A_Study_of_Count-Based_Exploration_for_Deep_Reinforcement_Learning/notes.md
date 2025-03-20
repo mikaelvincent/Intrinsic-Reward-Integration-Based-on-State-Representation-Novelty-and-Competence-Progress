@@ -1,8 +1,9 @@
 # #Exploration: A Study of Count-Based Exploration for Deep Reinforcement Learning
 
-> **Authors**: Haoran Tang, Rein Houthooft, Davis Foote, Adam Stooke, Xi Chen, Yan Duan, John Schulman, Filip De Turck, Pieter Abbeel
-> **Date**: 5 December 2017
 > **Link**: <https://doi.org/10.48550/arXiv.1611.04717>
+
+> **Parenthetical**: (Tang et al., 2016)
+> **Narrative**: Tang et al. (2016)
 
 ---
 

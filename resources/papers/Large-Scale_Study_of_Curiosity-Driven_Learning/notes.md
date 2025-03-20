@@ -1,8 +1,9 @@
 # Large-Scale Study of Curiosity-Driven Learning
 
-> **Authors**: Yuri Burda, Harri Edwards, Deepak Pathak, Amos Storkey, Trevor Darrell, Alexei A. Efros
-> **Date**: 13 August 2018
 > **Link**: <https://doi.org/10.48550/arXiv.1808.04355>
+
+> **Parenthetical**: (Burda, Edwards, Pathak, et al., 2018)
+> **Narrative**: Burda, Edwards, Pathak, et al. (2018)
 
 ---
 

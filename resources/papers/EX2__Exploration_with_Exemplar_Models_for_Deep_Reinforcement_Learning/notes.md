@@ -1,8 +1,9 @@
 # EX2: Exploration with Exemplar Models for Deep Reinforcement Learning
 
-> **Authors**: Justin Fu, John D. Co-Reyes, Sergey Levine
-> **Date**: 27 May 2017
 > **Link**: <https://doi.org/10.48550/arXiv.1703.01260>
+
+> **Parenthetical**: (Fu et al., 2017)
+> **Narrative**: Fu et al. (2017)
 
 ---
 

@@ -1,8 +1,9 @@
 # Count-Based Exploration with Neural Density Models
 
-> **Authors**: Georg Ostrovski, Marc G. Bellemare, Aaron van den Oord, Remi Munos
-> **Date**: 14 Jun 2017
 > **Link**: <https://doi.org/10.48550/arXiv.1703.01310>
+
+> **Parenthetical**: (Ostrovski et al., 2017)
+> **Narrative**: Ostrovski et al. (2017)
 
 ---
 

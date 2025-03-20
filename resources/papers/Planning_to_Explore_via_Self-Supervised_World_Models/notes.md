@@ -1,8 +1,9 @@
 # Planning to Explore via Self-Supervised World Models
 
-> **Authors**: Ramanan Sekar, Oleh Rybkin, Kostas Daniilidis, Pieter Abbeel, Danijar Hafner, Deepak Pathak
-> **Date**: 30 June 2020
 > **Link**: <https://doi.org/10.48550/arXiv.2005.05960>
+
+> **Parenthetical**: (Sekar et al., 2020)
+> **Narrative**: Sekar et al. (2020)
 
 ---
 

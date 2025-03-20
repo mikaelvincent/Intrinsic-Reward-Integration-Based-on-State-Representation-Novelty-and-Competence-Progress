@@ -1,8 +1,9 @@
 # Variational Option Discovery Algorithms
 
-> **Authors**: Joshua Achiam, Harrison Edwards, Dario Amodei, Pieter Abbeel
-> **Date**: 26 July 2018
 > **Link**: <https://doi.org/10.48550/arXiv.1807.10299>
+
+> **Parenthetical**: (Achiam et al., 2018)
+> **Narrative**: Achiam et al. (2018)
 
 ---
 

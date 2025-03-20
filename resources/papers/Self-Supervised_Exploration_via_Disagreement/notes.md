@@ -1,8 +1,9 @@
 # Self-Supervised Exploration via Disagreement
 
-> **Authors**: Deepak Pathak, Dhiraj Gandhi, Abhinav Gupta
-> **Date**: 10 June 2019
 > **Link**: <https://doi.org/10.48550/arXiv.1906.04161>
+
+> **Parenthetical**: (Pathak et al., 2019)
+> **Narrative**: Pathak et al. (2019)
 
 ---
 

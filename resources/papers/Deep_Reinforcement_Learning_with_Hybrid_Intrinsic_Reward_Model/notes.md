@@ -1,8 +1,9 @@
 # Deep Reinforcement Learning with Hybrid Intrinsic Reward Model
 
-> **Authors**: Mingqi Yuan, Bo Li, Xin Jin, Wenjun Zeng
-> **Date**: 22 January 2025
 > **Link**: <https://doi.org/10.48550/arXiv.2501.12627>
+
+> **Parenthetical**: (Yuan et al., 2025)
+> **Narrative**: Yuan et al. (2025)
 
 ---
 

@@ -1,8 +1,9 @@
 # R-IAC: Robust Intrinsically Motivated Exploration and Active Learning
 
-> **Authors**: Adrien Baranes, Pierre-Yves Oudeyer
-> **Date**: 1 December 2009
 > **Link**: <https://doi.org/10.1109/TAMD.2009.2037513>
+
+> **Parenthetical**: (Baranes & Oudeyer, 2009)
+> **Narrative**: Baranes and Oudeyer (2009)
 
 ---
 

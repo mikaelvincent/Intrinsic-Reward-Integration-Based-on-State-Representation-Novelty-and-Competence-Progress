@@ -1,8 +1,9 @@
 # Curiosity driven reinforcement learning for motion planning on humanoids
 
-> **Authors**: Mikhail Frank, Jürgen Leitner, Marijn Stollenga, Alexander Förster, Jürgen Schmidhuber
-> **Date**: 6 January 2014
 > **Link**: <https://doi.org/10.3389/fnbot.2013.00025>
+
+> **Parenthetical**: (Frank et al., 2014)
+> **Narrative**: Frank et al. (2014)
 
 ---
 

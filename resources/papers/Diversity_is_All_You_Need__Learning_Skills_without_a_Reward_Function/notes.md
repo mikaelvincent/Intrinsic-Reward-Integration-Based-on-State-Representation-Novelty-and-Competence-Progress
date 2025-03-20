@@ -1,8 +1,9 @@
 # Diversity is All You Need: Learning Skills without a Reward Function
 
-> **Authors**: Benjamin Eysenbach, Abhishek Gupta, Julian Ibarz, Sergey Levine
-> **Date**: 9 October 2018
 > **Link**: <https://doi.org/10.48550/arXiv.1802.06070>
+
+> **Parenthetical**: (Eysenbach et al., 2018)
+> **Narrative**: Eysenbach et al. (2018)
 
 ---
 

@@ -1,8 +1,9 @@
 # Unified curiosity-Driven learning with smoothed intrinsic reward estimation
 
-> **Authors**: Fuxian Huang, Weichao Li, Jiabao Cui, Yongjian Fu, Xi Li
-> **Date**: March 2022
 > **Link**: <https://doi.org/10.1016/j.patcog.2021.108352>
+
+> **Parenthetical**: (Huang et al., 2021)
+> **Narrative**: Huang et al. (2021)
 
 ---
 

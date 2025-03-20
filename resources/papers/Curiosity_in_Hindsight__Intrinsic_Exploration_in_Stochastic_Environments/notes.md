@@ -1,8 +1,9 @@
 # Curiosity in Hindsight: Intrinsic Exploration in Stochastic Environments
 
-> **Authors**: Daniel Jarrett, Corentin Tallec, Florent Altché, Thomas Mesnard, Rémi Munos, Michal Valko
-> **Date**: 14 July 2023
 > **Link**: <https://doi.org/10.48550/arXiv.2211.10515>
+
+> **Parenthetical**: (Jarrett et al., 2022)
+> **Narrative**: Jarrett et al. (2022)
 
 ---
 

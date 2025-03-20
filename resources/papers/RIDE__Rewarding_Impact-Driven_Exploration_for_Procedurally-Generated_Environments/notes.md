@@ -1,8 +1,9 @@
 # RIDE: Rewarding Impact-Driven Exploration for Procedurally-Generated Environments
 
-> **Authors**: Roberta Raileanu, Tim Rocktäschel
-> **Date**: 29 February 2020
 > **Link**: <https://doi.org/10.48550/arXiv.2002.12292>
+
+> **Parenthetical**: (Raileanu & Rocktäschel, 2020)
+> **Narrative**: Raileanu and Rocktäschel (2020)
 
 ---
 

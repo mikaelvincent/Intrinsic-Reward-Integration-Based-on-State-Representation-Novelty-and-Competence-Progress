@@ -1,8 +1,9 @@
 # Unifying Count-Based Exploration and Intrinsic Motivation
 
-> **Authors**: Marc G. Bellemare, Sriram Srinivasan, Georg Ostrovski, Tom Schaul, David Saxton, Remi Munos
-> **Date**: 7 Nov 2016
 > **Link**: <https://doi.org/10.48550/arXiv.1606.01868>
+
+> **Parenthetical**: (Bellemare et al., 2016)
+> **Narrative**: Bellemare et al. (2016)
 
 ---
 

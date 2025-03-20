@@ -1,8 +1,9 @@
 # Is Curiosity All You Need? On the Utility of Emergent Behaviours from Curious Exploration
 
-> **Authors**: Oliver Groth, Markus Wulfmeier, Giulia Vezzani, Vibhavari Dasagi, Tim Hertweck, Roland Hafner, Nicolas Heess, Martin Riedmiller
-> **Date**: 17 September 2021
 > **Link**: <https://doi.org/10.48550/arXiv.2109.08603>
+
+> **Parenthetical**: (Groth et al., 2021)
+> **Narrative**: Groth et al. (2021)
 
 ---
 

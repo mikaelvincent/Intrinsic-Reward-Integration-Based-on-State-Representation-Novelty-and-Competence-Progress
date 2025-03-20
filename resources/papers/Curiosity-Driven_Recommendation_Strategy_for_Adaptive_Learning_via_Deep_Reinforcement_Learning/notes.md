@@ -1,8 +1,9 @@
 # Curiosity-Driven Recommendation Strategy for Adaptive Learning via Deep Reinforcement Learning
 
-> **Authors**: Ruijian Han, Kani Chen, Chunxi Tan
-> **Date**: 12 October 2019
 > **Link**: <https://doi.org/10.48550/arXiv.1910.12577>
+
+> **Parenthetical**: (Han et al., 2019)
+> **Narrative**: Han et al. (2019)
 
 ---
 

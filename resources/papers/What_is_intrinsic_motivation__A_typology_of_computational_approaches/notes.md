@@ -1,8 +1,9 @@
 # What is intrinsic motivation? A typology of computational approaches
 
-> **Authors**: Pierre-Yves Oudeyer, Frederic Kaplan
-> **Date**: 2 November 2007
 > **Link**: <https://doi.org/10.3389/neuro.12.006.2007>
+
+> **Parenthetical**: (Oudeyer & Kaplan, 2007)
+> **Narrative**: Oudeyer and Kaplan (2007)
 
 ---
 

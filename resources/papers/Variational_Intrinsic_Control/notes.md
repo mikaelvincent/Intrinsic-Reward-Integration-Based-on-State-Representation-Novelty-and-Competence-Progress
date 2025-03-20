@@ -1,8 +1,9 @@
 # Variational Intrinsic Control
 
-> **Authors**: Karol Gregor, Danilo Jimenez Rezende, Daan Wierstra
-> **Date**: 22 November 2016
 > **Link**: <https://doi.org/10.48550/arXiv.1611.07507>
+
+> **Parenthetical**: (Gregor et al., 2016)
+> **Narrative**: Gregor et al. (2016)
 
 ---
 

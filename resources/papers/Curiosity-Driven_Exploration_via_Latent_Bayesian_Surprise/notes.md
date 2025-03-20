@@ -1,8 +1,9 @@
 # Curiosity-Driven Exploration via Latent Bayesian Surprise
 
-> **Authors**: Pietro Mazzaglia, Ozan Catal, Tim Verbelen, Bart Dhoedt
-> **Date**: 23 February 2022
 > **Link**: <https://doi.org/10.48550/arXiv.2104.07495>
+
+> **Parenthetical**: (Mazzaglia et al., 2021)
+> **Narrative**: Mazzaglia et al. (2021)
 
 ---
 

@@ -1,8 +1,9 @@
 # Curiosity-driven Exploration by Self-supervised Prediction
 
-> **Authors**: Deepak Pathak, Pulkit Agrawal, Alexei A. Efros, Trevor Darrell
-> **Date**: 15 May 2017
 > **Link**: <https://doi.org/10.48550/arXiv.1705.05363>
+
+> **Parenthetical**: (Pathak et al., 2017)
+> **Narrative**: Pathak et al. (2017)
 
 ---
 
