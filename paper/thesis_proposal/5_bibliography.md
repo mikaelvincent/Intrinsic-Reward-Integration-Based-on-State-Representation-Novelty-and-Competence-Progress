@@ -10,6 +10,8 @@ Burda, Y., Edwards, H., Pathak, D., Storkey, A., Darrell, T., & Efros, A. A. (20
 
 Burda, Y., Edwards, H., Storkey, A. J., & Klimov, O. (2018). Exploration by random network distillation. *arXiv (Cornell University)*. <https://doi.org/10.48550/arxiv.1810.12894>
 
+Chevalier-Boisvert, M., Dai, B., Towers, M., Rodrigo, D. L., Willems, L., Lahlou, S., Pal, S., Castro, P. S., & Terry, J. (2023). Minigrid & Miniworld: Modular & Customizable Reinforcement Learning Environments for Goal-Oriented Tasks. *arXiv (Cornell University)*. <https://doi.org/10.48550/arxiv.2306.13831>
+
 Eysenbach, B., Gupta, A., Ibarz, J., & Levine, S. (2018). Diversity is All You Need: Learning Skills without a Reward Function. *arXiv (Cornell University)*. <https://doi.org/10.48550/arxiv.1802.06070>
 
 Frank, M., Leitner, J., Stollenga, M., Förster, A., & Schmidhuber, J. (2014). Curiosity driven reinforcement learning for motion planning on humanoids. *Frontiers in Neurorobotics*, *7*. <https://doi.org/10.3389/fnbot.2013.00025>
@@ -53,6 +55,8 @@ Sekar, R., Rybkin, O., Daniilidis, K., Abbeel, P., Hafner, D., & Pathak, D. (202
 Szepesvári, C. (2010). Algorithms for reinforcement learning. In *Synthesis lectures on artificial intelligence and machine learning*. <https://doi.org/10.1007/978-3-031-01551-9>
 
 Tang, H., Houthooft, R., Foote, D., Stooke, A., Chen, X., Duan, Y., Schulman, J., De Turck, F., & Abbeel, P. (2016). #Exploration: A study of Count-Based exploration for deep reinforcement learning. *arXiv (Cornell University)*. <https://doi.org/10.48550/arxiv.1611.04717>
+
+Todorov, E., Erez, T., & Tassa, Y. (2012). MuJoCo: A physics engine for model-based control. *2011 IEEE/RSJ International Conference on Intelligent Robots and Systems*. <https://doi.org/10.1109/iros.2012.6386109>
 
 Tsitsiklis, J., & Van Roy, B. (1997). An analysis of temporal-difference learning with function approximation. *IEEE Transactions on Automatic Control*, *42*(5), 674–690. <https://doi.org/10.1109/9.580874>
 
