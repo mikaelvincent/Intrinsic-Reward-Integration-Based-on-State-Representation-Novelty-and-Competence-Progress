@@ -184,3 +184,5 @@ cython_debug/
 
 #Pylint
 pylint_report.json
+
+internal_documents
