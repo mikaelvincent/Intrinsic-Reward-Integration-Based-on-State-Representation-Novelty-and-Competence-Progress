@@ -1,0 +1,27 @@
+{
+  "n_written": 12,
+  "notes": [],
+  "reason": null,
+  "results_dir": "D:\\thesis_working\\intrinsic-rl\\code\\results_suite",
+  "runs_root": "D:\\thesis_working\\intrinsic-rl\\code\\runs_suite",
+  "runs_root_exists": true,
+  "status": "ok",
+  "summary_csv_mtime": 1767516391.188108,
+  "summary_csv_mtime_utc": "2026-01-04T08:46:31Z",
+  "summary_csv_path": "summary.csv",
+  "timestamp_utc": "2026-01-04T22:24:10Z",
+  "written": [
+    "plots\\eval-auc-steps-all-methods.png",
+    "plots\\eval-auc-time-all-methods.png",
+    "plots\\eval-bars-all-methods.png",
+    "plots\\eval-curves-ablations-curves.png",
+    "plots\\eval-curves-baselines-curves.png",
+    "plots\\glpe-gate-map.png",
+    "plots\\glpe-intrinsic-taper.png",
+    "plots\\steps-to-beat-ablations.png",
+    "plots\\steps-to-beat-baselines.png",
+    "plots\\timing-breakdown.png",
+    "plots\\train-reward-decomp-ablations.png",
+    "plots\\train-reward-decomp-baselines.png"
+  ]
+}
