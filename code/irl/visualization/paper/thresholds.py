@@ -14,11 +14,11 @@ _SUPPORTED_SCORE_ENVS: set[str] = {
 }
 
 _KNOWN_SCORE_THRESHOLDS: dict[str, float] = {
-    "Ant-v5": 6000.0,
+    "Ant-v5": 5000.0,
     "BipedalWalker-v3": 300.0,
     "CarRacing-v3": 900.0,
-    "HalfCheetah-v5": 4800.0,
-    "Humanoid-v5": 6000.0,
+    "HalfCheetah-v5": 6000.0,
+    "Humanoid-v5": 3000.0,
     "MountainCar-v0": -110.0,
 }
 
@@ -41,29 +41,6 @@ def solved_threshold_legend_handle(plt: Any) -> object:
     )
 
 
-def reward_threshold_from_gym_spec(env_id: str) -> float | None:
-    try:
-        import gymnasium as gym  # type: ignore
-    except Exception:
-        return None
-
-    try:
-        spec = gym.spec(str(env_id))
-    except Exception:
-        return None
-
-    rt = getattr(spec, "reward_threshold", None)
-    if rt is None:
-        return None
-
-    try:
-        v = float(rt)
-    except Exception:
-        return None
-
-    return v if np.isfinite(v) else None
-
-
 def reward_threshold_from_known(env_id: str) -> float | None:
     key = str(env_id).strip()
     if key in _KNOWN_SCORE_THRESHOLDS:
@@ -72,14 +49,9 @@ def reward_threshold_from_known(env_id: str) -> float | None:
 
 
 def solved_threshold(env_id: str) -> float | None:
-    rt = reward_threshold_from_gym_spec(str(env_id))
-    if rt is not None and np.isfinite(float(rt)):
-        return float(rt)
-
     rt = reward_threshold_from_known(str(env_id))
     if rt is not None and np.isfinite(float(rt)):
         return float(rt)
-
     return None
 
 
