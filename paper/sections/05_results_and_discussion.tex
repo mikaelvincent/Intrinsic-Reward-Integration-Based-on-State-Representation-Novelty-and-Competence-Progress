@@ -25,7 +25,7 @@ Consistent with the interaction-efficiency summary, on \textsc{MountainCar-v0}, 
 Relative to the strongest baseline (RIAC), this is a $+10.4$ return-point margin at the final checkpoint ($-96.2$ vs.\ $-106.6$).
 Both GLPE variants solve the task in all seeds, reaching the $-110$ solved threshold in \(\approx 0.35\,\mathrm{M}\) median steps (Table~\ref{tab:solved_threshold_stats}).
 In contrast, several baselines exhibit occasional failures that remain near the minimum return (Figure~\ref{fig:eval_curves_baselines}), which lowers both final-return averages and solved-threshold reliability.
-Among baselines, RIDE reaches the same threshold fastest (\(\approx 0.44\,\mathrm{M}\) median steps) but still fails in 1/10 seeds (Table~\ref{tab:solved_threshold_stats}).
+Among baselines, ICM is closest (9/10 solves at \(\approx 0.35\,\mathrm{M}\) median steps) but still falls short of perfect reliability (Table~\ref{tab:solved_threshold_stats}).
 
 On the MuJoCo locomotion tasks, GLPE (no gate) remains competitive with the strongest intrinsic baselines.
 On \textsc{HalfCheetah-v5}, both GLPE variants reach the $6000$ solved threshold in all seeds and finish around $6.9\,$k mean return (Table~\ref{tab:final_returns_glpe_vs_baselines}), with learning curves that track the strongest intrinsic baselines throughout training.
@@ -61,7 +61,10 @@ Across environments, the gate switches off only in localized regions of the visi
 
 The threshold-based analysis in Figure~\ref{fig:steps_to_threshold_baselines} complements the learning curves by separating \emph{how fast} a method reaches a target score from \emph{how often} it reaches it.
 Table~\ref{tab:solved_threshold_stats} summarizes success counts at the full solved threshold (the 100\% level in Figure~\ref{fig:steps_to_threshold_baselines}) and the median steps to reach it among successful seeds.
-Under this stricter criterion, the qualitative picture largely matches the learning curves: MountainCar remains where GLPE shows the clearest reliability advantage, whereas on the remaining tasks success counts are dominated by variance (Humanoid) or proximity to the solved threshold (BipedalWalker).
+At this full threshold, GLPE and GLPE (no gate) solve \textsc{MountainCar-v0} in $10/10$ seeds with a \(0.35\,\mathrm{M}\) median step-to-solve; the closest baseline, ICM, reaches the threshold equally quickly (\(0.35\,\mathrm{M}\)) but still fails in 1/10 seeds.
+On \textsc{HalfCheetah-v5} all methods solve in $8/8$ seeds and GLPE reaches the threshold at \(9.4\)--\(9.7\,\mathrm{M}\) steps, comparable to the fastest baseline (RIDE: \(9.03\,\mathrm{M}\)).
+On \textsc{Ant-v5}, GLPE variants solve in $7/8$ seeds with a \(10.39\,\mathrm{M}\) median step-to-solve, narrowly behind RIAC's $8/8$ (\(10.22\,\mathrm{M}\)).
+The remaining tasks show where thresholding becomes brittle: on \textsc{BipedalWalker-v3}, solved counts vary sharply around the $300$ cutoff (GLPE: $4/8$; GLPE (no gate): $2/8$; RIAC: $8/8$), while on \textsc{Humanoid-v5} no method exceeds $2/5$ solves, so median steps-to-threshold are determined by only a few successful runs.
 
 Because the GLPE family anneals intrinsic shaping with a cosine taper (Section~\ref{sec:method}), its intrinsic contribution is intentionally transient.
 Figure~\ref{fig:glpe_intrinsic_taper} shows that the underlying intrinsic signal remains nonzero, but the taper weight drives the applied intrinsic reward smoothly toward (near) zero as training approaches the final phase.
@@ -75,7 +78,9 @@ This behavior is visible in the optimization signal: Figure~\ref{fig:train_rewar
 
 Computational efficiency can alter conclusions when methods are compared under a fixed wall-clock budget rather than a fixed interaction budget.
 Figure~\ref{fig:eval_auc_time} summarizes this perspective using an area-under-curve (AUC) metric of evaluation return versus cumulative training time (Section~\ref{sec:experimental_setup:efficiency}), with each environment using a common time horizon to avoid extrapolating slower methods.
-The GLPE family remains competitive in this view: GLPE retains its MountainCar advantage, and GLPE (no gate) stays close to the strongest baselines on the locomotion tasks.
+Across \textsc{BipedalWalker-v3}, \textsc{HalfCheetah-v5}, \textsc{Ant-v5}, and \textsc{Humanoid-v5}, GLPE (no gate) remains close to the strongest baseline in time-AUC (within approximately 2--6\% across these tasks; e.g., \(\approx 2.63\times 10^5\) vs.\ \(\approx 2.67\times 10^5\) on \textsc{BipedalWalker-v3}, \(\approx 6.18\times 10^6\) vs.\ \(\approx 6.60\times 10^6\) on \textsc{HalfCheetah-v5}, \(\approx 1.25\times 10^7\) vs.\ \(\approx 1.33\times 10^7\) on \textsc{Ant-v5}, and \(\approx 1.68\times 10^7\) vs.\ \(\approx 1.75\times 10^7\) on \textsc{Humanoid-v5}).
+Full GLPE is typically further back under this wall-clock lens, consistent with its higher per-update intrinsic overhead (Figure~\ref{fig:timing_breakdown}).
+\textsc{MountainCar-v0} is more sensitive: although GLPE leads by steps, the best time-AUC is attained by RIAC (about \(-2.41\times 10^4\)), while GLPE and GLPE (no gate) achieve about \(-2.61\times 10^4\) and \(-2.65\times 10^4\) respectively (less negative is better).
 
 \input{figures/timing_breakdown}
 \input{tables/gate_cache_microbenchmark}
@@ -86,4 +91,4 @@ A standalone CPU microbenchmark on a batch of $16{,}384$ transitions yields medi
 For the gated variant, one identifiable cost is recomputing robust global medians used to set gating thresholds.
 Table~\ref{tab:gate_cache_microbenchmark} shows that a simple refresh-interval cache yields a $4.83\times$ speedup in this specific subroutine, suggesting that the gate can be made inexpensive without changing the overall algorithmic structure.
 Because caching uses slightly stale medians and can therefore change gating decisions, we treat it as an optional engineering knob rather than part of the core GLPE comparison; empirically, the resulting ``GLPE (cached)'' variant can underperform uncached GLPE on exploration-sensitive tasks, most notably \textsc{Humanoid-v5} (Figure~\ref{fig:eval_auc_time}).
-Taken together, these results indicate that GLPE (no gate) provides a competitive default intrinsic signal, while gating offers targeted robustness gains on exploration-limited tasks such as MountainCar and can trade off performance in high-variance regimes such as Humanoid.
+Taken together, these results indicate that GLPE (no gate) provides a competitive default intrinsic signal, while the gated variant trades additional intrinsic computation for improved interaction efficiency on sparse-reward \textsc{MountainCar-v0} and can underperform in high-variance regimes such as \textsc{Humanoid-v5}.
