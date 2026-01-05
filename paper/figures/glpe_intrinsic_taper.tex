@@ -1,0 +1,6 @@
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\linewidth]{figures/glpe-intrinsic-taper.png}
+    \caption{Intrinsic annealing in the GLPE family via the cosine taper from Section~\ref{sec:method}. The dashed curve (right axis) is the taper weight applied over training progress; the solid curve (left axis) is the batch-mean intrinsic reward actually added to PPO after scaling and clipping. The dotted curve rescales this intrinsic term to factor out the taper weight, illustrating that annealing---not a collapse of the intrinsic signal---drives the intrinsic contribution toward zero as training approaches the final phase.}
+    \label{fig:glpe_intrinsic_taper}
+\end{figure}
