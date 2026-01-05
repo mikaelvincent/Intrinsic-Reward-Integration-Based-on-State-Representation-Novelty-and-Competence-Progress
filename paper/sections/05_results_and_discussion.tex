@@ -13,16 +13,21 @@ Across the suite, GLPE and GLPE (no gate) remain competitive with established ex
 On \textsc{MountainCar-v0}, GLPE achieves the best final return among all evaluated methods (Table~\ref{tab:final_returns_glpe_vs_baselines}) and reaches the solved threshold of $-110$ reliably and early (10/10 seeds; median \approx{}\(3.46\times10^5\) steps).
 This gap to the strongest baseline is practically meaningful: the fastest baseline (RIDE) reaches the same threshold in \approx{}\(4.41\times10^5\) median steps (9/10 seeds), while other intrinsic methods are less reliable.
 
-On the higher-dimensional locomotion tasks, GLPE (no gate) is a strong and low-friction default.
+On the MuJoCo locomotion tasks, GLPE (no gate) is a strong and low-friction default.
 On \textsc{HalfCheetah-v5}, both GLPE variants reach the $6000$ solved threshold in all seeds and finish around $6.9\,$k mean return (Table~\ref{tab:final_returns_glpe_vs_baselines}), and their learning curves remain close to the strongest intrinsic baselines throughout training.
 While RIDE attains the highest mean final return on this task, GLPE remains close in both final performance and learning speed, with the additional benefit that the same intrinsic construction transfers without task-specific mechanism changes.
-On \textsc{Humanoid-v5}, where variance is substantial across all methods, GLPE (no gate) matches the strongest baseline (ICM) in mean final return within wide, overlapping confidence intervals (Table~\ref{tab:final_returns_glpe_vs_baselines}).
+On \textsc{Humanoid-v5}, where variance is substantial across all methods, GLPE (no gate) matches the strongest baseline (ICM) in mean final return within wide, overlapping confidence intervals (Table~\ref{tab:final_returns_glpe_vs_baselines}); correspondingly, both methods reach the $3000$ solved threshold in only 2/5 seeds.
 The gated variant improves markedly over vanilla PPO but is more conservative here, suggesting that turning off gating can be a pragmatic default when the state space is large and the risk of prematurely suppressing useful exploration is higher.
 
 \textsc{Ant-v5} highlights a complementary regime where many methods approach the solved threshold.
 GLPE and GLPE (no gate) finish slightly below $5000$ on average but still reach the threshold at least once in 7/8 seeds, indicating that the method remains competitive even when dense extrinsic reward already provides strong guidance.
 Finally, on \textsc{BipedalWalker-v3} (solved threshold $300$), several baselines reliably solve, and GLPE (no gate) approaches the threshold with a comparatively tight confidence interval.
-However, fewer GLPE runs cross the strict solved threshold than the best baseline, suggesting that on already well-shaped tasks the primary advantage of GLPE can be earlier progress rather than consistently higher final performance.
+However, GLPE (no gate) crosses the strict solved threshold in only 2/8 seeds (versus 7/8 for vanilla PPO and 8/8 for RIAC), suggesting that on already well-shaped tasks the primary advantage of the GLPE family can be early progress and stability rather than consistently higher asymptotic performance.
+
+Diagnostic ablations within the GLPE family help explain these regimes.
+Removing either component of the intrinsic score (impact-only: $\alpha_{\mathrm{LP}}{=}0$; LP-only: $\alpha_{\mathrm{impact}}{=}0$) makes performance more environment-dependent.
+On MountainCar, both single-term variants underperform the combined intrinsic signal (e.g., impact-only finishes near $-112$ and LP-only near $-107$, versus $-96$ for GLPE), consistent with impact and learning progress acting as complementary drivers of exploration.
+On Ant, the impact-only variant remains competitive, suggesting that feature-space change can be sufficient when dense extrinsic reward provides consistent directional feedback.
 
 To make the gating behavior concrete, Figure~\ref{fig:glpe_gate_map} shows where the GLPE gate suppresses intrinsic shaping along trajectories from the final checkpoint.
 Across environments, the gate switches off only in localized regions of the visited state distribution, consistent with its intended role as a conservative safety valve rather than a persistent penalty on exploration.
@@ -55,4 +60,5 @@ To interpret these wall-clock tradeoffs, Figure~\ref{fig:timing_breakdown} decom
 The intrinsic segments typically remain a minority of wall-clock time, with environment stepping and PPO optimization dominating on the more expensive tasks.
 For the gated variant, one identifiable cost is recomputing robust global medians used to set gating thresholds.
 Table~\ref{tab:gate_cache_microbenchmark} shows that a simple refresh-interval cache yields a $4.83\times$ speedup in this specific subroutine, suggesting that the gate can be made inexpensive without changing the overall algorithmic structure.
+Because caching uses slightly stale medians and can therefore change gating decisions, we treat it as an optional engineering knob rather than part of the core GLPE comparison.
 Taken together, these results indicate that GLPE (no gate) provides a competitive default intrinsic signal, while gating offers targeted robustness gains on exploration-limited tasks such as MountainCar.
