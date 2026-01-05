@@ -3,7 +3,7 @@
 
 We evaluate the GLPE family and intrinsic-reward baselines on the five-environment suite from Section~\ref{sec:experimental_setup}.
 All plots and aggregates use the deterministic evaluation protocol: at each checkpoint we run 20 episodes per seed and report the mean \emph{extrinsic} return (i.e., the task reward without intrinsic shaping).
-Figure~\ref{fig:eval_curves_baselines} summarizes learning dynamics, Figure~\ref{fig:steps_to_threshold_baselines} reports sample efficiency at fixed reward thresholds, and Table~\ref{tab:final_returns_glpe_vs_baselines} summarizes final-checkpoint performance.
+Figure~\ref{fig:eval_curves_baselines} summarizes learning dynamics, Figure~\ref{fig:steps_to_threshold_baselines} reports sample efficiency at fixed reward thresholds, Figure~\ref{fig:glpe_intrinsic_taper} visualizes the intrinsic scheduling used by the GLPE family, and Table~\ref{tab:final_returns_glpe_vs_baselines} summarizes final-checkpoint performance.
 
 \input{figures/eval_curves_baselines}
 \input{tables/final_returns_glpe_vs_baselines}
@@ -29,6 +29,12 @@ The threshold-based analysis in Figure~\ref{fig:steps_to_threshold_baselines} co
 GLPE's main strength is consistent and efficient progress on exploration-limited tasks: on MountainCar, it reaches all three threshold levels quickly with near-perfect reliability.
 On HalfCheetah, GLPE reaches the solved threshold in all seeds, indicating that the locality-aware learning-progress signal does not sacrifice robustness even in continuous-control settings.
 On BipedalWalker and Humanoid, the strict thresholds expose variance across methods: several baselines solve BipedalWalker reliably, while on Humanoid all methods solve in only a subset of seeds.
+
+Because the GLPE family anneals intrinsic shaping with a cosine taper (Section~\ref{sec:method}), its intrinsic contribution is intentionally transient.
+Figure~\ref{fig:glpe_intrinsic_taper} shows that the underlying intrinsic signal remains nonzero, but the applied intrinsic reward smoothly decays to (near) zero by the configured end of the taper.
+This scheduling complements gating by keeping early exploration incentives while reducing the risk that persistent intrinsic bonuses distort late-training fine-tuning.
+
+\input{figures/glpe_intrinsic_taper}
 
 \input{figures/timing_breakdown}
 \input{tables/gate_cache_microbenchmark}
