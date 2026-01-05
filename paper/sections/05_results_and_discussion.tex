@@ -5,6 +5,7 @@ We evaluate GLPE and GLPE (no gate), alongside intrinsic-reward baselines, on th
 All plots and aggregates use the deterministic evaluation protocol: at each checkpoint we run 20 episodes per seed and report the mean \emph{extrinsic} return (i.e., the task reward without intrinsic shaping).
 Unless otherwise noted, each environment uses 8 random seeds (10 for \textsc{MountainCar-v0} and 5 for \textsc{Humanoid-v5}).
 We primarily interpret learning curves (Figure~\ref{fig:eval_curves_baselines}), sample efficiency via step-AUC over environment steps (Table~\ref{tab:auc_steps_glpe_vs_baselines}), thresholded reliability and steps-to-threshold (Figure~\ref{fig:steps_to_threshold_baselines} and Table~\ref{tab:solved_threshold_stats}), and wall-clock efficiency via time-AUC under a common budget (Figure~\ref{fig:eval_auc_time}).
+We additionally use the training-time decomposition of extrinsic versus intrinsic rollout reward (Figure~\ref{fig:train_reward_decomp_baselines}) to contextualize how strongly intrinsic shaping influences the optimization signal.
 GLPE-specific diagnostics visualize the intrinsic taper schedule (Figure~\ref{fig:glpe_intrinsic_taper}) and where gating suppresses shaping along final-checkpoint trajectories (Figure~\ref{fig:glpe_gate_map}).
 Table~\ref{tab:final_returns_glpe_vs_baselines} reports final-checkpoint returns, and Table~\ref{tab:glpe_component_ablation_returns} summarizes intrinsic-component ablations on three representative tasks.
 
@@ -57,10 +58,12 @@ Table~\ref{tab:solved_threshold_stats} summarizes success counts at the full sol
 Under this stricter criterion, GLPE's most pronounced advantage is on the exploration-limited MountainCar task, while on the locomotion tasks GLPE (no gate) remains broadly competitive with strong baselines but inherits the cross-seed variance that dominates Humanoid and the near-threshold sensitivity of BipedalWalker.
 
 Because the GLPE family anneals intrinsic shaping with a cosine taper (Section~\ref{sec:method}), its intrinsic contribution is intentionally transient.
-Figure~\ref{fig:glpe_intrinsic_taper} shows that the underlying intrinsic signal remains nonzero, but the applied intrinsic reward smoothly decays to (near) zero by the configured end of the taper.
-This scheduling complements gating by keeping early exploration incentives while reducing the risk that persistent intrinsic bonuses distort late-training fine-tuning.
+Figure~\ref{fig:glpe_intrinsic_taper} shows that the underlying intrinsic signal remains nonzero, but the taper weight drives the applied intrinsic reward smoothly toward (near) zero as training approaches the final phase.
+This behavior is visible in the optimization signal: Figure~\ref{fig:train_reward_decomp_baselines} decomposes the mean rollout reward during training into extrinsic and intrinsic components, showing that GLPE and GLPE (no gate) reduce the intrinsic term late in training while several baselines maintain a nonzero intrinsic component throughout.
 
 \input{figures/glpe_intrinsic_taper}
+
+\input{figures/training_reward_decomposition_baselines}
 
 \input{figures/eval_auc_time}
 
