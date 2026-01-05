@@ -1,1 +1,28 @@
 \section{Results and Discussion}
+\label{sec:results_and_discussion}
+
+We evaluate GLPE on the five-task suite in Table~\ref{tab:env_suite}, comparing against PPO without intrinsic reward (Vanilla) and four intrinsic-reward baselines (ICM, RND, RIDE, RIAC).
+We measure performance using the mean episodic return from offline evaluation runs, which use 20 episodes per checkpoint with the deterministic policy mode (Section~\ref{sec:experimental_setup:evaluation}).
+Unless stated otherwise, we report mean returns across seeds together with 95\% bootstrap confidence intervals (2{,}000 resamples), computed on the per-seed performance at the final checkpoint.
+
+\input{figures/eval_learning_curves}
+
+Figure~\ref{fig:eval_learning_curves} summarizes learning dynamics on the full suite.
+On dense-reward locomotion tasks (\textsc{BipedalWalker}, \textsc{HalfCheetah}, \textsc{Ant}), Vanilla PPO already reaches strong scores, so intrinsic methods primarily affect learning speed and stability rather than enabling qualitatively new behaviors.
+In this regime, GLPE remains competitive with established baselines but does not uniformly dominate.
+For example, on \textsc{HalfCheetah} GLPE and GLPE (no gate) achieve returns close to RIDE by the end of training, while on \textsc{Ant} RIAC attains the highest mean return.
+
+The most consistent gains from GLPE appear on \textsc{MountainCar}, where rewards are sparse and progress depends on discovering a momentum-building strategy.
+Here, GLPE reaches and exceeds the solved threshold reliably, and its final return is both higher and less variable than the strongest baseline in our comparison.
+Conversely, on \textsc{BipedalWalker} the gated variant underperforms Vanilla and the best intrinsic baselines, while GLPE (no gate) closes much of the gap.
+This pattern suggests a tradeoff in the region-level gate: suppressing intrinsic reward can reduce interference once exploitation is appropriate, but it can also remove useful exploration pressure in tasks where local optima persist late into training.
+
+\textsc{Humanoid} exhibits substantial across-seed variability for all intrinsic methods, reflected in wide confidence intervals.
+In this setting, GLPE (no gate) matches the mean performance of ICM, whereas the gated variant trends lower.
+Given the small number of seeds (Table~\ref{tab:env_suite}), these differences should be interpreted as directional rather than definitive.
+
+\input{tables/final_eval_summary}
+
+Table~\ref{tab:final_eval_summary} provides the final-checkpoint returns that correspond to the endpoints in Figure~\ref{fig:eval_learning_curves}.
+Overall, GLPE offers a competitive intrinsic signal that improves performance on sparse-reward \textsc{MountainCar} and remains near the strongest baselines on \textsc{HalfCheetah}, but the current gating scheme is not uniformly beneficial across the locomotion suite.
+We return to these tradeoffs when discussing limitations and opportunities for improving gate calibration and robustness.
