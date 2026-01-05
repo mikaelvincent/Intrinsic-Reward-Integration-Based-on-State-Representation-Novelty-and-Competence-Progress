@@ -1,0 +1,21 @@
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{lccc}
+\hline
+Environment & GLPE & GLPE (no gate) & Best baseline \\
+\hline
+\textsc{MountainCar-v0} & $-96.2\;[-96.5,-95.9]$ & $-97.1\;[-99.0,-96.0]$ & RIAC: $-106.6\;[-127.5,-95.9]$ \\
+\textsc{BipedalWalker-v3} & $266.5\;[214.0,301.3]$ & $294.4\;[285.9,303.7]$ & Vanilla: $302.2\;[291.2,309.4]$ \\
+\textsc{Ant-v5} & $4{,}961\;[4{,}421,5{,}359]$ & $4{,}961\;[4{,}436,5{,}349]$ & RIAC: $5{,}384\;[5{,}118,5{,}625]$ \\
+\textsc{HalfCheetah-v5} & $6{,}889\;[6{,}565,7{,}285]$ & $6{,}908\;[6{,}548,7{,}280]$ & RIDE: $7{,}106\;[6{,}901,7{,}299]$ \\
+\textsc{Humanoid-v5} & $1{,}970\;[546,4{,}355]$ & $2{,}858\;[1{,}428,4{,}454]$ & ICM: $2{,}874\;[770,4{,}956]$ \\
+\hline
+\end{tabular}
+\caption{
+Mean extrinsic return at the final checkpoint (latest by training steps). Values are means over seeds; each seed is evaluated for 20 deterministic (mode) episodes, and confidence intervals are 95\% bootstrap intervals over seeds.
+Higher is better; for \textsc{MountainCar-v0} this corresponds to less negative return.
+The best baseline is selected (per environment) among Vanilla PPO, ICM, RND, RIDE, and RIAC by highest mean return.
+}
+\label{tab:final_returns_glpe_vs_baselines}
+\end{table}
