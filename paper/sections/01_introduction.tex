@@ -9,9 +9,10 @@ A large fraction of modern intrinsic-reward methods operationalize curiosity thr
 Prediction-error bonuses reward transitions that are surprising under a learned dynamics model \cite{stadie-2015,pathak-2017}, while Random Network Distillation (RND) treats novelty as prediction error against a fixed random target network \cite{burda-2018B}.
 Related objectives reward epistemic uncertainty or information gain \cite{houthooft-2016,mohamed-2015,pathak-2019}.
 However, raw prediction error can remain high in stochastic or irreducible regions, producing the ``noisy-TV'' failure mode where the agent seeks uninformative unpredictability \cite{burda-2018A,burda-2018B,mavor-parker-2021}.
-Moreover, intrinsic bonuses that are simply added to the environment reward are generally not policy-invariant in the sense of potential-based shaping \cite{ng-1999}, so they are best viewed as practical exploration aids whose scale and nonstationarity matter.
+More broadly, intrinsic shaping must balance two competing goals: it should be informative enough to guide exploration, yet selective enough to avoid dominating optimization with unproductive curiosity.
+Intrinsic bonuses that are simply added to the environment reward are generally not policy-invariant in the sense of potential-based shaping \cite{ng-1999}, so they are best viewed as practical exploration aids whose scale and nonstationarity matter.
 
-Learning-progress exploration provides an appealing alternative: instead of rewarding absolute surprise, reward \,\emph{improvement} in a predictive model.
+Learning-progress exploration provides an appealing alternative: instead of rewarding absolute surprise, reward \emph{improvement} in a predictive model.
 This idea appears prominently in developmental robotics, where region-local progress estimates drive exploration toward experience that is learnable but not yet mastered \cite{oudeyer-2007B,baranes-2009}.
 In high-dimensional control benchmarks, learning progress must be estimated in a learned representation and localized in state space; global statistics can obscure pockets of progress and can still overvalue regions that are consistently high-error.
 Complementary to progress, impact-based objectives encourage transitions that change the agent's representation in meaningful ways (e.g., RIDE; \cite{raileanu-2020}).
@@ -22,7 +23,8 @@ We maintain a lightweight online partition of the latent space and track forward
 Regional learning progress is then the (positive) discrepancy between these horizons, capturing recent reductions in prediction error.
 We pair this progress term with a feature-space impact signal measuring how much the representation changes over a transition, and stabilize both components with online RMS normalization before combining them into a base intrinsic score.
 Within this framework we study two variants: \textbf{GLPE (no gate)} uses the base score directly as intrinsic reward, while \textbf{GLPE} introduces a region-specific gate that suppresses intrinsic reward in regions that remain high-error yet exhibit little learning progress.
-The gate uses robust global reference statistics and hysteresis to avoid rapid flipping, and it is intended as a targeted backstop against unproductive curiosity.
+The gate uses robust global reference statistics and hysteresis to avoid rapid oscillations, and it is intended as a targeted backstop against unproductive curiosity.
+To keep intrinsic shaping stable and transient in practice, we clip intrinsic rewards and optionally anneal the intrinsic coefficient late in training with a cosine taper.
 
 We evaluate both GLPE variants on five Gymnasium vector-observation benchmarks spanning discrete and continuous control (Section~\ref{sec:experimental_setup}), using a shared PPO backbone \cite{schulman-2017} and comparing against widely used intrinsic-reward baselines including ICM \cite{pathak-2017}, RND \cite{burda-2018B}, RIDE \cite{raileanu-2020}, and RIAC-style learning progress \cite{baranes-2009}.
 Beyond learning curves over environment interaction, we report wall-clock efficiency and targeted diagnostics that isolate signal contributions and overhead.
