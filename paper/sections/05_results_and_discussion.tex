@@ -20,8 +20,9 @@ Some diagnostic and efficiency plots additionally include auxiliary GLPE variant
 
 Table~\ref{tab:auc_steps_glpe_vs_baselines} summarizes interaction efficiency using a normalized step-AUC over environment steps: it rewards methods that learn quickly and sustain high returns over the fixed step budget.
 By this metric, GLPE has the strongest point estimate on \textsc{MountainCar-v0} (step-AUC $-107.0$ vs.\ $-113.7$ for the best baseline), and GLPE (no gate) is within $0.8\%$ of the best baseline on \textsc{BipedalWalker-v3} ($255.2$ vs.\ $257.3$).
-On \textsc{Ant-v5} and \textsc{HalfCheetah-v5}, the GLPE variants are within approximately 4--5\% of the best baseline step-AUC (Ant: $3{,}402$ vs.\ $3{,}565$; HalfCheetah: $4{,}998$--$5{,}005$ vs.\ $5{,}208$), and on \textsc{Humanoid-v5} GLPE (no gate) is within $7\%$ ($1{,}665$ vs.\ $1{,}781$).
+On \textsc{Ant-v5} and \textsc{HalfCheetah-v5}, the GLPE variants are within approximately 4--5\% of the best baseline step-AUC, and on \textsc{Humanoid-v5} GLPE (no gate) is within $7\%$ ($1{,}665$ vs.\ $1{,}781$).
 We treat GLPE (no gate) as a low-friction default that removes gating-specific thresholding, and use the gated variant as a conservative ``safety valve'' against unproductive intrinsic shaping.
+Across this suite, GLPE (no gate) is generally the better wall-clock default, while enabling gating trades additional intrinsic overhead for a reliability-oriented guardrail in sparse-reward settings.
 Consistent with the interaction-efficiency summary, on \textsc{MountainCar-v0}, GLPE achieves the best final return among all evaluated methods (Table~\ref{tab:final_returns_glpe_vs_baselines}).
 Relative to the strongest baseline (RIAC), this is a $+10.4$ return-point margin at the final checkpoint ($-96.2$ vs.\ $-106.6$).
 Both GLPE variants solve the task in all seeds, reaching the $-110$ solved threshold in \(\approx 0.35\,\mathrm{M}\) median steps (Table~\ref{tab:solved_threshold_stats}).
@@ -29,15 +30,15 @@ In contrast, several baselines exhibit occasional failures that remain near the 
 Among baselines, ICM is closest (9/10 solves at \(\approx 0.35\,\mathrm{M}\) median steps) but still falls short of perfect reliability (Table~\ref{tab:solved_threshold_stats}).
 
 On the MuJoCo locomotion tasks, GLPE (no gate) remains competitive with the strongest intrinsic baselines.
-On \textsc{HalfCheetah-v5}, both GLPE variants reach the $6000$ solved threshold in all seeds and finish around $6.9\,$k mean return (Table~\ref{tab:final_returns_glpe_vs_baselines}), with learning curves that track the strongest intrinsic baselines throughout training.
-While RIDE attains the highest mean final return on this task, GLPE (no gate) is $2.8\%$ lower at the final checkpoint ($6{,}908$ vs.\ $7{,}106$) and about $4\%$ lower in step-AUC ($4{,}998$ vs.\ $5{,}208$; Table~\ref{tab:auc_steps_glpe_vs_baselines}).
+On \textsc{HalfCheetah-v5}, both GLPE variants reach the $6000$ solved threshold in all seeds and track the strongest intrinsic baselines throughout training (Figure~\ref{fig:eval_curves_baselines}), finishing near $6.9\,$k mean return (Table~\ref{tab:final_returns_glpe_vs_baselines}).
+RIDE attains the highest mean final return, but GLPE (no gate) remains close and exhibits a consistent ordering under step-AUC (Tables~\ref{tab:final_returns_glpe_vs_baselines} and~\ref{tab:auc_steps_glpe_vs_baselines}).
 On \textsc{Humanoid-v5}, variance is substantial across all methods: a small number of seeds achieve high returns while others remain far below the solved threshold, leading to wide confidence intervals (Figure~\ref{fig:eval_curves_baselines}).
 In this regime, GLPE (no gate) matches the strongest baseline (ICM) in mean final return within overlapping confidence intervals (Table~\ref{tab:final_returns_glpe_vs_baselines}), with nearly identical point estimates ($2{,}858$ vs.\ $2{,}874$); correspondingly, both methods reach the $3000$ solved threshold in only 2/5 seeds (Table~\ref{tab:solved_threshold_stats}).
 The gated variant improves over vanilla PPO on average but lags GLPE (no gate) here, suggesting that disabling gating can be a pragmatic choice when suppressing exploration too early is costly.
 
 \textsc{Ant-v5} highlights a complementary regime where dense extrinsic reward already provides strong guidance and many methods approach the solved threshold.
-GLPE and GLPE (no gate) finish slightly below $5000$ on average (mean $4{,}961$), about $7.8\%$ below RIAC's $5{,}384$ at the final checkpoint (Table~\ref{tab:final_returns_glpe_vs_baselines}).
-By step-AUC, the gap to the best baseline is smaller (within about 5\%; Table~\ref{tab:auc_steps_glpe_vs_baselines}), and GLPE reaches the solved threshold at least once in 7/8 seeds.
+GLPE and GLPE (no gate) match each other closely and reach the solved threshold in 7/8 seeds, but finish modestly below the strongest baseline at the final checkpoint (Tables~\ref{tab:final_returns_glpe_vs_baselines} and~\ref{tab:solved_threshold_stats}).
+The step-AUC summary mirrors this pattern, suggesting that the gap reflects lower average performance rather than being confined to the final checkpoint (Table~\ref{tab:auc_steps_glpe_vs_baselines}).
 Finally, on \textsc{BipedalWalker-v3} (solved threshold $300$), GLPE (no gate) approaches the threshold with a comparatively tight confidence interval, but binary ``solved'' counts are sensitive to small between-seed differences.
 At the intermediate 50\% threshold ($150$), both GLPE variants reach the target in all seeds in \(\approx 0.4\,\mathrm{M}\) steps (Table~\ref{tab:half_solved_threshold_stats}), suggesting that the main gap lies in consistently converting near-solved performance into threshold-crossing runs.
 Accordingly, despite a near-best step-AUC (Table~\ref{tab:auc_steps_glpe_vs_baselines}), GLPE (no gate) reaches the full solved threshold in only 2/8 seeds (versus 7/8 for vanilla PPO and 8/8 for RIAC), and the gated variant reaches it in 4/8 seeds but with lower mean final return ($266.5\;[214.0,301.3]$; Tables~\ref{tab:solved_threshold_stats} and~\ref{tab:final_returns_glpe_vs_baselines}).
