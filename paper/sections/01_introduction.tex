@@ -1,1 +1,42 @@
 \section{Introduction}
+\label{sec:introduction}
+
+Reinforcement learning (RL) agents learn by interacting with an environment, but in many control problems the environment reward is sparse, delayed, or otherwise insufficient to guide early learning.
+In these settings, exploration---discovering trajectories that reveal informative feedback---often dominates the overall sample and compute requirements.
+Intrinsic motivation addresses this challenge by augmenting the task reward with internally generated signals that encourage novelty, surprise, or skill acquisition \cite{schmidhuber-1991,singh-2004,oudeyer-2007A,barto-2012}.
+
+A large fraction of modern intrinsic-reward methods operationalize curiosity through novelty in a learned representation.
+Prediction-error bonuses reward transitions that are surprising under a learned dynamics model \cite{stadie-2015,pathak-2017}, while Random Network Distillation (RND) treats novelty as prediction error against a fixed random target network \cite{burda-2018B}.
+Related objectives reward epistemic uncertainty or information gain \cite{houthooft-2016,mohamed-2015,pathak-2019}.
+However, raw prediction error can remain high in stochastic or irreducible regions, producing the ``noisy-TV'' failure mode where the agent seeks uninformative unpredictability \cite{burda-2018A,burda-2018B,mavor-parker-2021}.
+Moreover, intrinsic bonuses that are simply added to the environment reward are generally not policy-invariant in the sense of potential-based shaping \cite{ng-1999}, so they are best viewed as practical exploration aids whose scale and nonstationarity matter.
+
+Learning-progress exploration provides an appealing alternative: instead of rewarding absolute surprise, reward \,\emph{improvement} in a predictive model.
+This idea appears prominently in developmental robotics, where region-local progress estimates drive exploration toward experience that is learnable but not yet mastered \cite{oudeyer-2007B,baranes-2009}.
+In high-dimensional control benchmarks, learning progress must be estimated in a learned representation and localized in state space; global statistics can obscure pockets of progress and can still overvalue regions that are consistently high-error.
+Complementary to progress, impact-based objectives encourage transitions that change the agent's representation in meaningful ways (e.g., RIDE; \cite{raileanu-2020}).
+
+This paper introduces the \emph{GLPE family}---\textbf{G}ated \textbf{L}earning-\textbf{P}rogress \textbf{E}xploration---a region-aware intrinsic reward computed in a learned feature space.
+A shared latent dynamics model encodes observations and predicts next-step features.
+We maintain a lightweight online partition of the latent space and track forward-model prediction error within each region using short- and long-horizon exponential moving averages.
+Regional learning progress is then the (positive) discrepancy between these horizons, capturing recent reductions in prediction error.
+We pair this progress term with a feature-space impact signal measuring how much the representation changes over a transition, and stabilize both components with online RMS normalization before combining them into a base intrinsic score.
+Within this framework we study two variants: \textbf{GLPE (no gate)} uses the base score directly as intrinsic reward, while \textbf{GLPE} introduces a region-specific gate that suppresses intrinsic reward in regions that remain high-error yet exhibit little learning progress.
+The gate uses robust global reference statistics and hysteresis to avoid rapid flipping, and it is intended as a targeted backstop against unproductive curiosity.
+
+We evaluate both GLPE variants on five Gymnasium vector-observation benchmarks spanning discrete and continuous control (Section~\ref{sec:experimental_setup}), using a shared PPO backbone \cite{schulman-2017} and comparing against widely used intrinsic-reward baselines including ICM \cite{pathak-2017}, RND \cite{burda-2018B}, RIDE \cite{raileanu-2020}, and RIAC-style learning progress \cite{baranes-2009}.
+Beyond learning curves over environment interaction, we report wall-clock efficiency and targeted diagnostics that isolate signal contributions and overhead.
+Across the suite, \textbf{GLPE (no gate)} serves as a low-friction default, while gating is most useful as an optional guardrail when intrinsic shaping risks becoming unproductive.
+
+\paragraph{Contributions.}
+\begin{itemize}
+    \item We propose the \emph{GLPE family} of intrinsic rewards that combines region-local learning progress with feature-space impact in a learned latent space, yielding \textbf{GLPE (no gate)} and its gated counterpart \textbf{GLPE}.
+    \item We introduce a robust, region-specific gating mechanism that suppresses intrinsic reward in high-error, low-progress regions, targeting known failure modes of prediction-error curiosity.
+    \item We provide an empirical study on a five-environment Gymnasium suite with a common PPO backbone, reporting both interaction-normalized and wall-clock-normalized comparisons, along with ablations and diagnostics of intrinsic components and computational overhead.
+\end{itemize}
+
+\paragraph{Organization.}
+Section~\ref{sec:related_work} reviews intrinsic motivation, novelty, and learning-progress exploration.
+Section~\ref{sec:method} presents the GLPE family.
+Section~\ref{sec:experimental_setup} details the benchmark suite, baselines, and evaluation protocol.
+Section~\ref{sec:results} reports results, diagnostics, and efficiency analyses, and Section~\ref{sec:conclusion} concludes.
