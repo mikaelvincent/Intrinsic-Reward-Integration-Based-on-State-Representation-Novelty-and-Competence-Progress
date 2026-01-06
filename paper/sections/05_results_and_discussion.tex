@@ -3,7 +3,7 @@
 
 We evaluate GLPE and GLPE (no gate), alongside intrinsic-reward baselines, on the five-environment suite from Section~\ref{sec:experimental_setup}.
 Across tasks, GLPE (no gate) is a strong default: at the final checkpoint it closely matches the best baseline on \textsc{Humanoid-v5} (within wide confidence intervals) and trails the best baseline by only a small margin on \textsc{HalfCheetah-v5} and \textsc{BipedalWalker-v3} (Table~\ref{tab:final_returns_glpe_vs_baselines}).
-The gated variant provides its clearest benefit on the exploration-limited \textsc{MountainCar-v0} task, where it achieves the best final return and best step-AUC among all methods (Tables~\ref{tab:final_returns_glpe_vs_baselines} and~\ref{tab:auc_steps_glpe_vs_baselines}).
+The gated variant provides its clearest benefit on the exploration-limited \textsc{MountainCar-v0} task, where it achieves the best final return (Table~\ref{tab:final_returns_glpe_vs_baselines}).
 All plots and aggregates use the deterministic evaluation protocol: at each checkpoint we run 20 episodes per seed and report the mean \emph{extrinsic} return (i.e., the task reward without intrinsic shaping).
 Unless otherwise noted, each environment uses 8 random seeds (10 for \textsc{MountainCar-v0} and 5 for \textsc{Humanoid-v5}).
 We primarily interpret learning curves (Figure~\ref{fig:eval_curves_baselines}), sample efficiency via step-AUC over environment steps (Table~\ref{tab:auc_steps_glpe_vs_baselines}), thresholded reliability and steps-to-threshold (Figure~\ref{fig:steps_to_threshold_baselines} and Tables~\ref{tab:half_solved_threshold_stats} and~\ref{tab:solved_threshold_stats}), and wall-clock efficiency via time-AUC under a common budget (Figure~\ref{fig:eval_auc_time}).
@@ -17,11 +17,10 @@ Some diagnostic and efficiency plots additionally include auxiliary GLPE variant
 \input{tables/final_returns_glpe_vs_baselines}
 \input{tables/auc_steps_glpe_vs_baselines}
 
-Table~\ref{tab:auc_steps_glpe_vs_baselines} summarizes interaction efficiency using a normalized step-AUC over environment steps: it rewards methods that learn quickly and sustain high returns over the fixed step budget.
+Table~\ref{tab:auc_steps_glpe_vs_baselines} summarizes interaction efficiency using a normalized step-AUC over environment steps, rewarding methods that learn quickly and sustain high returns over the fixed step budget.
 By this metric, GLPE has the strongest point estimate on \textsc{MountainCar-v0}, and GLPE (no gate) remains near the top on \textsc{BipedalWalker-v3}.
-On \textsc{Ant-v5} and \textsc{HalfCheetah-v5}, the GLPE variants fall within a small gap of the strongest baseline step-AUC, while \textsc{Humanoid-v5} exhibits a clearer gap that is difficult to interpret cleanly given the high across-seed variance.
-We treat GLPE (no gate) as a low-friction default that removes gating-specific thresholding, and use the gated variant as a conservative ``safety valve'' against unproductive intrinsic shaping.
-Across this suite, GLPE (no gate) is generally the better wall-clock default, while enabling gating trades additional intrinsic overhead for a reliability-oriented guardrail in sparse-reward settings.
+On \textsc{Ant-v5} and \textsc{HalfCheetah-v5}, the GLPE variants fall within a small gap of the strongest baseline step-AUC, while \textsc{Humanoid-v5} shows a larger gap that is hard to interpret cleanly given the high across-seed variance.
+We therefore treat GLPE (no gate) as the low-friction default that removes gating-specific thresholding, and view the gated variant as an optional guardrail when intrinsic shaping risks being unproductive or destabilizing in sparse-reward settings.
 On \textsc{MountainCar-v0}, GLPE achieves the best final return and the strongest step-AUC (Tables~\ref{tab:final_returns_glpe_vs_baselines} and~\ref{tab:auc_steps_glpe_vs_baselines}), and both GLPE variants reach the solved threshold in all seeds (Table~\ref{tab:solved_threshold_stats}).
 Several baselines exhibit occasional failures that remain near the minimum return (Figure~\ref{fig:eval_curves_baselines}), so even the most reliable baseline falls short of perfect success (Table~\ref{tab:solved_threshold_stats}).
 
@@ -40,7 +39,7 @@ As a result, binary ``solved'' counts are highly sensitive to small between-seed
 The gated variant increases solved-threshold reach relative to GLPE (no gate) but exhibits occasional low-return failures (Figure~\ref{fig:eval_curves_baselines}), which pull down its mean.
 Taken together, \textsc{BipedalWalker-v3} illustrates a near-threshold regime where GLPE (no gate) is stable and efficient but not consistently ``pushed'' over a sharp solved cutoff.
 
-Diagnostic ablations within the GLPE family---run on \textsc{MountainCar-v0}, \textsc{BipedalWalker-v3}, and \textsc{Ant-v5}---help explain these regimes.
+To connect these per-environment regimes to GLPE's design choices, we use diagnostic ablations within the GLPE family---run on \textsc{MountainCar-v0}, \textsc{BipedalWalker-v3}, and \textsc{Ant-v5}---to isolate which intrinsic components matter in sparse-reward, near-threshold, and dense-reward settings.
 Table~\ref{tab:glpe_component_ablation_returns} isolates the two intrinsic components by setting impact-only ($\alpha_{\mathrm{LP}}{=}0$) or LP-only ($\alpha_{\mathrm{impact}}{=}0$).
 On \textsc{MountainCar-v0}, both single-term variants fall well short of GLPE, consistent with impact and learning progress acting as complementary drivers of exploration in a sparse-reward setting.
 In contrast, on \textsc{Ant-v5} the impact-only variant slightly exceeds GLPE in mean final return, and on \textsc{BipedalWalker-v3} the LP-only variant comes closest to the solved threshold.
@@ -49,7 +48,7 @@ Together, these ablations suggest that while a single component can be sufficien
 \input{tables/glpe_component_ablation_returns}
 
 To make the gating behavior concrete, Figure~\ref{fig:glpe_gate_map} shows where the GLPE gate suppresses intrinsic shaping along trajectories from the final checkpoint.
-Across environments, the gate switches off only in localized regions of the visited state distribution, consistent with its intended role as a conservative safety valve rather than a persistent penalty on exploration.
+Across environments, the gate switches off only in localized regions of the visited state distribution, supporting the interpretation of gating as a targeted backstop: it can prevent unhelpful shaping in sparse-reward settings without broadly suppressing exploration when dense reward already provides strong guidance.
 
 \input{figures/glpe_gate_map}
 
@@ -77,7 +76,7 @@ Computational efficiency can alter conclusions when methods are compared under a
 Figure~\ref{fig:eval_auc_time} summarizes this perspective using an area-under-curve (AUC) metric of evaluation return versus cumulative training time (Section~\ref{sec:experimental_setup:efficiency}), with each environment using a common time horizon to avoid extrapolating slower methods.
 Across \textsc{BipedalWalker-v3}, \textsc{HalfCheetah-v5}, \textsc{Ant-v5}, and \textsc{Humanoid-v5}, GLPE (no gate) remains close to the strongest baseline in time-AUC (Figure~\ref{fig:eval_auc_time}).
 Full GLPE is typically further back under this wall-clock lens, consistent with its higher per-update intrinsic overhead (Figure~\ref{fig:timing_breakdown}).
-\textsc{MountainCar-v0} is more sensitive: although GLPE leads by steps, the best time-AUC is attained by RIAC, and both GLPE variants give up some wall-clock efficiency to intrinsic computation despite strong interaction efficiency.
+\textsc{MountainCar-v0} is more sensitive: despite GLPE leading by environment steps, the best time-AUC is attained by RIAC, indicating that intrinsic compute can dominate when environment interaction is cheap and learning progresses quickly.
 
 \input{figures/timing_breakdown}
 \input{tables/gate_cache_microbenchmark}
@@ -89,4 +88,4 @@ While hardware- and configuration-dependent, these measurements align with the b
 For the gated variant, one identifiable cost is recomputing robust global medians used to set gating thresholds.
 Table~\ref{tab:gate_cache_microbenchmark} shows that a simple refresh-interval cache yields a $4.83\times$ speedup in this specific subroutine, suggesting that the gate can be made inexpensive without changing the overall algorithmic structure.
 Because caching uses slightly stale medians and can therefore change gating decisions, we treat it as an optional engineering knob rather than part of the core GLPE comparison; empirically, the resulting ``GLPE (cached)'' variant can underperform uncached GLPE on exploration-sensitive tasks, most notably \textsc{Humanoid-v5} (Figure~\ref{fig:eval_auc_time}).
-Taken together, these results indicate that GLPE (no gate) provides a competitive default intrinsic signal, while the gated variant trades additional intrinsic computation for improved interaction efficiency on sparse-reward \textsc{MountainCar-v0} and can underperform in high-variance regimes such as \textsc{Humanoid-v5}.
+Taken together, these results indicate that GLPE (no gate) remains competitive under both step- and time-normalized views, while gating is most beneficial on sparse-reward \textsc{MountainCar-v0} and can be counterproductive in high-variance regimes such as \textsc{Humanoid-v5}.
