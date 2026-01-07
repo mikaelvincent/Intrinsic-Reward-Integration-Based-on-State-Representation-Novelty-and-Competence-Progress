@@ -1,10 +1,14 @@
 \documentclass{article}
 
-\usepackage{templates/iclr/iclr2024_conference,times}
+\makeatletter
+\def\input@path{{templates/iclr/}}
+\makeatother
+\usepackage{iclr2024_conference,times}
 
 \usepackage{amsmath}
 \usepackage{amssymb}
-\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{algorithmic}
 \usepackage{booktabs}
 \usepackage{graphicx}
 \usepackage{hyperref}
