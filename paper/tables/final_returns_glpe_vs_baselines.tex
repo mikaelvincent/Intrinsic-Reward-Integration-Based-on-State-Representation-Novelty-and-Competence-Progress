@@ -1,7 +1,6 @@
 \begin{table*}[t]
 \centering
-{\scriptsize
-\setlength{\tabcolsep}{3.5pt}
+\small
 \begin{tabular}{lccc}
 \hline
 Environment & GLPE & GLPE (no gate) & Best baseline \\
@@ -13,7 +12,6 @@ Environment & GLPE & GLPE (no gate) & Best baseline \\
 \textsc{Humanoid-v5} & $1{,}970\;[546,4{,}355]$ & $2{,}858\;[1{,}428,4{,}454]$ & ICM: $2{,}874\;[770,4{,}956]$ \\
 \hline
 \end{tabular}
-}
 \caption{
 Mean extrinsic return at the final checkpoint (latest by environment steps).
 Values are means over seeds; each seed is evaluated for 20 deterministic (mode) episodes, and confidence intervals are 95\% bootstrap intervals over seeds.

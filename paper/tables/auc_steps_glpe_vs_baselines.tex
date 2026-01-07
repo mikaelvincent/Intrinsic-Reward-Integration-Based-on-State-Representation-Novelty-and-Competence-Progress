@@ -1,7 +1,6 @@
 \begin{table*}[t]
 \centering
-{\scriptsize
-\setlength{\tabcolsep}{3.5pt}
+\small
 \begin{tabular}{lccc}
 \hline
 Environment & GLPE & GLPE (no gate) & Best baseline \\
@@ -13,7 +12,6 @@ Environment & GLPE & GLPE (no gate) & Best baseline \\
 \textsc{Humanoid-v5} & $1{,}583\;[551,3{,}360]$ & $1{,}665\;[769,2{,}921]$ & ICM: $1{,}781\;[829,2{,}797]$ \\
 \hline
 \end{tabular}
-}
 \caption{
 Step-AUC of deterministic evaluation return versus cumulative environment steps, computed by trapezoidal integration of the mean return--by--steps curve over evaluation checkpoints and dividing by the environment's step budget.
 This yields the average evaluation return over training, rewarding methods that learn quickly and sustain high returns.
