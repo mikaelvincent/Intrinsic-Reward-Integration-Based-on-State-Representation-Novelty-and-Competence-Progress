@@ -117,17 +117,17 @@ def _run_latexmk(
         f"-outdir={out_dir_rel}",
         target_tex_rel,
     ]
-    try:
-        subprocess.run(cmd, cwd=str(paper_dir), check=True)
-    except subprocess.CalledProcessError as e:
-        log_path = out_dir / f"{target}.log"
-        lines = [
-            "latexmk failed.",
-            f"target: {target}",
-            f"log: {log_path.as_posix()}",
-            f"exit code: {e.returncode}",
-        ]
-        _fail("\n".join(lines))
+    res = subprocess.run(cmd, cwd=str(paper_dir), check=False)
+    if res.returncode != 0:
+        log_path = (out_dir / f"{target}.log").resolve()
+        _fail(
+            "\n".join(
+                [
+                    f"latexmk failed for target '{target}' (exit code {res.returncode})",
+                    f"see log: {log_path}",
+                ]
+            )
+        )
 
 
 def _stage_sources(paper_dir: Path, target: str, build_dir: Path) -> None:
