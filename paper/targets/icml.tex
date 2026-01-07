@@ -1,10 +1,15 @@
 \documentclass{article}
 
-\usepackage{templates/icml/icml2024}
+\makeatletter
+\def\input@path{{templates/icml/}}
+\makeatother
+
+\usepackage{icml2024}
 
 \usepackage{amsmath}
 \usepackage{amssymb}
-\usepackage{algorithmic}
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
 \usepackage{booktabs}
 \usepackage{graphicx}
 \usepackage{hyperref}
@@ -31,7 +36,7 @@
 
 \input{content_body}
 
-\bibliographystyle{templates/icml/icml2024}
+\bibliographystyle{icml2024}
 \bibliography{references/references}
 
 \end{document}
