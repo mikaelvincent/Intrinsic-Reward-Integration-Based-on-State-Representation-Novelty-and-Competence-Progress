@@ -1,7 +1,7 @@
 \begin{table*}[t]
 \centering
 \small
-\begin{tabular}{lccc}
+\begin{fitwidthtabular}{lccc}
 \hline
 Environment & GLPE & GLPE (no gate) & Best baseline \\
 \hline
@@ -11,7 +11,7 @@ Environment & GLPE & GLPE (no gate) & Best baseline \\
 \textsc{HalfCheetah-v5} & $5{,}005\;[4{,}708,5{,}316]$ & $4{,}998\;[4{,}700,5{,}296]$ & RIDE: $5{,}208\;[5{,}019,5{,}410]$ \\
 \textsc{Humanoid-v5} & $1{,}583\;[551,3{,}360]$ & $1{,}665\;[769,2{,}921]$ & ICM: $1{,}781\;[829,2{,}797]$ \\
 \hline
-\end{tabular}
+\end{fitwidthtabular}
 \caption{
 Step-AUC of deterministic evaluation return versus cumulative environment steps, computed by trapezoidal integration of the mean return--by--steps curve over evaluation checkpoints and dividing by the environment's step budget.
 This yields the average evaluation return over training, rewarding methods that learn quickly and sustain high returns.
