@@ -3,26 +3,26 @@
 \small
 \begin{minipage}{0.98\linewidth}
 \begin{algorithmic}[1]
-\State \textbf{Input:} on-policy transitions $\{(o_t,a_t,o_{t+1})\}_{t=1}^N$; encoder $\phi_\omega$; forward model $f_\psi$; inverse model $g_\xi$; region assignment function $\rho$; region EMAs $\mu^{\mathrm{short}}_r,\mu^{\mathrm{long}}_r$; RMS accumulators; gate states $g_r$ (optional)
-\State \textbf{Output:} intrinsic rewards $\{r_t^{\mathrm{int}}\}_{t=1}^N$; updated region statistics; updated intrinsic model parameters
-\For{$t=1$ to $N$}
-    \State $z_t \gets \phi_\omega(o_t)$, $z_{t+1}\gets \phi_\omega(o_{t+1})$
-    \State $e_t \gets \frac{1}{d}\lVert f_\psi(z_t,a_t)-z_{t+1}\rVert_2^2$
-    \State Assign region $r \gets \rho(z_t)$ (inserting $z_t$ and splitting leaves when needed)
-    \State Update region EMAs $\mu^{\mathrm{short}}_r,\mu^{\mathrm{long}}_r$ with $e_t$
-    \State $\mathrm{LP}_t \gets \max(0,\mu^{\mathrm{long}}_r-\mu^{\mathrm{short}}_r)$
-    \State $I_t \gets \lVert z_{t+1}-z_t\rVert_2$
-    \State Normalize $I_t$ and $\mathrm{LP}_t$ with running RMS to get $\widetilde{I}_t,\widetilde{\mathrm{LP}}_t$
-    \State $u_t \gets \alpha_{\mathrm{impact}}\widetilde{I}_t + \alpha_{\mathrm{LP}}\widetilde{\mathrm{LP}}_t$
-    \If{gating enabled}
-        \State Compute robust global medians $\mathrm{LP}_{\mathrm{med}}, e_{\mathrm{med}}$ across visited regions
-        \State Update gate $g_r$ using persistence and hysteresis rules
-        \State $r_t^{\mathrm{int}} \gets g_r\,u_t$
-    \Else
-        \State $r_t^{\mathrm{int}} \gets u_t$
-    \EndIf
-\EndFor
-\State Update intrinsic model parameters $(\omega,\psi,\xi)$ using $\{(z_t,a_t,z_{t+1})\}$ and supervised losses
+\STATE \textbf{Input:} on-policy transitions $\{(o_t,a_t,o_{t+1})\}_{t=1}^N$; encoder $\phi_\omega$; forward model $f_\psi$; inverse model $g_\xi$; region assignment function $\rho$; region EMAs $\mu^{\mathrm{short}}_r,\mu^{\mathrm{long}}_r$; RMS accumulators; gate states $g_r$ (optional)
+\STATE \textbf{Output:} intrinsic rewards $\{r_t^{\mathrm{int}}\}_{t=1}^N$; updated region statistics; updated intrinsic model parameters
+\FOR{$t=1$ to $N$}
+    \STATE $z_t \gets \phi_\omega(o_t)$, $z_{t+1}\gets \phi_\omega(o_{t+1})$
+    \STATE $e_t \gets \frac{1}{d}\lVert f_\psi(z_t,a_t)-z_{t+1}\rVert_2^2$
+    \STATE Assign region $r \gets \rho(z_t)$ (inserting $z_t$ and splitting leaves when needed)
+    \STATE Update region EMAs $\mu^{\mathrm{short}}_r,\mu^{\mathrm{long}}_r$ with $e_t$
+    \STATE $\mathrm{LP}_t \gets \max(0,\mu^{\mathrm{long}}_r-\mu^{\mathrm{short}}_r)$
+    \STATE $I_t \gets \lVert z_{t+1}-z_t\rVert_2$
+    \STATE Normalize $I_t$ and $\mathrm{LP}_t$ with running RMS to get $\widetilde{I}_t,\widetilde{\mathrm{LP}}_t$
+    \STATE $u_t \gets \alpha_{\mathrm{impact}}\widetilde{I}_t + \alpha_{\mathrm{LP}}\widetilde{\mathrm{LP}}_t$
+    \IF{gating enabled}
+        \STATE Compute robust global medians $\mathrm{LP}_{\mathrm{med}}, e_{\mathrm{med}}$ across visited regions
+        \STATE Update gate $g_r$ using persistence and hysteresis rules
+        \STATE $r_t^{\mathrm{int}} \gets g_r\,u_t$
+    \ELSE
+        \STATE $r_t^{\mathrm{int}} \gets u_t$
+    \ENDIF
+\ENDFOR
+\STATE Update intrinsic model parameters $(\omega,\psi,\xi)$ using $\{(z_t,a_t,z_{t+1})\}$ and supervised losses
 \end{algorithmic}
 \end{minipage}
 \caption{High-level pseudocode for computing GLPE-family intrinsic rewards within one PPO update.}
