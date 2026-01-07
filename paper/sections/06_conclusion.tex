@@ -1,14 +1,13 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-This work studied intrinsic-reward shaping for exploration in control tasks where extrinsic feedback can be sparse, delayed, or insufficient to guide early learning.
-Building on learning-progress exploration and feature-space impact, we introduced the \emph{GLPE family}: \textbf{GLPE (no gate)} combines region-local learning progress with feature-space impact under lightweight online normalization, while \textbf{GLPE} augments the same base signal with a region-specific gate that can set intrinsic reward to zero in high-error, low-progress regions.
+Intrinsic-reward shaping can substantially accelerate learning when extrinsic feedback is sparse or delayed, but naive novelty or prediction-error bonuses can also concentrate exploration in regions where progress is slow, unstable, or effectively noisy.
+We introduced the \emph{GLPE family}, which ties intrinsic reward to two complementary signals computed from on-policy transitions: feature-space impact and region-local learning progress estimated from short- and long-horizon prediction-error averages in an online latent-space partition.
+The full \textbf{GLPE} variant adds a simple region-wise gate that suppresses intrinsic shaping when prediction error stays high while learning progress stalls, providing a targeted guardrail against unproductive curiosity; \textbf{GLPE (no gate)} uses the same base score without this additional thresholding.
 
-Across the five-environment Gymnasium suite and a shared PPO backbone (Section~\ref{sec:experimental_setup}), \textbf{GLPE (no gate)} is the most consistent default, remaining competitive with the strongest baseline under both step-normalized and wall-clock-normalized views (Section~\ref{sec:results}).
-Practically, it provides a low-friction way to bias exploration toward transitions that both \emph{change} the learned representation and occur in regions where the dynamics model is actively improving.
-The full gated variant is best interpreted as an optional guardrail: it is most helpful in sparse-reward regimes (most clearly on \textsc{MountainCar-v0}), where it provides a targeted guardrail by selectively disabling unproductive shaping, and it can be overly conservative in high-variance settings.
-The cosine taper schedule further makes exploration support intentionally transient, smoothly reducing reliance on intrinsic rewards late in training while preserving the early-learning benefits of intrinsic shaping.
+Across five Gymnasium control benchmarks and a shared PPO backbone, GLPE (no gate) is the most consistent default, remaining competitive with strong intrinsic baselines under both step-normalized and wall-clock-normalized views.
+The gated variant is most valuable in sparse-reward regimes such as \textsc{MountainCar-v0}, where it improves reliability and reduces instability relative to ungated shaping, but it can be unnecessarily conservative in high-variance settings such as \textsc{Humanoid-v5}.
+Finally, the cosine taper schedule makes intrinsic shaping intentionally transient, smoothly reducing its contribution late in training so that final performance reflects primarily the learned task policy.
 
-Our study is limited to vector-observation benchmarks and on-policy PPO, and (as with most exploration bonuses) the intrinsic shaping we use is not policy-invariant.
-The gate also introduces additional computation and thresholding that can be unnecessary---or counterproductive in high-variance settings---relative to \textbf{GLPE (no gate)}.
-Future work can therefore focus on extending the GLPE family to richer observation modalities and alternative training regimes, and on making the gated variant cheaper and more adaptive (e.g., via cached or more efficient robust statistics) without changing the underlying intrinsic objective.
+This study is limited to vector-observation benchmarks and on-policy PPO, and (as with most intrinsic bonuses) the shaping signal we apply is not policy-invariant.
+Future work can extend GLPE to richer observation modalities and alternative training regimes, and can make the gated variant cheaper and more adaptive without changing the underlying intrinsic objective.
