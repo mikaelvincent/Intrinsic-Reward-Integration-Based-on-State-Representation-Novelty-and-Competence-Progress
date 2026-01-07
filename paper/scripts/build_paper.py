@@ -78,7 +78,7 @@ def _require_templates(paper_dir: Path, target: str) -> None:
         *(f"  - {p.as_posix()}" for p in missing),
         "",
         "Place the official conference template files under:",
-        f"  { (paper_dir / 'templates' / target).as_posix() }/",
+        f"  {(paper_dir / 'templates' / target).as_posix()}/",
     ]
     _fail("\n".join(lines))
 
@@ -117,7 +117,17 @@ def _run_latexmk(
         f"-outdir={out_dir_rel}",
         target_tex_rel,
     ]
-    subprocess.run(cmd, cwd=str(paper_dir), check=True)
+    try:
+        subprocess.run(cmd, cwd=str(paper_dir), check=True)
+    except subprocess.CalledProcessError as e:
+        log_path = out_dir / f"{target}.log"
+        lines = [
+            "latexmk failed.",
+            f"target: {target}",
+            f"log: {log_path.as_posix()}",
+            f"exit code: {e.returncode}",
+        ]
+        _fail("\n".join(lines))
 
 
 def _stage_sources(paper_dir: Path, target: str, build_dir: Path) -> None:
