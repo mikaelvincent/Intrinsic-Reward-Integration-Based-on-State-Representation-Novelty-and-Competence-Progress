@@ -24,8 +24,8 @@ This provides headroom to assess long-horizon stability of exploration behavior 
 \subsection{Methods compared}
 \label{sec:experimental_setup:methods}
 
-We compare two proposed intrinsic-reward methods, \textbf{GLPE} and \textbf{GLPE (no gate)} (Section~\ref{sec:method}), against a set of commonly used exploration baselines: \textbf{Vanilla (extrinsic-only PPO)}, \textbf{ICM}, \textbf{RND}, \textbf{RIDE}, and \textbf{RIAC}.
-Vanilla (extrinsic-only PPO) optimizes only the environment reward.
+We compare two proposed intrinsic-reward methods, \textbf{GLPE} and \textbf{GLPE (no gate)} (Section~\ref{sec:method}), against a set of commonly used exploration baselines: \textbf{Vanilla PPO}, \textbf{ICM}, \textbf{RND}, \textbf{RIDE}, and \textbf{RIAC}.
+Vanilla PPO optimizes only the extrinsic environment reward.
 ICM uses forward-model prediction error in a learned feature space as an intrinsic signal, while RND uses the prediction error of a trainable predictor against a fixed random target network.
 RIDE rewards feature-space impact, down-weighted by episodic visitation counts obtained by discretizing features, and RIAC uses region-local learning progress computed from changes in forward-model error within an adaptive partition of feature space.
 All methods use the same PPO backbone and network architectures.
@@ -75,13 +75,13 @@ We additionally log scalar metrics every fixed number of environment steps (set 
 \subsection{Efficiency measurements}
 \label{sec:experimental_setup:efficiency}
 
-In addition to sample efficiency (learning as a function of environment interaction), we track computational efficiency using wall-clock time.
+In addition to sample efficiency (learning as a function of environment steps), we track computational efficiency using wall-clock time.
 All timings are measured in the same execution setting used for training (CPU in our experiments) and therefore reflect end-to-end optimization overhead.
 For each PPO iteration we log per-component wall-clock time spent in environment interaction, policy inference, intrinsic computation, intrinsic-module updates, advantage computation, and PPO optimization.
 We use these logs to form cumulative training time.
 
-When reporting scalar summaries of learning curves, we compute area-under-the-curve (AUC) metrics via trapezoidal integration of mean return as a function of either environment steps or wall-clock time.
-For time-based summaries, we use a \emph{common time budget} per environment defined as the minimum final wall-clock time attained among the compared methods.
+When reporting scalar summaries of learning curves, we compute two AUC metrics via trapezoidal integration of mean return: step-AUC (return versus environment steps, divided by the environment's step budget) and wall-clock AUC (return versus cumulative training time).
+For wall-clock AUC, we use a \emph{common time budget} per environment defined as the minimum final wall-clock time attained among the compared methods.
 This ensures that summaries do not rely on extrapolation beyond the measured runtime of any method.
 
 \subsection{Implementation details and hyperparameters}
