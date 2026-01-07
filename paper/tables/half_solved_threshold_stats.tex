@@ -8,13 +8,13 @@ Environment & GLPE & GLPE (no gate) & Most reliable baseline \\
 \textsc{MountainCar-v0} & \(10/10;\;0.12\,\mathrm{M}\) & \(10/10;\;0.11\,\mathrm{M}\) & RIDE: \(9/10;\;0.13\,\mathrm{M}\) \\
 \textsc{BipedalWalker-v3} & \(8/8;\;0.44\,\mathrm{M}\) & \(8/8;\;0.41\,\mathrm{M}\) & ICM: \(8/8;\;0.41\,\mathrm{M}\) \\
 \textsc{Ant-v5} & \(8/8;\;4.61\,\mathrm{M}\) & \(8/8;\;4.61\,\mathrm{M}\) & RND: \(8/8;\;4.18\,\mathrm{M}\) \\
-\textsc{HalfCheetah-v5} & \(8/8;\;2.01\,\mathrm{M}\) & \(8/8;\;2.01\,\mathrm{M}\) & Vanilla: \(8/8;\;1.28\,\mathrm{M}\) \\
+\textsc{HalfCheetah-v5} & \(8/8;\;2.01\,\mathrm{M}\) & \(8/8;\;2.01\,\mathrm{M}\) & Vanilla PPO: \(8/8;\;1.28\,\mathrm{M}\) \\
 \textsc{Humanoid-v5} & \(2/5;\;14.51\,\mathrm{M}\) & \(4/5;\;11.47\,\mathrm{M}\) & ICM: \(4/5;\;10.32\,\mathrm{M}\) \\
 \hline
 \end{tabular}
 \caption{
 Reliability and speed at 50\% of the solved threshold.
-Each cell reports the number of seeds that reached 50\% of the task's solved-return threshold by the end of training and the median steps (in millions) to first reach that level, computed by linearly interpolating between deterministic evaluation checkpoints (Figure~\ref{fig:steps_to_threshold_baselines}).
+Each cell reports the number of seeds that reached 50\% of the task's solved threshold by the end of training and the median steps (in millions) to first reach that level, computed by linearly interpolating between deterministic evaluation checkpoints (Figure~\ref{fig:steps_to_threshold_baselines}).
 For tasks with negative solved thresholds (\textsc{MountainCar-v0}), the 50\% level uses the same monotonic mapping as in Figure~\ref{fig:steps_to_threshold_baselines}.
 Medians are taken over successful seeds only.
 The ``most reliable baseline'' is the method with the highest reach count among Vanilla PPO, ICM, RND, RIDE, and RIAC (ties broken by lower median steps).
