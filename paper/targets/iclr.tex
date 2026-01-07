@@ -1,9 +1,14 @@
 \documentclass{article}
 
-\usepackage{templates/iclr/iclr2024_conference,times}
+\makeatletter
+\def\input@path{{templates/iclr/}}
+\makeatother
+
+\usepackage{iclr2024_conference,times}
 
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{algorithmicx}
 \usepackage{algpseudocode}
 \usepackage{booktabs}
 \usepackage{graphicx}
@@ -18,7 +23,7 @@
 
 \input{content}
 
-\bibliographystyle{templates/iclr/iclr2024_conference}
+\bibliographystyle{iclr2024_conference}
 \bibliography{references/references}
 
 \end{document}
