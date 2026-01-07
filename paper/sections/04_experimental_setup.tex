@@ -2,8 +2,8 @@
 \label{sec:experimental_setup}
 
 \subsection{Tasks and environments}
-We evaluate exploration and control on five standard Gymnasium benchmarks spanning discrete and continuous control:
-\textsc{MountainCar-v0}, \textsc{BipedalWalker-v3}, and the MuJoCo locomotion tasks \textsc{Ant-v5}, \textsc{HalfCheetah-v5}, and \textsc{Humanoid-v5}.
+
+We evaluate exploration and control on five standard Gymnasium benchmarks spanning discrete and continuous control: \textsc{MountainCar-v0}, \textsc{BipedalWalker-v3}, and the MuJoCo locomotion tasks \textsc{Ant-v5}, \textsc{HalfCheetah-v5}, and \textsc{Humanoid-v5}.
 Across all experiments we use the default environment reward functions and termination conditions, with no domain randomization and no additional frame skipping.
 Training uses vectorized environments with $B$ parallel instances and rollouts of length $T$ per instance.
 We set $(B,T)$ so that the nominal on-policy batch size per PPO update is
@@ -23,12 +23,13 @@ This provides headroom to assess long-horizon stability of exploration behavior 
 
 \subsection{Methods compared}
 \label{sec:experimental_setup:methods}
-We compare two proposed intrinsic-reward methods, \textbf{GLPE} and \textbf{GLPE (no gate)} (Section~\ref{sec:method}), against a set of commonly used exploration baselines:
-\textbf{Vanilla (extrinsic-only PPO)}, \textbf{ICM}, \textbf{RND}, \textbf{RIDE}, and \textbf{RIAC}.
+
+We compare two proposed intrinsic-reward methods, \textbf{GLPE} and \textbf{GLPE (no gate)} (Section~\ref{sec:method}), against a set of commonly used exploration baselines: \textbf{Vanilla (extrinsic-only PPO)}, \textbf{ICM}, \textbf{RND}, \textbf{RIDE}, and \textbf{RIAC}.
 Vanilla (extrinsic-only PPO) optimizes only the environment reward.
 ICM uses forward-model prediction error in a learned feature space as an intrinsic signal, while RND uses the prediction error of a trainable predictor against a fixed random target network.
 RIDE rewards feature-space impact, down-weighted by episodic visitation counts obtained by discretizing features, and RIAC uses region-local learning progress computed from changes in forward-model error within an adaptive partition of feature space.
-All methods use the same PPO backbone and network architectures; within each environment we keep PPO hyperparameters fixed across methods to isolate the effect of the intrinsic objective.
+All methods use the same PPO backbone and network architectures.
+Within each environment we keep PPO hyperparameters fixed across methods to isolate the effect of the intrinsic objective.
 
 For intrinsic-reward methods, the policy is trained with the augmented reward defined in Section~\ref{sec:method}, combining the environment reward with a scaled and clipped intrinsic term.
 We use the same intrinsic scaling coefficient $\eta$ and clipping range $r_{\max}$ for all intrinsic methods within a given environment (Table~\ref{tab:glpe_hparams}), so differences arise from the intrinsic signal itself rather than from reward-scale tuning.
@@ -36,9 +37,11 @@ GLPE (no gate) uses the same base intrinsic score as GLPE but disables the gatin
 
 \subsection{RL backbone and training protocol}
 \label{sec:experimental_setup:training}
+
 All agents are trained with Proximal Policy Optimization (PPO; \cite{schulman-2017}) with generalized advantage estimation (GAE; \cite{schulman-2015}).
 The policy and value function are parameterized by separate multilayer perceptrons with two hidden layers of width 256 and ReLU activations.
-For continuous-control tasks, the policy outputs a diagonal Gaussian distribution; actions are squashed to the environment bounds when those bounds are finite.
+For continuous-control tasks, the policy outputs a diagonal Gaussian distribution.
+Actions are squashed to the environment bounds when those bounds are finite.
 
 Each training iteration proceeds as follows:
 (i) collect up to $N=16{,}384$ on-policy transitions by running the current policy in $B$ vectorized environments for $T$ steps;
@@ -47,7 +50,8 @@ Each training iteration proceeds as follows:
 (iv) perform multiple epochs of PPO updates over shuffled minibatches of the collected batch.
 We use Adam optimizers for both the policy and value networks, normalize advantages within each update batch, and clip gradient norms to 1.0.
 
-We normalize vector observations using a running mean and variance estimated online from collected rollouts, and apply the same normalization to the inputs of the policy, value, and intrinsic modules.
+We normalize vector observations using a running mean and variance estimated online from collected rollouts.
+We apply the same normalization to the inputs of the policy, value, and intrinsic modules.
 
 \paragraph{Intrinsic reward computation and updates.}
 Trainable intrinsic models are updated once per PPO iteration using the same on-policy batch used for PPO.
@@ -57,6 +61,7 @@ For GLPE and GLPE (no gate), we additionally anneal the intrinsic coefficient $\
 
 \subsection{Evaluation protocol}
 \label{sec:experimental_setup:evaluation}
+
 We evaluate performance using undiscounted episodic return from the environment (extrinsic reward only).
 We do not run evaluation rollouts online during training; instead, we evaluate saved checkpoints offline.
 Each evaluated checkpoint is run for 20 episodes in a separate environment instance using deterministic action selection (distribution mode).
@@ -69,20 +74,25 @@ We additionally log scalar metrics every fixed number of environment steps (set 
 
 \subsection{Efficiency measurements}
 \label{sec:experimental_setup:efficiency}
+
 In addition to sample efficiency (learning as a function of environment interaction), we track computational efficiency using wall-clock time.
 All timings are measured in the same execution setting used for training (CPU in our experiments) and therefore reflect end-to-end optimization overhead.
-For each PPO iteration we log per-component wall-clock time spent in environment interaction, policy inference, intrinsic computation, intrinsic-module updates, advantage computation, and PPO optimization, and we use these logs to form cumulative training time.
+For each PPO iteration we log per-component wall-clock time spent in environment interaction, policy inference, intrinsic computation, intrinsic-module updates, advantage computation, and PPO optimization.
+We use these logs to form cumulative training time.
 
 When reporting scalar summaries of learning curves, we compute area-under-the-curve (AUC) metrics via trapezoidal integration of mean return as a function of either environment steps or wall-clock time.
-For time-based summaries, we use a \emph{common time budget} per environment defined as the minimum final wall-clock time attained among the compared methods, ensuring that summaries do not rely on extrapolation beyond the measured runtime of any method.
+For time-based summaries, we use a \emph{common time budget} per environment defined as the minimum final wall-clock time attained among the compared methods.
+This ensures that summaries do not rely on extrapolation beyond the measured runtime of any method.
 
 \subsection{Implementation details and hyperparameters}
 \label{sec:experimental_setup:impl_details}
+
 Tables~\ref{tab:ppo_hparams} and~\ref{tab:glpe_hparams} list the PPO and GLPE hyperparameters used in all experiments.
 Unless specified in the tables, we use $\gamma=0.99$ and value-loss coefficient 0.5 for PPO.
 
 For methods that learn a latent dynamics model (ICM, RIDE, RIAC, and the GLPE family), the shared encoder produces 128-dimensional features and is implemented as a two-layer MLP (256 units per layer, ReLU) for these vector-observation tasks.
-Forward and inverse model losses are weighted equally, the model is trained with Adam at learning rate $3\times 10^{-4}$, and intrinsic-model gradient norms are clipped to 5.0.
+Forward and inverse model losses are weighted equally.
+The model is trained with Adam at learning rate $3\times 10^{-4}$, and intrinsic-model gradient norms are clipped to 5.0.
 
 \input{tables/ppo_hparams}
 
