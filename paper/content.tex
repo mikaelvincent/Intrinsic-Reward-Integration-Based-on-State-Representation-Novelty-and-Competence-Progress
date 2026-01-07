@@ -12,6 +12,20 @@
   \fi
 }
 
+\makeatletter
+\@ifpackageloaded{neurips_2023}{%
+  \setcitestyle{authoryear,square,citesep={;},aysep={,},yysep={;}}%
+}{%
+  \setcitestyle{authoryear,round,citesep={;},aysep={,},yysep={;}}%
+}%
+\makeatother
+\let\cite\citep
+
+\setcounter{dbltopnumber}{2}
+\renewcommand{\dbltopfraction}{0.95}
+\renewcommand{\dblfloatpagefraction}{0.9}
+\renewcommand{\textfraction}{0.05}
+
 \input{sections/00_abstract}
 
 \input{sections/01_introduction}
@@ -20,3 +34,5 @@
 \input{sections/04_experimental_setup}
 \input{sections/05_results_and_discussion}
 \input{sections/06_conclusion}
+
+\clearpage
