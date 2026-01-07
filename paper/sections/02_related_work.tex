@@ -1,19 +1,16 @@
 \section{Related Work}
 \label{sec:related_work}
 
-Intrinsic motivation and curiosity provide reinforcement learning agents with internally generated reward signals that guide exploration when extrinsic feedback is sparse or delayed.
-Early computational accounts formalize curiosity in terms of progress in prediction or compression, encouraging experience that is learnable but not yet mastered \cite{schmidhuber-1991,schmidhuber-2007,oudeyer-2007}.
-In deep RL, intrinsic rewards are often combined with extrinsic reward shaping and trained end-to-end with the policy \cite{ng-1999}.
+Intrinsic motivation in reinforcement learning is commonly framed as augmenting sparse extrinsic feedback with an internally generated signal that encourages exploration \cite{singh-2004,barto-2012,oudeyer-2007A}.
+Proposed intrinsic objectives span novelty and visitation bonuses \cite{bellemare-2016,tang-2016,ostrovski-2017}, information-gain and uncertainty reduction \cite{mohamed-2015,houthooft-2016}, and learned prediction-error curiosity \cite{stadie-2015,pathak-2017,burda-2018B}.
+Many modern methods apply these bonuses as reward shaping during policy optimization; unlike potential-based shaping, intrinsic rewards can change the optimal policy and are therefore evaluated empirically \cite{ng-1999}.
 
-Exploration has also been studied through count-based novelty and pseudo-counts \cite{bellemare-2016}, optimism and uncertainty estimation \cite{strehl-2006,osband-2016}, and information-theoretic objectives \cite{houthooft-2016}.
-These approaches can offer principled exploration incentives but may require accurate density models or calibrated uncertainty estimates in high-dimensional observation spaces.
+Prediction-error bonuses have been particularly effective in high-dimensional settings.
+ICM \cite{pathak-2017} learns a forward model in a learned feature space, while RND \cite{burda-2018B} trains a predictor against a fixed random target.
+Related approaches measure novelty via episodic memory \cite{savinov-2018}, model disagreement \cite{pathak-2019}, or combinations of episodic and lifelong bonuses \cite{badia-2020}.
+A known limitation is that prediction error may remain high in regions that are inherently stochastic or difficult to model, leading to exploration that is intense but not task-useful; the ``noisy TV'' phenomenon is one concrete example \cite{mavor-parker-2021}.
 
-Prediction-error bonuses are a popular intrinsic signal in high-dimensional RL.
-ICM \cite{pathak-2017} uses a learned forward model in a learned feature space, while RND \cite{burda-2018B} uses a learned predictor network against a fixed random target.
-Such methods can overexplore in environments with stochastic transitions or observation noise, since irreducible error remains high even when dynamics are not learnable.
-
-Learning-progress methods address this issue by rewarding improvement rather than error magnitude.
-Early work measures progress as reduction in prediction error over time \cite{schmidhuber-1991,oudeyer-2007}.
-In RL, progress has been localized via region partitioning and bandit-style allocation (e.g., RIAC) \cite{baranes-2009}, encouraging exploration in areas where the agent is currently learning.
-The GLPE family builds on this idea by computing region-local learning progress in a learned latent space and combining it with feature-space impact, with an additional gating mechanism to suppress unproductive curiosity when progress stalls.
-Section~\ref{sec:method} formalizes these components and Section~\ref{sec:experimental_setup} evaluates them in modern PPO-based training.
+Learning-progress approaches instead reward improvements in a predictive model over time, encouraging experience that is learnable but not yet mastered \cite{schmidhuber-1991,oudeyer-2007A}.
+In continuous control, RIAC \cite{baranes-2009} localizes progress by maintaining an adaptive partition of state space and using progress estimates to guide exploration.
+The GLPE family builds on this lineage by (i) computing region-local learning progress in a learned latent space rather than in hand-chosen state coordinates, (ii) combining progress with a feature-space impact term related to controllable change \cite{raileanu-2020}, and (iii) introducing an explicit gate that suppresses intrinsic shaping when prediction error stays high but progress stalls.
+This gate serves as a lightweight guardrail against unproductive curiosity rather than an alternative intrinsic objective.
