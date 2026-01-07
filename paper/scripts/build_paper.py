@@ -176,7 +176,11 @@ def _build_one(
     if not pdf_src.exists():
         _fail(f"expected PDF not found: {pdf_src.as_posix()}")
 
-    _copy_file(pdf_src, build_dir / "paper.pdf")
+    _copy_file(pdf_src, build_dir / f"{target}.pdf")
+
+    legacy_pdf = build_dir / "paper.pdf"
+    if legacy_pdf.exists():
+        legacy_pdf.unlink()
 
     if stage:
         _stage_sources(paper_dir, target, build_dir)
@@ -193,7 +197,7 @@ def main(argv: list[str]) -> int:
             "  iclr     -> requires templates/iclr/iclr2024_conference.sty + .bst\n"
             "  arxiv    -> no template files required\n\n"
             "Outputs:\n"
-            "  paper/build/<target>/paper.pdf\n"
+            "  paper/build/<target>/<target>.pdf\n"
             "  paper/build/<target>/latex/  (self-contained sources)\n\n"
             "Prerequisites:\n"
             "  - A TeX distribution (TeX Live recommended)\n"
