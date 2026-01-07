@@ -13,11 +13,10 @@ Environment & GLPE & GLPE (no gate) & Most reliable baseline \\
 \hline
 \end{tabular}
 \caption{
-Solved-threshold reliability and speed.
-Each cell reports the number of seeds that reached the task's solved-return threshold by the end of training and the median training steps (in millions) to first reach that threshold, computed by linearly interpolating between deterministic evaluation checkpoints (Figure~\ref{fig:steps_to_threshold_baselines}).
+Reliability and speed at the solved threshold.
+Each cell reports the number of seeds that reached the task's solved-return threshold by the end of training and the median steps (in millions) to first reach it, computed by linearly interpolating between deterministic evaluation checkpoints (Figure~\ref{fig:steps_to_threshold_baselines}).
 Medians are taken over successful seeds only.
-The ``most reliable baseline'' is selected among Vanilla PPO, ICM, RND, RIDE, and RIAC by highest solve count (ties broken by lower median steps).
-Higher solve counts and lower median steps indicate more reliable and faster learning.
+The ``most reliable baseline'' is the method with the highest solve count among Vanilla PPO, ICM, RND, RIDE, and RIAC (ties broken by lower median steps).
 }
 \label{tab:solved_threshold_stats}
 \end{table}
