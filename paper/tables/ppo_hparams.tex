@@ -1,7 +1,7 @@
 \begin{table*}[t]
 \centering
 \small
-\begin{tabular}{lrrrrrrrr}
+\begin{fitwidthtabular}{lrrrrrrrr}
 \hline
 Environment & LR & Epochs & Minib. & Clip & $\lambda$ & Ent. & $v$-clip & KL stop \\
 \hline
@@ -11,7 +11,7 @@ Environment & LR & Epochs & Minib. & Clip & $\lambda$ & Ent. & $v$-clip & KL sto
 \textsc{HalfCheetah-v5}   & $3.0{\times}10^{-4}$ & 10 & 32 & 0.20 & 0.95 & 0.01 & 0.20 & 0.03 \\
 \textsc{Humanoid-v5}      & $2.0{\times}10^{-4}$ &  5 & 32 & 0.20 & 0.97 & 0.01 & 0.20 & 0.03 \\
 \hline
-\end{tabular}
+\end{fitwidthtabular}
 \caption{
 PPO hyperparameters by environment.
 ``Minib.'' is the number of minibatches per update (each epoch iterates once over all $N$ samples).
