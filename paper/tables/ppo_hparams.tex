@@ -12,6 +12,12 @@ Environment & LR & Epochs & Minib. & Clip & $\lambda$ & Ent. & $v$-clip & KL sto
 \textsc{Humanoid-v5}      & $2.0{\times}10^{-4}$ &  5 & 32 & 0.20 & 0.97 & 0.01 & 0.20 & 0.03 \\
 \hline
 \end{tabular}
-\caption{PPO hyperparameters by environment. ``Minib.'' is the number of minibatches per update (each epoch iterates once over all $N$ samples). ``Ent.'' is the entropy regularization coefficient. ``$v$-clip'' is the value-function clipping range (0 disables value clipping). ``KL stop'' is the approximate KL threshold for early stopping within an update.}
+\caption{
+PPO hyperparameters by environment.
+``Minib.'' is the number of minibatches per update (each epoch iterates once over all $N$ samples).
+``Ent.'' is the entropy regularization coefficient.
+``$v$-clip'' is the value-function clipping range (0 disables value clipping).
+``KL stop'' is the approximate KL threshold for early stopping within an update.
+}
 \label{tab:ppo_hparams}
 \end{table}
