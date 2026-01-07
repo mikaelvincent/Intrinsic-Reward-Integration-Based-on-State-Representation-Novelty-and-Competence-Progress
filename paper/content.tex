@@ -1,3 +1,17 @@
+\newsavebox{\fitwidthtabularbox}
+\newenvironment{fitwidthtabular}[1]{%
+  \begin{lrbox}{\fitwidthtabularbox}%
+  \begin{tabular}{#1}%
+}{%
+  \end{tabular}%
+  \end{lrbox}%
+  \ifdim\wd\fitwidthtabularbox>\linewidth
+    \resizebox{\linewidth}{!}{\usebox{\fitwidthtabularbox}}%
+  \else
+    \usebox{\fitwidthtabularbox}%
+  \fi
+}
+
 \input{sections/00_abstract}
 
 \input{sections/01_introduction}
