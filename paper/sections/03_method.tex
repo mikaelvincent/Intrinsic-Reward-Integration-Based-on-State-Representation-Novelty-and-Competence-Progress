@@ -13,7 +13,7 @@ We augment the extrinsic reward with an intrinsic term computed from single-step
 where $\eta_t\ge 0$ controls the intrinsic--extrinsic trade-off and $r_{\max}>0$ bounds the magnitude of intrinsic shaping.
 For environment-terminal transitions we set $r_t^{\mathrm{int}}=0$ so that intrinsic shaping does not depend on episode termination.
 
-We propose two intrinsic reward formulations within a shared framework: \textbf{GLPE} and \textbf{GLPE (no gate)}.
+We propose two intrinsic reward formulations within a shared framework: GLPE and GLPE (no gate).
 Both combine feature-space impact with region-local learning progress.
 GLPE additionally introduces a region-specific gate that suppresses intrinsically rewarding but unproductive experience.
 We refer to these two variants collectively as the \emph{GLPE family}.
@@ -104,7 +104,7 @@ Both proposed methods use the same $u_t$ and differ only in whether it is gated.
 
 \subsection{GLPE (no gate)}
 
-\textbf{GLPE (no gate)} is a region-aware intrinsic reward that combines feature-space impact and region-local learning progress without any explicit suppression mechanism.
+GLPE (no gate) is a region-aware intrinsic reward that combines feature-space impact and region-local learning progress without any explicit suppression mechanism.
 The intrinsic reward is
 \begin{equation}
     r_t^{\mathrm{int}} = u_t.
@@ -113,7 +113,7 @@ This variant preserves the locality and nonstationarity tracking provided by the
 
 \subsection{GLPE: gated learning-progress exploration}
 
-\textbf{GLPE} augments the same base score $u_t$ with a binary, region-specific gate that suppresses intrinsic rewards in regions that appear difficult to predict yet show little or no learning progress.
+GLPE augments the same base score $u_t$ with a binary, region-specific gate that suppresses intrinsic rewards in regions that appear difficult to predict yet show little or no learning progress.
 
 \paragraph{Global robust thresholds.}
 At any time, let $\mathcal{R}$ denote the set of regions that have been visited at least once, and let $\mathrm{LP}(r)$ denote the current learning progress in region $r$.
