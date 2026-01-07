@@ -3,7 +3,7 @@
 
 Intrinsic-reward shaping can substantially accelerate learning when extrinsic feedback is sparse or delayed, but naive novelty or prediction-error bonuses can also concentrate exploration in regions where progress is slow, unstable, or effectively noisy.
 We introduced the \emph{GLPE family}, which ties intrinsic reward to two complementary signals computed from on-policy transitions: feature-space impact and region-local learning progress estimated from short- and long-horizon prediction-error averages in an online latent-space partition.
-The full \textbf{GLPE} variant adds a simple region-wise gate that suppresses intrinsic shaping when prediction error stays high while learning progress stalls, providing a targeted guardrail against unproductive curiosity; \textbf{GLPE (no gate)} uses the same base score without this additional thresholding.
+The full GLPE variant adds a simple region-wise gate that suppresses intrinsic shaping when prediction error stays high while learning progress stalls, providing a targeted guardrail against unproductive curiosity; GLPE (no gate) uses the same base score without this additional thresholding.
 
 Across five Gymnasium control benchmarks and a shared PPO backbone, GLPE (no gate) is the most consistent default, remaining competitive with strong intrinsic baselines under both step-normalized and wall-clock-normalized views.
 The gated variant is most valuable in sparse-reward regimes such as \textsc{MountainCar-v0}, where it improves reliability and reduces instability relative to ungated shaping, but it can be unnecessarily conservative in high-variance settings such as \textsc{Humanoid-v5}.
