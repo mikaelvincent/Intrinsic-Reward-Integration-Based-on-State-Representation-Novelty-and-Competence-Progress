@@ -1,10 +1,14 @@
 \documentclass{article}
 
-\usepackage[preprint]{templates/neurips/neurips_2023}
+\makeatletter
+\def\input@path{{templates/neurips/}}
+\makeatother
+\usepackage[preprint]{neurips_2023}
 
 \usepackage{amsmath}
 \usepackage{amssymb}
-\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{algorithmic}
 \usepackage{booktabs}
 \usepackage{graphicx}
 \usepackage{hyperref}
