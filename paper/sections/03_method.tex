@@ -97,7 +97,7 @@ Applying this independently to $I_t$ and $\mathrm{LP}_t$ yields normalized compo
 \end{equation}
 We then define a shared base intrinsic score
 \begin{equation}
-    u_t = \alpha_{\mathrm{impact}}\,\widetilde{I}_t + \alpha_{\mathrm{LP}}\,\widetilde{\mathrm{LP}}_t,
+    u_t = \alpha_{\mathrm{impact}}\widetilde{I}_t + \alpha_{\mathrm{LP}}\widetilde{\mathrm{LP}}_t,
 \end{equation}
 with nonnegative weights $\alpha_{\mathrm{impact}},\alpha_{\mathrm{LP}}$.
 Both proposed methods use the same $u_t$ and differ only in whether it is gated.
@@ -119,9 +119,10 @@ GLPE augments the same base score $u_t$ with a binary, region-specific gate that
 At any time, let $\mathcal{R}$ denote the set of regions that have been visited at least once, and let $\mathrm{LP}(r)$ denote the current learning progress in region $r$.
 We compute robust global reference values using medians across visited regions,
 \begin{equation}
-    \mathrm{LP}_{\mathrm{med}} = \mathrm{median}_{r\in\mathcal{R}}\,\mathrm{LP}(r),
-    \qquad
-    e_{\mathrm{med}} = \mathrm{median}_{r\in\mathcal{R}}\,\mu^{\mathrm{short}}_r.
+\begin{aligned}
+    \mathrm{LP}_{\mathrm{med}} &= \mathrm{median}_{r\in\mathcal{R}}\,\mathrm{LP}(r),\\
+    e_{\mathrm{med}} &= \mathrm{median}_{r\in\mathcal{R}}\,\mu^{\mathrm{short}}_r.
+\end{aligned}
 \end{equation}
 We define a learning-progress threshold $\tau_{\mathrm{LP}} = \kappa\,\mathrm{LP}_{\mathrm{med}}$ with multiplier $\kappa>0$, and a scale-free normalized error score
 \begin{equation}
