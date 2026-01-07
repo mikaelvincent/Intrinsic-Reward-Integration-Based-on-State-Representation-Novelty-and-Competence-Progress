@@ -54,7 +54,7 @@ This procedure yields a growing set of regions that adaptively refines frequentl
 Region statistics (defined next) are updated using the region assignment based on the current embedding $z_t$.
 The capacity $C$ and maximum depth $D_{\max}$ control the granularity of the partition.
 
-\subsection{Regional learning progress}
+\subsection{Region-local learning progress}
 
 For each region $r$ we maintain two exponential moving averages (EMAs) of the forward prediction error: a long-horizon average $\mu^{\mathrm{long}}_r$ and a short-horizon average $\mu^{\mathrm{short}}_r$.
 When a transition at time $t$ is assigned to region $\rho_t=r$, we update
@@ -104,7 +104,7 @@ Both proposed methods use the same $u_t$ and differ only in whether it is gated.
 
 \subsection{GLPE (no gate)}
 
-\textbf{GLPE (no gate)} is a region-aware intrinsic reward that combines feature impact and regional learning progress without any explicit suppression mechanism.
+\textbf{GLPE (no gate)} is a region-aware intrinsic reward that combines feature-space impact and region-local learning progress without any explicit suppression mechanism.
 The intrinsic reward is
 \begin{equation}
     r_t^{\mathrm{int}} = u_t.
