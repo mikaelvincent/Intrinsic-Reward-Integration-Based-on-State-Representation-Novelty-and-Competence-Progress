@@ -1,6 +1,11 @@
 \begin{figure}[t]
-    \centering
-    \includegraphics[width=\linewidth]{figures/glpe-intrinsic-taper.png}
-    \caption{Cosine taper schedule used to anneal intrinsic shaping in the GLPE family (Section~\ref{sec:method}). The dashed curve (right axis) is the taper weight applied over training progress; the solid curve (left axis) is the batch-mean intrinsic reward actually added to PPO after scaling and clipping. The dotted curve divides the added intrinsic term by the taper weight, showing that the intrinsic signal remains present while the applied contribution vanishes due to annealing.}
-    \label{fig:glpe_intrinsic_taper}
+\centering
+\includegraphics[width=\linewidth]{figures/glpe-intrinsic-taper.png}
+\caption{
+Cosine taper schedule used to anneal intrinsic shaping in the GLPE family (Section~\ref{sec:method}).
+The dashed curve (right axis) is the taper weight applied over training progress.
+The solid curve (left axis) is the batch-mean intrinsic reward actually added to PPO after scaling and clipping.
+The dotted curve divides the added intrinsic term by the taper weight, showing that the intrinsic signal remains present while the applied contribution vanishes due to annealing.
+}
+\label{fig:glpe_intrinsic_taper}
 \end{figure}
