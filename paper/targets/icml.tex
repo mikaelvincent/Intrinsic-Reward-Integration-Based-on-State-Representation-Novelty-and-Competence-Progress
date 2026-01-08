@@ -13,6 +13,24 @@
 \usepackage{microtype}
 \usepackage{url}
 
+\makeatletter
+\let\glpe@origthebibliography\thebibliography
+\renewcommand{\thebibliography}[1]{%
+  \glpe@origthebibliography{#1}%
+  \setlength{\topsep}{0pt}%
+  \setlength{\partopsep}{0pt}%
+  \setlength{\itemsep}{0pt}%
+  \setlength{\parsep}{0pt}%
+  \setlength{\parskip}{0pt}%
+  \@ifundefined{bibsep}{}{%
+    \setlength{\bibsep}{0pt}%
+  }%
+  \clubpenalty=0%
+  \@clubpenalty\clubpenalty%
+  \widowpenalty=0%
+}
+\makeatother
+
 \icmltitlerunning{Gated Learning-Progress Exploration}
 
 \begin{document}
