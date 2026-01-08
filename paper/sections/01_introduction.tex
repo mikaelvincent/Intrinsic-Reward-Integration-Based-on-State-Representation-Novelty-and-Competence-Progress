@@ -2,8 +2,8 @@
 \label{sec:introduction}
 
 Deep reinforcement learning agents often learn effectively when dense extrinsic rewards provide informative gradients throughout training, but performance can degrade sharply when rewards are sparse, delayed, or shaped in ways that do not guide early exploration.
-Intrinsic-reward methods address this by augmenting the environment reward with an auxiliary signal that encourages exploration in the absence of external feedback \cite{singh-2004,barto-2012,oudeyer-2007A}.
-Common intrinsic objectives include novelty and visitation bonuses \cite{bellemare-2016,tang-2016}, prediction-error curiosity in learned feature spaces \cite{pathak-2017,burda-2018B}, and impact-based signals that encourage controllable state changes \cite{raileanu-2020}.
+Intrinsic-reward methods address this by augmenting the environment reward with an auxiliary signal that encourages exploration in the absence of external feedback \cite{singh-2004,barto-2012,oudeyer-2007A,oudeyer-2007B}.
+Common intrinsic objectives include novelty and visitation bonuses \cite{bellemare-2016,tang-2016}, prediction-error curiosity in learned feature spaces \cite{pathak-2017,burda-2018A,burda-2018B}, and impact-based signals that encourage controllable state changes \cite{raileanu-2020}.
 
 Despite strong empirical results, many intrinsic objectives exhibit a recurring failure mode: \emph{unproductive curiosity}.
 Prediction error or novelty can remain high in regions that are difficult to model---because dynamics are complex, stochastic, or only weakly coupled to task progress---causing the agent to spend substantial effort collecting experience that does not improve either the intrinsic model or the task policy \cite{mavor-parker-2021}.
