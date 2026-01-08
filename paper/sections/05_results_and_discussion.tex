@@ -39,7 +39,7 @@ Learning curves can obscure whether a method is merely slower or is failing enti
 We therefore evaluate reliability at fixed return thresholds using steps-to-threshold statistics (Figure~\ref{fig:steps_to_threshold_baselines}) and success counts (Tables~\ref{tab:half_solved_threshold_stats} and~\ref{tab:solved_threshold_stats}).
 We use task-specific solved thresholds (\textsc{MountainCar-v0}: $-110$, \textsc{BipedalWalker-v3}: $300$, \textsc{Ant-v5}: $5{,}000$, \textsc{HalfCheetah-v5}: $6{,}000$, \textsc{Humanoid-v5}: $3{,}000$) and additionally report results at 25\% and 50\% of these levels.
 
-At the 50\% threshold, GLPE (no gate) reaches the target in all seeds on four tasks and in 4/5 seeds on \textsc{Humanoid-v5}, matching the best baseline reach count on every environment (Table~\ref{tab:half_solved_threshold_stats}).
+At the 50\% threshold, GLPE (no gate) reaches the target in all seeds on four tasks and in 4/5 seeds on \textsc{Humanoid-v5}, matching or exceeding the best baseline reach count on every environment (Table~\ref{tab:half_solved_threshold_stats}).
 The gap between 50\% and 100\% success is concentrated in high-variance or near-cutoff regimes: \textsc{Humanoid-v5} and \textsc{BipedalWalker-v3} show many runs that reach competent behavior without consistently clearing the full solved cutoff (Table~\ref{tab:solved_threshold_stats}).
 On \textsc{MountainCar-v0}, by contrast, both GLPE variants reach the solved threshold quickly and reliably, and several baselines exhibit occasional failures that remain near the minimum return (Figure~\ref{fig:eval_curves_baselines}).
 
