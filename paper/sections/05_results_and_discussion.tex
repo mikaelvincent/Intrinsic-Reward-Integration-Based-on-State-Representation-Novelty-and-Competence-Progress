@@ -22,7 +22,6 @@ Some diagnostic plots additionally include auxiliary GLPE variants (e.g., cached
 \input{tables/final_returns_glpe_vs_baselines}
 \input{tables/auc_steps_glpe_vs_baselines}
 \input{tables/solved_threshold_stats}
-\input{figures/eval_curves_baselines}
 
 \subsection{Ablations: impact vs.\ learning progress}
 
@@ -45,7 +44,6 @@ The gap between 50\% and 100\% success is concentrated in high-variance or near-
 On \textsc{MountainCar-v0}, by contrast, both GLPE variants reach the solved threshold quickly and reliably, and several baselines exhibit occasional failures that remain near the minimum return (Figure~\ref{fig:eval_curves_baselines}).
 
 \input{tables/half_solved_threshold_stats}
-\input{figures/steps_to_threshold_baselines}
 
 \subsection{Intrinsic shaping dynamics and gating behavior}
 
@@ -56,10 +54,6 @@ Compared to baselines that maintain a nonzero intrinsic term throughout training
 To make the gate's effect concrete, Figure~\ref{fig:glpe_gate_map} shows state-space projections of final-checkpoint trajectories with timesteps colored by whether intrinsic shaping is active.
 Across environments, gate-off points occupy a small and typically localized subset of the visited distribution.
 This supports the interpretation of gating as a targeted guardrail: it suppresses shaping only in narrow regions that appear persistently high-error and low-progress, rather than globally weakening exploration.
-
-\input{figures/glpe_intrinsic_taper}
-\input{figures/training_reward_decomposition_baselines}
-\input{figures/glpe_gate_map}
 
 \subsection{Wall-clock efficiency and computational overhead}
 
@@ -75,5 +69,3 @@ Table~\ref{tab:gate_cache_microbenchmark} isolates one identifiable cost of the 
 Because cached medians are slightly stale and can change gating decisions, we treat caching as an optional engineering knob rather than part of the core GLPE comparison.
 
 \input{tables/gate_cache_microbenchmark}
-\input{figures/eval_auc_time}
-\input{figures/timing_breakdown}
