@@ -114,10 +114,12 @@
 % final/accepted version of the ``appearing in'' note.  Modify it to
 % change that text.
 %%%%%%%%%%%%%%%%%%%%
-\newcommand{\ICML@appearing}{\textit{Proceedings of the
-$\mathit{41}^{st}$ International Conference on Machine Learning},
-Vienna, Austria. PMLR 235, 2024.
-Copyright 2024 by the author(s).}
+\newcommand{\ICML@appearing}{%
+% \textit{Proceedings of the
+% $\mathit{41}^{st}$ International Conference on Machine Learning},
+% Vienna, Austria. PMLR 235, 2024.
+% Copyright 2024 by the author(s).}
+}
 
 %%%%%%%%%%%%%%%%%%%%
 % This string is printed at the bottom of the page for the draft/under
@@ -557,6 +559,12 @@ Correspondence to: \icmlcorrespondingauthor@text.
 
 %% keywords as first class citizens
 \def\icmlkeywords#1{%
+%  \ifdefined\isaccepted \else
+%    \par {\bf Keywords:} #1%
+%  \fi
+%  \ifdefined\nohyperref\else\ifdefined\hypersetup
+%    \hypersetup{pdfkeywords={#1}}
+%  \fi\fi
 %  \ifdefined\isaccepted \else
 %    \par {\bf Keywords:} #1%
 %  \fi
