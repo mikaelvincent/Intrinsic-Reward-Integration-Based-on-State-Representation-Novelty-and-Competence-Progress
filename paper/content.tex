@@ -18,6 +18,20 @@
 }{%
   \setcitestyle{authoryear,round,citesep={;},aysep={,},yysep={;}}%
 }%
+\newcommand{\glpefigwidth}{%
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\newcommand{\glpefigheight}{%
+  \ifdim\Gin@nat@height>0.82\textheight
+    0.82\textheight
+  \else
+    \Gin@nat@height
+  \fi
+}
 \makeatother
 \let\cite\citep
 
@@ -34,5 +48,13 @@
 \input{sections/04_experimental_setup}
 \input{sections/05_results_and_discussion}
 \input{sections/06_conclusion}
+
+\input{figures/eval_curves_baselines}
+\input{figures/steps_to_threshold_baselines}
+\input{figures/glpe_intrinsic_taper}
+\input{figures/training_reward_decomposition_baselines}
+\input{figures/glpe_gate_map}
+\input{figures/eval_auc_time}
+\input{figures/timing_breakdown}
 
 \clearpage
