@@ -1,0 +1,199 @@
+\begin{thebibliography}{23}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Badia et~al.(2020)Badia, Sprechmann, Vitvitskyi, Guo, Piot,
+  Kapturowski, Tieleman, Arjovsky, Pritzel, Bolt, and Blundell]{badia-2020}
+Adrià~Puigdomènech Badia, Pablo Sprechmann, Alex Vitvitskyi, Daniel Guo,
+  Bilal Piot, Steven Kapturowski, Olivier Tieleman, Martin Arjovsky, Alexander
+  Pritzel, Andrew Bolt, and Charles Blundell.
+\newblock {Never Give Up: Learning Directed Exploration Strategies}.
+\newblock \emph{arXiv (Cornell University)}, 2 2020.
+\newblock \doi{10.48550/arxiv.2002.06038}.
+\newblock URL \url{http://arxiv.org/abs/2002.06038}.
+
+\bibitem[Baranes and Oudeyer(2009)]{baranes-2009}
+A.~Baranes and P.-y. Oudeyer.
+\newblock {R-IAC: robust intrinsically motivated exploration and active
+  learning}.
+\newblock \emph{IEEE Transactions on Autonomous Mental Development}, 1\penalty0
+  (3):\penalty0 155--169, 10 2009.
+\newblock \doi{10.1109/tamd.2009.2037513}.
+\newblock URL \url{https://doi.org/10.1109/tamd.2009.2037513}.
+
+\bibitem[Barto(2012)]{barto-2012}
+Andrew~G. Barto.
+\newblock \emph{{Intrinsic Motivation and Reinforcement Learning}}.
+\newblock 11 2012.
+\newblock \doi{10.1007/978-3-642-32375-1\{_}2}.
+\newblock URL \url{https://doi.org/10.1007/978-3-642-32375-1_2}.
+
+\bibitem[Bellemare et~al.(2016)Bellemare, Srinivasan, Ostrovski, Schaul,
+  Saxton, and Munos]{bellemare-2016}
+Marc~G. Bellemare, Sriram Srinivasan, Georg Ostrovski, Tom Schaul, David
+  Saxton, and Remi Munos.
+\newblock {Unifying Count-Based exploration and intrinsic motivation}.
+\newblock \emph{arXiv (Cornell University)}, 6 2016.
+\newblock \doi{10.48550/arxiv.1606.01868}.
+\newblock URL \url{http://arxiv.org/abs/1606.01868}.
+
+\bibitem[Burda et~al.(2018{\natexlab{a}})Burda, Edwards, Pathak, Storkey,
+  Darrell, and Efros]{burda-2018A}
+Yuri Burda, Harri Edwards, Deepak Pathak, Amos Storkey, Trevor Darrell, and
+  Alexei~A. Efros.
+\newblock {Large-Scale study of Curiosity-Driven Learning}.
+\newblock \emph{arXiv (Cornell University)}, 8 2018{\natexlab{a}}.
+\newblock \doi{10.48550/arxiv.1808.04355}.
+\newblock URL \url{http://arxiv.org/abs/1808.04355}.
+
+\bibitem[Burda et~al.(2018{\natexlab{b}})Burda, Edwards, Storkey, and
+  Klimov]{burda-2018B}
+Yuri Burda, Harrison Edwards, Amos Storkey, and Oleg Klimov.
+\newblock {Exploration by random network distillation}.
+\newblock \emph{arXiv (Cornell University)}, 10 2018{\natexlab{b}}.
+\newblock \doi{10.48550/arxiv.1810.12894}.
+\newblock URL \url{http://arxiv.org/abs/1810.12894}.
+
+\bibitem[Houthooft et~al.(2016)Houthooft, Chen, Duan, Schulman, De~Turck, and
+  Abbeel]{houthooft-2016}
+Rein Houthooft, Xi~Chen, Yan Duan, John Schulman, Filip De~Turck, and Pieter
+  Abbeel.
+\newblock {VIME: Variational Information Maximizing Exploration}.
+\newblock \emph{arXiv (Cornell University)}, 5 2016.
+\newblock \doi{10.48550/arxiv.1605.09674}.
+\newblock URL \url{http://arxiv.org/abs/1605.09674}.
+
+\bibitem[Mavor-Parker et~al.(2021)Mavor-Parker, Young, Barry, and
+  Griffin]{mavor-parker-2021}
+Augustine~N. Mavor-Parker, Kimberly~A. Young, Caswell Barry, and Lewis~D.
+  Griffin.
+\newblock {How to Stay Curious while Avoiding Noisy TVs using Aleatoric
+  Uncertainty Estimation}.
+\newblock \emph{arXiv (Cornell University)}, 2 2021.
+\newblock \doi{10.48550/arxiv.2102.04399}.
+\newblock URL \url{http://arxiv.org/abs/2102.04399}.
+
+\bibitem[Mohamed and Rezende(2015)]{mohamed-2015}
+Shakir Mohamed and Danilo~Jimenez Rezende.
+\newblock {Variational information maximisation for intrinsically motivated
+  reinforcement learning}.
+\newblock \emph{arXiv (Cornell University)}, 9 2015.
+\newblock \doi{10.48550/arxiv.1509.08731}.
+\newblock URL \url{http://arxiv.org/abs/1509.08731}.
+
+\bibitem[Ng et~al.(1999)Ng, Harada, and Russell]{ng-1999}
+Andrew Ng, Daishi Harada, and Stuart Russell.
+\newblock {Policy Invariance Under Reward Transformations: Theory and
+  Application to Reward Shaping}.
+\newblock pages 278--287, San Francisco, us, 1999. Morgan Kaufmann.
+\newblock \doi{10.5555/645528.657613}.
+\newblock URL \url{https://dl.acm.org/doi/10.5555/645528.657613}.
+
+\bibitem[Ostrovski et~al.(2017)Ostrovski, Bellemare, Van Den~Oord, and
+  Munos]{ostrovski-2017}
+Georg Ostrovski, Marc~G. Bellemare, Aaron Van Den~Oord, and Remi Munos.
+\newblock {Count-Based Exploration with Neural Density Models}.
+\newblock \emph{arXiv (Cornell University)}, 3 2017.
+\newblock \doi{10.48550/arxiv.1703.01310}.
+\newblock URL \url{http://arxiv.org/abs/1703.01310}.
+
+\bibitem[Oudeyer and Kaplan(2007)]{oudeyer-2007A}
+Pierre-Yves Oudeyer and Frederic Kaplan.
+\newblock {What is intrinsic motivation? A typology of computational
+  approaches}.
+\newblock \emph{Frontiers in Neurorobotics}, 1:\penalty0 6, 1 2007.
+\newblock \doi{10.3389/neuro.12.006.2007}.
+\newblock URL \url{https://doi.org/10.3389/neuro.12.006.2007}.
+
+\bibitem[Oudeyer et~al.(2007)Oudeyer, Kaplan, and Hafner]{oudeyer-2007B}
+Pierre-Yves Oudeyer, Frdric Kaplan, and Verena~V. Hafner.
+\newblock {Intrinsic motivation systems for autonomous mental development}.
+\newblock \emph{IEEE Transactions on Evolutionary Computation}, 11\penalty0
+  (2):\penalty0 265--286, 4 2007.
+\newblock \doi{10.1109/tevc.2006.890271}.
+\newblock URL \url{https://doi.org/10.1109/tevc.2006.890271}.
+
+\bibitem[Pathak et~al.(2017)Pathak, Agrawal, Efros, and Darrell]{pathak-2017}
+Deepak Pathak, Pulkit Agrawal, Alexei Efros, and Trevor Darrell.
+\newblock {Curiosity-driven Exploration by Self-supervised Prediction}.
+\newblock \emph{arXiv}, 2017.
+\newblock \doi{10.48550/arXiv.1705.05363}.
+\newblock URL \url{https://arxiv.org/abs/1705.05363}.
+
+\bibitem[Pathak et~al.(2019)Pathak, Gandhi, and Gupta]{pathak-2019}
+Deepak Pathak, Dhiraj Gandhi, and Abhinav Gupta.
+\newblock {Self-Supervised Exploration via disagreement}.
+\newblock \emph{arXiv (Cornell University)}, 6 2019.
+\newblock \doi{10.48550/arxiv.1906.04161}.
+\newblock URL \url{http://arxiv.org/abs/1906.04161}.
+
+\bibitem[Raileanu and Rocktäschel(2020)]{raileanu-2020}
+Roberta Raileanu and Tim Rocktäschel.
+\newblock {RIDE: Rewarding Impact-Driven Exploration for Procedurally-Generated
+  Environments}.
+\newblock \emph{arXiv (Cornell University)}, 2 2020.
+\newblock \doi{10.48550/arxiv.2002.12292}.
+\newblock URL \url{http://arxiv.org/abs/2002.12292}.
+
+\bibitem[Savinov et~al.(2018)Savinov, Raichuk, Marinier, Vincent, Pollefeys,
+  Lillicrap, and Gelly]{savinov-2018}
+Nikolay Savinov, Anton Raichuk, Raphaël Marinier, Damien Vincent, Marc
+  Pollefeys, Timothy Lillicrap, and Sylvain Gelly.
+\newblock {Episodic Curiosity through Reachability}.
+\newblock \emph{arXiv (Cornell University)}, 10 2018.
+\newblock \doi{10.48550/arxiv.1810.02274}.
+\newblock URL \url{http://arxiv.org/abs/1810.02274}.
+
+\bibitem[Schmidhuber(1991)]{schmidhuber-1991}
+Juergen Schmidhuber.
+\newblock \emph{{A possibility for implementing curiosity and boredom in
+  Model-Building neural controllers}}.
+\newblock 2 1991.
+\newblock \doi{10.7551/mitpress/3115.003.0030}.
+\newblock URL \url{https://doi.org/10.7551/mitpress/3115.003.0030}.
+
+\bibitem[Schulman et~al.(2015)Schulman, Moritz, Levine, Jordan, and
+  Abbeel]{schulman-2015}
+John Schulman, Philipp Moritz, Sergey Levine, Michael Jordan, and Pieter
+  Abbeel.
+\newblock {High-Dimensional continuous control using generalized advantage
+  estimation}.
+\newblock \emph{arXiv (Cornell University)}, 6 2015.
+\newblock \doi{10.48550/arxiv.1506.02438}.
+\newblock URL \url{http://arxiv.org/abs/1506.02438}.
+
+\bibitem[Schulman et~al.(2017)Schulman, Wolski, Dhariwal, Radford, and
+  Klimov]{schulman-2017}
+John Schulman, Filip Wolski, Prafulla Dhariwal, Alec Radford, and Oleg Klimov.
+\newblock {Proximal Policy Optimization Algorithms}.
+\newblock \emph{arXiv}, 2017.
+\newblock \doi{10.48550/arXiv.1707.06347}.
+\newblock URL \url{https://arxiv.org/abs/1707.06347}.
+
+\bibitem[Singh et~al.(2004)Singh, Barto, and Chentanez]{singh-2004}
+Satinder Singh, Andrew Barto, and Nuttapong Chentanez.
+\newblock {Intrinsically motivated reinforcement learning}.
+\newblock Cambridge, us, 2004. MIT Press.
+
+\bibitem[Stadie et~al.(2015)Stadie, Levine, and Abbeel]{stadie-2015}
+Bradly~C. Stadie, Sergey Levine, and Pieter Abbeel.
+\newblock {Incentivizing exploration in reinforcement learning with deep
+  predictive models}.
+\newblock \emph{arXiv (Cornell University)}, 7 2015.
+\newblock \doi{10.48550/arxiv.1507.00814}.
+\newblock URL \url{http://arxiv.org/abs/1507.00814}.
+
+\bibitem[Tang et~al.(2016)Tang, Houthooft, Foote, Stooke, Chen, Duan, Schulman,
+  De~Turck, and Abbeel]{tang-2016}
+Haoran Tang, Rein Houthooft, Davis Foote, Adam Stooke, Xi~Chen, Yan Duan, John
+  Schulman, Filip De~Turck, and Pieter Abbeel.
+\newblock {\#Exploration: A study of Count-Based exploration for deep
+  reinforcement learning}.
+\newblock \emph{arXiv (Cornell University)}, 30:\penalty0 2750--2759, 11 2016.
+\newblock \doi{10.48550/arxiv.1611.04717}.
+\newblock URL \url{http://arxiv.org/abs/1611.04717}.
+
+\end{thebibliography}

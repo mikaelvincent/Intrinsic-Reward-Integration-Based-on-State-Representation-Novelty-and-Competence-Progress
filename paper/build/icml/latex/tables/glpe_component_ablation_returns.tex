@@ -1,0 +1,20 @@
+\begin{table*}[h]
+\centering
+\small
+\begin{fitwidthtabular}{lccc}
+\hline
+Environment & GLPE & Impact-only & LP-only \\
+\hline
+\textsc{MountainCar-v0}    & $-96.2\;[-96.5,-95.9]$        & $-111.8\;[-137.0,-96.2]$      & $-106.6\;[-127.4,-96.0]$ \\
+\textsc{BipedalWalker-v3}  & $266.5\;[214.0,301.3]$       & $277.5\;[256.0,296.5]$       & $298.8\;[285.5,308.1]$ \\
+\textsc{Ant-v5}            & $4{,}961\;[4{,}421,5{,}359]$  & $5{,}233\;[4{,}544,5{,}663]$  & $4{,}599\;[3{,}617,5{,}401]$ \\
+\hline
+\end{fitwidthtabular}
+\caption{
+Final-checkpoint mean extrinsic return for GLPE and component ablations.
+Impact-only sets $\alpha_{\mathrm{LP}}{=}0$ and LP-only sets $\alpha_{\mathrm{impact}}{=}0$.
+Brackets show 95\% bootstrap confidence intervals over training seeds.
+Higher is better (less negative is better on \textsc{MountainCar-v0}).
+}
+\label{tab:glpe_component_ablation_returns}
+\end{table*}

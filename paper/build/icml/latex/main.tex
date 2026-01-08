@@ -1,0 +1,66 @@
+\documentclass{article}
+
+\makeatletter
+\def\input@path{{templates/icml/}}
+\makeatother
+\usepackage[accepted]{icml2024}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{microtype}
+\usepackage{balance}
+\usepackage{url}
+
+\makeatletter
+\let\glpe@origthebibliography\thebibliography
+\renewcommand{\thebibliography}[1]{%
+  \glpe@origthebibliography{#1}%
+  \setlength{\topsep}{0pt}%
+  \setlength{\partopsep}{0pt}%
+  \setlength{\itemsep}{0pt}%
+  \setlength{\parsep}{0pt}%
+  \setlength{\parskip}{0pt}%
+  \@ifundefined{bibsep}{}{%
+    \setlength{\bibsep}{0pt}%
+  }%
+  \clubpenalty=0%
+  \@clubpenalty\clubpenalty%
+  \widowpenalty=0%
+}
+\makeatother
+
+\icmltitlerunning{Gated Learning-Progress Exploration}
+
+\begin{document}
+
+\twocolumn[
+\icmltitle{Gated Learning-Progress Exploration}
+
+\icmlauthor{Mikael Vincent Tumampos}{usc}
+\icmlauthor{Ervin Joshua Guirnela}{usc}
+\icmlauthor{Christine Pe\~na}{usc}
+
+\icmlaffiliation{usc}{University of San Carlos, Cebu City, Philippines}
+
+\icmlcorrespondingauthor{Mikael Vincent Tumampos}{tumampos@mikaelvincent.dev}
+\icmlcorrespondingauthor{Ervin Joshua Guirnela}{17100409@usc.edu.ph}
+\icmlcorrespondingauthor{Christine Pe\~na}{cfpena@usc.edu.ph}
+
+\icmlkeywords{reinforcement learning, intrinsic motivation, exploration}
+
+\vskip 0.3in
+\input{sections/00_abstract}
+]
+
+\printAffiliationsAndNotice{}
+
+\input{content_body}
+
+\balance
+\bibliographystyle{templates/icml/icml2024}
+\bibliography{references/references}
+
+\end{document}

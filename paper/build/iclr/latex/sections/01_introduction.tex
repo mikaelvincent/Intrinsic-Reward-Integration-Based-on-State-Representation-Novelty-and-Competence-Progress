@@ -1,0 +1,31 @@
+\section{Introduction}
+\label{sec:introduction}
+
+Deep reinforcement learning agents often learn effectively when dense extrinsic rewards provide informative gradients throughout training, but performance can degrade sharply when rewards are sparse, delayed, or shaped in ways that do not guide early exploration.
+Intrinsic-reward methods address this by augmenting the environment reward with an auxiliary signal that encourages exploration in the absence of external feedback \cite{singh-2004,barto-2012,oudeyer-2007A,oudeyer-2007B}.
+Common intrinsic objectives include novelty and visitation bonuses \cite{bellemare-2016,tang-2016}, prediction-error curiosity in learned feature spaces \cite{pathak-2017,burda-2018A,burda-2018B}, and impact-based signals that encourage controllable state changes \cite{raileanu-2020}.
+
+Despite strong empirical results, many intrinsic objectives exhibit a recurring failure mode: \emph{unproductive curiosity}.
+Prediction error or novelty can remain high in regions that are difficult to model---because dynamics are complex, stochastic, or only weakly coupled to task progress---causing the agent to spend substantial effort collecting experience that does not improve either the intrinsic model or the task policy \cite{mavor-parker-2021}.
+This problem is especially acute in sparse-reward settings, where the intrinsic signal can dominate early learning.
+
+A complementary perspective is to reward \emph{learning progress}: experience is valuable when it improves a predictive model rather than merely being surprising \cite{schmidhuber-1991,oudeyer-2007A,baranes-2009}.
+Learning progress can help distinguish regions that are learnable-but-unmastered from regions that are either already predictable or effectively noisy.
+Practical progress-based methods must still address how to localize progress in high-dimensional observations, how to couple it to exploration-relevant change, and how to avoid regions where progress has stalled.
+
+We propose \emph{Gated Learning-Progress Exploration} (GLPE), a lightweight intrinsic-reward family that combines two signals computed from on-policy transitions.
+First, GLPE measures \emph{impact} as the magnitude of change in a learned feature representation between consecutive observations.
+Second, it measures \emph{region-local learning progress} by tracking forward-model prediction error within an online partition of the feature space using short- and long-horizon exponential moving averages.
+The resulting base score favors transitions that both change the representation and occur in regions where the dynamics model is improving.
+To mitigate unproductive curiosity, GLPE optionally applies a simple, region-specific \emph{gate} that suppresses intrinsic shaping in regions with persistently high prediction error but low learning progress, acting as a targeted guardrail rather than a global annealing heuristic.
+We also study \emph{GLPE (no gate)}, which uses the same base score without any gating and serves as a low-friction default.
+
+Our contributions are:
+\begin{itemize}
+    \item We introduce the GLPE family, combining region-local learning progress with feature-space impact under lightweight online normalization.
+    \item We propose a simple gating mechanism that suppresses intrinsic shaping in high-error, low-progress regions and study its effect relative to an ungated variant.
+    \item We provide an empirical study on a five-environment Gymnasium suite with a common PPO backbone, reporting both step-normalized and wall-clock-normalized comparisons, along with ablations and diagnostics of intrinsic dynamics and computational overhead.
+\end{itemize}
+
+We evaluate on \textsc{MountainCar-v0}, \textsc{BipedalWalker-v3}, and three MuJoCo locomotion tasks (\textsc{Ant-v5}, \textsc{HalfCheetah-v5}, \textsc{Humanoid-v5}), comparing against widely used intrinsic-reward baselines including ICM \cite{pathak-2017}, RND \cite{burda-2018B}, RIDE \cite{raileanu-2020}, and RIAC \cite{baranes-2009}.
+Across this suite, GLPE (no gate) remains consistently competitive under both step and wall-clock views, while the gated variant is most helpful on the sparse-reward \textsc{MountainCar-v0} task, where it improves reliability and reduces instability relative to ungated shaping (Section~\ref{sec:results}).

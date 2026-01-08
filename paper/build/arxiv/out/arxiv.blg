@@ -1,0 +1,53 @@
+This is BibTeX, Version 0.99e
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: arxiv.aux
+Reallocating 'name_of_file' (item size: 1) to 9 items.
+The style file: plainnat.bst
+Reallocating 'name_of_file' (item size: 1) to 22 items.
+Database file #1: references/references.bib
+Warning--empty publisher in barto-2012
+Warning--empty booktitle in ng-1999
+Warning--empty publisher in schmidhuber-1991
+Warning--empty booktitle in singh-2004
+You've used 23 entries,
+            2773 wiz_defined-function locations,
+            747 strings with 10158 characters,
+and the built_in function-call counts, 12062 in all, are:
+= -- 1059
+> -- 929
+< -- 7
++ -- 312
+- -- 288
+* -- 1106
+:= -- 1979
+add.period$ -- 115
+call.type$ -- 23
+change.case$ -- 163
+chr.to.int$ -- 22
+cite$ -- 50
+duplicate$ -- 475
+empty$ -- 771
+format.name$ -- 319
+if$ -- 2437
+int.to.chr$ -- 2
+int.to.str$ -- 1
+missing$ -- 25
+newline$ -- 167
+num.names$ -- 92
+pop$ -- 295
+preamble$ -- 1
+purify$ -- 142
+quote$ -- 0
+skip$ -- 366
+stack$ -- 0
+substring$ -- 162
+swap$ -- 51
+text.length$ -- 1
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 243
+warning$ -- 4
+while$ -- 79
+width$ -- 0
+write$ -- 376
+(There were 4 warnings)

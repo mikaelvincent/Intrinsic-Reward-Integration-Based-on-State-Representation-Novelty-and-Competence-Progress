@@ -1,0 +1,9 @@
+\begin{abstract}
+Exploration via intrinsic rewards can accelerate learning when extrinsic feedback is sparse or deceptive, but many intrinsic objectives overemphasize novelty in high-uncertainty regions where learning is slow or unstable.
+We introduce \emph{Gated Learning-Progress Exploration} (GLPE), a simple intrinsic-reward family that prioritizes transitions that both (i) induce meaningful changes in a learned feature representation and (ii) occur in regions where a forward dynamics model is actively improving.
+GLPE computes region-local learning progress via discrepancies between short- and long-horizon prediction-error EMAs within an online partition of feature space, and combines it with a feature-space impact term.
+A region-specific gate optionally suppresses intrinsic rewards in regions where prediction error remains high but learning progress is low, serving as a targeted guardrail against unproductive curiosity.
+We also study \emph{GLPE (no gate)}, which uses the same base intrinsic score without any gating.
+We evaluate both variants with a common PPO backbone on five Gymnasium control benchmarks and compare against widely used intrinsic-reward baselines, reporting performance under both step-normalized and wall-clock-normalized views.
+Across the suite, GLPE (no gate) matches the strongest baseline within uncertainty, while the full gated variant is most beneficial in sparse-reward regimes where ungated intrinsic rewards can destabilize training.
+\end{abstract}
