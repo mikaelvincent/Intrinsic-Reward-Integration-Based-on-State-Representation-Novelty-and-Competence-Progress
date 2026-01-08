@@ -6,11 +6,6 @@ Unless otherwise stated, we report \emph{extrinsic} evaluation return under the 
 
 \subsection{Learning curves and final performance}
 
-\input{tables/final_returns_glpe_vs_baselines}
-\input{tables/auc_steps_glpe_vs_baselines}
-\input{tables/solved_threshold_stats}
-\input{figures/eval_curves_baselines}
-
 Figure~\ref{fig:eval_curves_baselines} shows evaluation learning curves versus environment steps.
 Across tasks, GLPE (no gate) tracks the best-performing baseline closely and exhibits stable between-seed behavior.
 The gated variant differs mainly in sparse-reward or exploration-sensitive regimes: it is most beneficial on \textsc{MountainCar-v0} and can be overly conservative on \textsc{Humanoid-v5}, where variance across seeds dominates.
@@ -24,9 +19,12 @@ On the MuJoCo locomotion tasks, where extrinsic reward is comparatively dense, t
 
 Some diagnostic plots additionally include auxiliary GLPE variants (e.g., cached medians and single-component ablations) to isolate computational and signal contributions; we treat these as supporting analyses rather than primary baselines.
 
-\subsection{Ablations: impact vs.\ learning progress}
+\input{tables/final_returns_glpe_vs_baselines}
+\input{tables/auc_steps_glpe_vs_baselines}
+\input{tables/solved_threshold_stats}
+\input{figures/eval_curves_baselines}
 
-\input{tables/glpe_component_ablation_returns}
+\subsection{Ablations: impact vs.\ learning progress}
 
 To probe which components drive performance in different regimes, Table~\ref{tab:glpe_component_ablation_returns} reports final returns for GLPE and two single-term ablations on representative tasks.
 
@@ -34,10 +32,9 @@ On sparse-reward \textsc{MountainCar-v0}, combining impact and learning progress
 In contrast, on dense-reward \textsc{Ant-v5} the impact-only variant is competitive, and on near-threshold \textsc{BipedalWalker-v3} the LP-only variant comes closest to the solved cutoff.
 These patterns motivate the combined score as a robust default when the ``right'' intrinsic driver is task-dependent.
 
-\subsection{Thresholded reliability and steps-to-threshold}
+\input{tables/glpe_component_ablation_returns}
 
-\input{tables/half_solved_threshold_stats}
-\input{figures/steps_to_threshold_baselines}
+\subsection{Thresholded reliability and steps-to-threshold}
 
 Learning curves can obscure whether a method is merely slower or is failing entirely.
 We therefore evaluate reliability at fixed return thresholds using steps-to-threshold statistics (Figure~\ref{fig:steps_to_threshold_baselines}) and success counts (Tables~\ref{tab:half_solved_threshold_stats} and~\ref{tab:solved_threshold_stats}).
@@ -47,11 +44,10 @@ At the 50\% threshold, GLPE (no gate) reaches the target in all seeds on four ta
 The gap between 50\% and 100\% success is concentrated in high-variance or near-cutoff regimes: \textsc{Humanoid-v5} and \textsc{BipedalWalker-v3} show many runs that reach competent behavior without consistently clearing the full solved cutoff (Table~\ref{tab:solved_threshold_stats}).
 On \textsc{MountainCar-v0}, by contrast, both GLPE variants reach the solved threshold quickly and reliably, and several baselines exhibit occasional failures that remain near the minimum return (Figure~\ref{fig:eval_curves_baselines}).
 
-\subsection{Intrinsic shaping dynamics and gating behavior}
+\input{tables/half_solved_threshold_stats}
+\input{figures/steps_to_threshold_baselines}
 
-\input{figures/glpe_intrinsic_taper}
-\input{figures/training_reward_decomposition_baselines}
-\input{figures/glpe_gate_map}
+\subsection{Intrinsic shaping dynamics and gating behavior}
 
 The GLPE family is designed as a transient exploration aid rather than a permanent auxiliary objective.
 Figure~\ref{fig:glpe_intrinsic_taper} visualizes the cosine taper schedule used to anneal the applied intrinsic reward late in training, and Figure~\ref{fig:train_reward_decomp_baselines} decomposes the training-time rollout reward into extrinsic and intrinsic components.
@@ -61,11 +57,11 @@ To make the gate's effect concrete, Figure~\ref{fig:glpe_gate_map} shows state-s
 Across environments, gate-off points occupy a small and typically localized subset of the visited distribution.
 This supports the interpretation of gating as a targeted guardrail: it suppresses shaping only in narrow regions that appear persistently high-error and low-progress, rather than globally weakening exploration.
 
-\subsection{Wall-clock efficiency and computational overhead}
+\input{figures/glpe_intrinsic_taper}
+\input{figures/training_reward_decomposition_baselines}
+\input{figures/glpe_gate_map}
 
-\input{tables/gate_cache_microbenchmark}
-\input{figures/eval_auc_time}
-\input{figures/timing_breakdown}
+\subsection{Wall-clock efficiency and computational overhead}
 
 Intrinsic rewards can change not only sample efficiency but also end-to-end training cost.
 Figure~\ref{fig:eval_auc_time} reports wall-clock AUC of evaluation return under a common per-environment time horizon (Section~\ref{sec:experimental_setup:efficiency}), ensuring that slower methods are not advantaged by extrapolation beyond measured runtime.
@@ -77,3 +73,7 @@ On the more expensive MuJoCo tasks, environment stepping and PPO optimization do
 
 Table~\ref{tab:gate_cache_microbenchmark} isolates one identifiable cost of the gated variant---recomputing global medians for robust thresholds---and shows that caching these statistics can substantially increase throughput in a standalone microbenchmark.
 Because cached medians are slightly stale and can change gating decisions, we treat caching as an optional engineering knob rather than part of the core GLPE comparison.
+
+\input{tables/gate_cache_microbenchmark}
+\input{figures/eval_auc_time}
+\input{figures/timing_breakdown}
