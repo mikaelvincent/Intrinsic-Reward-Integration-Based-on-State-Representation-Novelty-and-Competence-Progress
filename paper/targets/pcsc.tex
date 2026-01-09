@@ -1,7 +1,12 @@
 \documentclass[sigconf]{templates/pcsc/acmart}
 
 \usepackage{amsmath}
+\makeatletter
+% Avoid amssymb clashing with newtxmath's \Bbbk.
+\@ifundefined{Bbbk}{}{\let\pcsc@Bbbk\Bbbk\let\Bbbk\relax}
 \usepackage{amssymb}
+\@ifundefined{pcsc@Bbbk}{}{\let\Bbbk\pcsc@Bbbk}
+\makeatother
 \usepackage{algorithm}
 \usepackage{algorithmic}
 \usepackage{booktabs}
