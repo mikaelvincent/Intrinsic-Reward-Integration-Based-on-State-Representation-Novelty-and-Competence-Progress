@@ -1,0 +1,66 @@
+\documentclass[sigconf]{templates/pcsc/acmart}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{url}
+
+\setcopyright{rightsretained}
+\settopmatter{printacmref=false}
+\renewcommand\footnotetextcopyrightpermission[1]{}
+\pagestyle{plain}
+
+\acmDOI{}
+\acmISBN{}
+\acmConference[PCSC2024]{Philippine Computing Science Congress}{May 2024}{Laguna, Philippines}
+\acmYear{2024}
+\copyrightyear{2024}
+\acmPrice{}
+\acmArticle{1}
+
+\title{Gated Learning-Progress Exploration}
+
+\author{Mikael Vincent Tumampos}
+\affiliation{%
+  \institution{University of San Carlos}
+  \city{Cebu City}
+  \country{Philippines}
+}
+\email{tumampos@mikaelvincent.dev}
+
+\author{Ervin Joshua Guirnela}
+\affiliation{%
+  \institution{University of San Carlos}
+  \city{Cebu City}
+  \country{Philippines}
+}
+\email{17100409@usc.edu.ph}
+
+\author{Christine Pe\~na}
+\affiliation{%
+  \institution{University of San Carlos}
+  \city{Cebu City}
+  \country{Philippines}
+}
+\email{cfpena@usc.edu.ph}
+
+\begin{document}
+
+\input{sections/00_abstract}
+
+\maketitle
+
+\input{content_body}
+
+\IfFileExists{ACM-Reference-Format.bst}{%
+  \bibliographystyle{ACM-Reference-Format}%
+}{%
+  \bibliographystyle{plainnat}%
+}
+\bibliography{references/references}
+
+\end{document}
