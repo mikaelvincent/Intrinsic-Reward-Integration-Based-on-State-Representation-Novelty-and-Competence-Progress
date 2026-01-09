@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 
 
-SUPPORTED_TARGETS: tuple[str, ...] = ("neurips", "icml", "iclr", "arxiv")
+SUPPORTED_TARGETS: tuple[str, ...] = ("neurips", "icml", "iclr", "arxiv", "pcsc")
 
 REQUIRED_TEMPLATE_FILES: dict[str, tuple[Path, ...]] = {
     "neurips": (Path("templates/neurips/neurips_2023.sty"),),
@@ -21,6 +21,7 @@ REQUIRED_TEMPLATE_FILES: dict[str, tuple[Path, ...]] = {
         Path("templates/iclr/iclr2024_conference.bst"),
     ),
     "arxiv": (),
+    "pcsc": (Path("templates/pcsc/acmart.cls"),),
 }
 
 STAGED_ROOT_ITEMS: tuple[str, ...] = (
@@ -195,7 +196,8 @@ def main(argv: list[str]) -> int:
             "  neurips  -> requires templates/neurips/neurips_2023.sty\n"
             "  icml     -> requires templates/icml/icml2024.sty + icml2024.bst\n"
             "  iclr     -> requires templates/iclr/iclr2024_conference.sty + .bst\n"
-            "  arxiv    -> no template files required\n\n"
+            "  arxiv    -> no template files required\n"
+            "  pcsc     -> requires templates/pcsc/acmart.cls\n\n"
             "Outputs:\n"
             "  paper/build/<target>/<target>.pdf\n"
             "  paper/build/<target>/latex/  (self-contained sources)\n\n"
