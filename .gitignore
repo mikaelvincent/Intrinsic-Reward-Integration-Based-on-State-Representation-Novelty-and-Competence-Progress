@@ -193,4 +193,9 @@ code/results_suite/plots/trajectories
 code/results_suite/videos
 code/temp
 PAPER_CONTENT_PLAN.md
-!paper/build
+
+paper/build/arxiv/latex
+paper/build/iclr/latex
+paper/build/icml/latex
+paper/build/neurips/latex
+paper/build/pcsc/latex
