@@ -194,9 +194,20 @@ code/results_suite/videos
 code/temp
 PAPER_CONTENT_PLAN.md
 
-paper/build
-!paper/build/arxiv/latex
-!paper/build/iclr/latex
-!paper/build/icml/latex
-!paper/build/neurips/latex
-!paper/build/pcsc/latex
+paper/build/**
+!paper/build/
+!paper/build/arxiv/
+!paper/build/arxiv/latex/
+!paper/build/iclr/
+!paper/build/iclr/latex/
+!paper/build/icml/
+!paper/build/icml/latex/
+!paper/build/neurips/
+!paper/build/neurips/latex/
+!paper/build/pcsc/
+!paper/build/pcsc/latex/
+!paper/build/arxiv/latex/**
+!paper/build/iclr/latex/**
+!paper/build/icml/latex/**
+!paper/build/neurips/latex/**
+!paper/build/pcsc/latex/**
