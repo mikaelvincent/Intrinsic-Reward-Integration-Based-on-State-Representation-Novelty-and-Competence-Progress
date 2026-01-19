@@ -12,6 +12,7 @@
 \usepackage{booktabs}
 \usepackage{graphicx}
 \usepackage{hyperref}
+\usepackage{placeins}
 \usepackage{url}
 
 \setcopyright{rightsretained}
@@ -60,6 +61,8 @@
 \maketitle
 
 \input{content_body}
+
+\FloatBarrier
 
 \IfFileExists{ACM-Reference-Format.bst}{%
   \bibliographystyle{ACM-Reference-Format}%
