@@ -17,14 +17,14 @@ For each environment we evaluate every method using the same set of training see
 
 \paragraph{Training budgets beyond the early-learning regime.}
 The total environment-step budgets in Table~\ref{tab:env_suite} are intentionally generous so that runs extend beyond the initial improvement phase.
-This provides headroom to assess long-horizon stability of exploration behavior and intrinsic shaping, including late-training drift, regressions, or oscillations.
+This provides sufficient budget to assess long-horizon stability of exploration behavior and intrinsic shaping, including late-training drift, regressions, or oscillations.
 
 \input{tables/env_suite}
 
 \subsection{Methods compared}
 \label{sec:experimental_setup:methods}
 
-We compare two proposed intrinsic-reward methods, GLPE and GLPE (no gate) (Section~\ref{sec:method}), against a set of commonly used exploration baselines: Vanilla PPO, ICM, RND, RIDE, and RIAC.
+We compare the two GLPE variants, GLPE and GLPE (no gate) (Section~\ref{sec:method}), against a set of commonly used exploration baselines: Vanilla PPO, ICM, RND, RIDE, and RIAC.
 Vanilla PPO optimizes only the extrinsic environment reward.
 ICM uses forward-model prediction error in a learned feature space as an intrinsic signal, while RND uses the prediction error of a trainable predictor against a fixed random target network.
 RIDE rewards feature-space impact, down-weighted by episodic visitation counts obtained by discretizing features, and RIAC uses region-local learning progress computed from changes in forward-model error within an adaptive partition of feature space.
