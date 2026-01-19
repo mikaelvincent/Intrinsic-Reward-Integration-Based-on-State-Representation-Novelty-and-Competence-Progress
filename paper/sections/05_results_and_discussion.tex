@@ -60,12 +60,12 @@ This supports the interpretation of gating as a targeted guardrail: it suppresse
 Intrinsic rewards can change not only sample efficiency but also end-to-end training cost.
 Figure~\ref{fig:eval_auc_time} reports wall-clock AUC of evaluation return under a common per-environment time horizon (Section~\ref{sec:experimental_setup:efficiency}), ensuring that slower methods are not advantaged by extrapolation beyond measured runtime.
 Across \textsc{BipedalWalker-v3}, \textsc{HalfCheetah-v5}, \textsc{Ant-v5}, and \textsc{Humanoid-v5}, GLPE (no gate) remains close to the strongest baseline under this wall-clock view.
-Full GLPE is typically further back, consistent with the additional computation required by gating and robust statistics.
+Full GLPE typically attains lower wall-clock AUC, consistent with the additional computation required by gating and robust statistics.
 
 Figure~\ref{fig:timing_breakdown} decomposes per-update runtime into environment interaction, PPO optimization, and intrinsic components.
-On the more expensive MuJoCo tasks, environment stepping and PPO optimization dominate total time, making intrinsic overhead a secondary factor; on \textsc{MountainCar-v0}, where environment interaction is cheap, intrinsic overhead plays a larger role in wall-clock comparisons.
+On the more expensive MuJoCo tasks, environment stepping and PPO optimization dominate total time, making intrinsic overhead a secondary factor; on \textsc{MountainCar-v0}, where environment interaction is inexpensive, intrinsic overhead plays a larger role in wall-clock comparisons.
 
 Table~\ref{tab:gate_cache_microbenchmark} isolates one identifiable cost of the gated variant---recomputing global medians for robust thresholds---and shows that caching these statistics can substantially increase throughput in a standalone microbenchmark.
-Because cached medians are slightly stale and can change gating decisions, we treat caching as an optional engineering knob rather than part of the core GLPE comparison.
+Because cached medians are slightly stale and can change gating decisions, we treat caching as an optional implementation choice rather than part of the core GLPE comparison.
 
 \input{tables/gate_cache_microbenchmark}
