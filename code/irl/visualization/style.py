@@ -9,6 +9,7 @@ DPI: int = 300
 
 GRID_ALPHA: float = 0.25
 
+AXIS_LABEL_FONTSIZE: int = 9
 LEGEND_FONTSIZE: int = 9
 LEGEND_FRAMEALPHA: float = 0.0
 
