@@ -10,7 +10,7 @@ import pandas as pd
 from irl.visualization.labels import add_legend_rows_top, add_row_label, env_label, legend_ncol, method_label, slugify
 from irl.visualization.palette import color_for_method as _color_for_method
 from irl.visualization.plot_utils import apply_rcparams_paper, save_fig_atomic, sort_env_ids as _sort_env_ids
-from irl.visualization.style import DPI, FIG_WIDTH, apply_grid, alpha_for_method, legend_order
+from irl.visualization.style import DPI, MULTIPANEL_FIG_WIDTH, apply_grid, alpha_for_method, legend_order
 from irl.visualization.style import linestyle_for_method, linewidth_for_method, zorder_for_method
 from .thresholds import SOLVED_THRESHOLD_LABEL, add_solved_threshold_line, solved_threshold_legend_handle
 
@@ -167,22 +167,23 @@ def plot_eval_curves_by_env(
 
     legend_methods = legend_order([m for m in want if m in methods_union])
 
-    nrows = int(len(env_recs))
-    height = max(2.8, 2.2 * float(nrows))
+    ncols = int(len(env_recs))
+    height = max(2.8, 2.2 * 1.0)
 
     plt = apply_rcparams_paper()
     fig, axes = plt.subplots(
-        nrows,
         1,
-        figsize=(float(FIG_WIDTH), float(height)),
+        ncols,
+        figsize=(float(MULTIPANEL_FIG_WIDTH), float(height)),
         dpi=int(DPI),
         squeeze=False,
     )
+    fig.supylabel("Mean return")
 
     has_solved_threshold = False
 
     for i, (env_id, df_env, methods_present) in enumerate(env_recs):
-        ax = axes[i, 0]
+        ax = axes[0, i]
 
         methods_draw = list(methods_present)
         for mk in methods_draw:
@@ -214,11 +215,8 @@ def plot_eval_curves_by_env(
             has_solved_threshold = True
         apply_grid(ax)
 
-        ax.set_ylabel("Mean return")
-        if i == nrows - 1:
+        if i == ncols - 1:
             ax.set_xlabel("Training steps")
-        else:
-            ax.tick_params(axis="x", which="both", labelbottom=False)
 
         add_row_label(ax, env_label(env_id))
 
