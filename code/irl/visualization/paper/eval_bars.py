@@ -10,7 +10,7 @@ import pandas as pd
 from irl.visualization.labels import add_legend_rows_top, add_row_label, env_label, method_label, slugify
 from irl.visualization.palette import color_for_method as _color_for_method
 from irl.visualization.plot_utils import apply_rcparams_paper, save_fig_atomic, sort_env_ids as _sort_env_ids
-from irl.visualization.style import DPI, FIG_WIDTH, apply_grid, legend_order as _legend_order
+from irl.visualization.style import DPI, MULTIPANEL_FIG_WIDTH, apply_grid, legend_order as _legend_order
 
 from .thresholds import SOLVED_THRESHOLD_LABEL, add_solved_threshold_line, solved_threshold_legend_handle
 
@@ -174,14 +174,14 @@ def plot_eval_bars_by_env(
     if not env_recs:
         return []
 
-    nrows = int(len(env_recs))
-    height = max(2.6, 2.2 * float(nrows))
+    ncols = int(len(env_recs))
+    height = max(2.6, 2.2 * 1.0)
 
     plt = apply_rcparams_paper()
     fig, axes = plt.subplots(
-        nrows,
         1,
-        figsize=(float(FIG_WIDTH), float(height)),
+        ncols,
+        figsize=(float(MULTIPANEL_FIG_WIDTH), float(height)),
         dpi=int(DPI),
         squeeze=False,
     )
@@ -189,7 +189,7 @@ def plot_eval_bars_by_env(
     has_solved_threshold = False
 
     for i, (env_id, rows_by_method, methods_present) in enumerate(env_recs):
-        ax = axes[i, 0]
+        ax = axes[0, i]
 
         means_l: list[float] = []
         ci_lo_l: list[float] = []
@@ -271,13 +271,10 @@ def plot_eval_bars_by_env(
         tick_labels = [method_label(mk) for mk in methods_present]
         ax.set_xticklabels(tick_labels, rotation=20, ha="right")
 
-        if i != nrows - 1:
-            ax.tick_params(axis="x", which="both", labelbottom=False)
-
         apply_grid(ax)
         add_row_label(ax, env_label(env_id))
 
-    axes[-1, 0].set_xlabel("Method")
+    axes[0, -1].set_xlabel("Method")
 
     rows = []
     if has_solved_threshold:
