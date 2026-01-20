@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Any, Sequence
 
 FIG_WIDTH: float = 7.0
+MULTIPANEL_FIG_WIDTH: float = FIG_WIDTH * 5.0
 FIGSIZE: tuple[float, float] = (FIG_WIDTH, 4.0)
 DPI: int = 300
 
