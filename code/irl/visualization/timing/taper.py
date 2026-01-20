@@ -11,7 +11,7 @@ from irl.visualization.data import aggregate_runs
 from irl.visualization.labels import add_legend_rows_top, add_row_label, env_label, legend_ncol, method_label
 from irl.visualization.palette import color_for_method as _color_for_method
 from irl.visualization.plot_utils import apply_rcparams_paper, save_fig_atomic, sort_env_ids as _sort_env_ids
-from irl.visualization.style import DPI, FIG_WIDTH, LEGEND_FONTSIZE, apply_grid, legend_order as _legend_order
+from irl.visualization.style import DPI, LEGEND_FONTSIZE, MULTIPANEL_FIG_WIDTH, apply_grid, legend_order as _legend_order
 
 
 def _is_effectively_one(vals: np.ndarray, *, tol: float) -> bool:
@@ -269,19 +269,20 @@ def plot_intrinsic_taper_weight(
         return []
 
     plt = apply_rcparams_paper()
-    nrows = int(len(env_recs))
-    height = max(2.8, 2.2 * float(nrows))
+    ncols = int(len(env_recs))
+    height = max(2.8, 2.2 * 1.0)
 
     fig, axes = plt.subplots(
-        nrows,
         1,
-        figsize=(float(FIG_WIDTH), float(height)),
+        ncols,
+        figsize=(float(MULTIPANEL_FIG_WIDTH), float(height)),
         dpi=int(DPI),
         squeeze=False,
     )
+    fig.supylabel("Intrinsic reward")
 
     for i, rec in enumerate(env_recs):
-        ax = axes[i, 0]
+        ax = axes[0, i]
         ax2 = ax.twinx()
 
         env_id = str(rec["env_id"])
@@ -323,13 +324,8 @@ def plot_intrinsic_taper_weight(
 
         apply_grid(ax)
 
-        if i == nrows - 1:
+        if i == ncols - 1:
             ax.set_xlabel("Training steps")
-        else:
-            ax.tick_params(axis="x", which="both", labelbottom=False)
-
-        ax.set_ylabel("Intrinsic reward")
-        ax2.set_ylabel("Taper weight")
 
         add_row_label(ax, f"{env_label(env_id)} | {method_label(method)}".replace(" | GLPE", ""))
 
