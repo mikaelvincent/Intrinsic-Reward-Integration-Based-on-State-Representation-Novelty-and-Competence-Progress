@@ -1,10 +1,12 @@
 from __future__ import annotations
 
+import math
 import re
 from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
 
+from . import style as _style
 from irl.visualization.style import AXIS_LABEL_FONTSIZE, DPI, LEGEND_FONTSIZE, scale_plot_height
 
 _STYLE_RCPARAMS: dict[str, Any] = {
@@ -129,10 +131,80 @@ def _patch_matplotlib_figsize_height_scale() -> None:
     orig_figure = plt.figure
 
     def _subplots(*args, **kwargs):  # type: ignore[no-untyped-def]
+        nrows_in = kwargs.get("nrows", 1)
+        ncols_in = kwargs.get("ncols", 1)
+        if len(args) >= 1:
+            nrows_in = args[0]
+        if len(args) >= 2:
+            ncols_in = args[1]
+
+        try:
+            nrows_i = int(nrows_in)
+            ncols_i = int(ncols_in)
+        except Exception:
+            nrows_i = None
+            ncols_i = None
+
+        try:
+            max_per_row = int(getattr(_style, "MAX_PANELS_PER_ROW", 3) or 3)
+        except Exception:
+            max_per_row = 3
+        max_per_row = int(max(1, max_per_row))
+
+        wrap = bool(nrows_i == 1 and ncols_i is not None and ncols_i > max_per_row)
+
+        grid_rows = 1
+        grid_cols = ncols_i if ncols_i is not None else 1
+        if wrap:
+            grid_cols = int(max_per_row)
+            grid_rows = int(math.ceil(float(ncols_i) / float(grid_cols)))
+
         fs = kwargs.get("figsize", None)
         if fs is not None:
+            if wrap and grid_rows > 1:
+                try:
+                    w, h = fs  # type: ignore[misc]
+                    fs = (w, float(h) * float(grid_rows))
+                except Exception:
+                    pass
             kwargs["figsize"] = _scaled_figsize(fs)
-        return orig_subplots(*args, **kwargs)
+
+        if not wrap:
+            return orig_subplots(*args, **kwargs)
+
+        squeeze_orig = bool(kwargs.get("squeeze", True))
+
+        args_l = list(args)
+        if len(args_l) >= 1:
+            args_l[0] = int(grid_rows)
+        else:
+            args_l.append(int(grid_rows))
+        if len(args_l) >= 2:
+            args_l[1] = int(grid_cols)
+        else:
+            args_l.append(int(grid_cols))
+
+        kwargs2 = dict(kwargs)
+        kwargs2.pop("nrows", None)
+        kwargs2.pop("ncols", None)
+
+        fig, axes_grid = orig_subplots(*args_l, **kwargs2)
+
+        try:
+            axes_flat = axes_grid.ravel()
+        except Exception:
+            return fig, axes_grid
+
+        used = axes_flat[: int(ncols_i)]
+        for ax in axes_flat[int(ncols_i) :]:
+            try:
+                ax.set_visible(False)
+            except Exception:
+                pass
+
+        if not squeeze_orig:
+            return fig, used.reshape(1, int(ncols_i))
+        return fig, used
 
     def _figure(*args, **kwargs):  # type: ignore[no-untyped-def]
         if "figsize" in kwargs and kwargs["figsize"] is not None:
