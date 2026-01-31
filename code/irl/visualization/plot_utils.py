@@ -155,6 +155,39 @@ def _center_wrapped_subplot_rows(fig) -> None:
         _shift_axes_x(to_shift, float(dx))
 
 
+def _apply_subplot_spacing(fig) -> None:
+    wspace = getattr(_style, "SUBPLOT_WSPACE", None)
+    hspace = getattr(_style, "SUBPLOT_HSPACE", None)
+    if wspace is None and hspace is None:
+        return
+
+    kwargs: dict[str, float] = {}
+
+    if wspace is not None:
+        try:
+            w = float(wspace)
+        except Exception:
+            w = float("nan")
+        if math.isfinite(w) and w >= 0.0:
+            kwargs["wspace"] = float(w)
+
+    if hspace is not None:
+        try:
+            h = float(hspace)
+        except Exception:
+            h = float("nan")
+        if math.isfinite(h) and h >= 0.0:
+            kwargs["hspace"] = float(h)
+
+    if not kwargs:
+        return
+
+    try:
+        fig.subplots_adjust(**kwargs)
+    except Exception:
+        return
+
+
 def _disable_matplotlib_titles() -> None:
     import matplotlib.axes
     import matplotlib.figure
@@ -197,13 +230,14 @@ def _patch_matplotlib_tight_layout_defaults() -> None:
     def _tight_layout(self, *args, **kwargs):  # type: ignore[no-untyped-def]
         if args:
             out = orig_tight_layout(self, *args, **kwargs)
+            _apply_subplot_spacing(self)
             _center_wrapped_subplot_rows(self)
             return out
 
         from irl.visualization.labels import (
             LEGEND_TIGHT_LAYOUT_PAD_MULT,
-            TIGHT_LAYOUT_H_PAD_MULT,
-            TIGHT_LAYOUT_W_PAD_MULT,
+            TIGHT_LAYOUT_H_PAD_MULT as _LABEL_TIGHT_LAYOUT_H_PAD_MULT,
+            TIGHT_LAYOUT_W_PAD_MULT as _LABEL_TIGHT_LAYOUT_W_PAD_MULT,
         )
 
         rect = kwargs.pop("rect", None)
@@ -222,19 +256,28 @@ def _patch_matplotlib_tight_layout_defaults() -> None:
         except Exception:
             pad_f = float(LEGEND_TIGHT_LAYOUT_PAD_MULT)
 
-        if not h_pad_in and h_pad is None and TIGHT_LAYOUT_H_PAD_MULT is not None:
+        h_pad_mult = getattr(_style, "TIGHT_LAYOUT_H_PAD_MULT", None)
+        if h_pad_mult is None:
+            h_pad_mult = _LABEL_TIGHT_LAYOUT_H_PAD_MULT
+
+        w_pad_mult = getattr(_style, "TIGHT_LAYOUT_W_PAD_MULT", None)
+        if w_pad_mult is None:
+            w_pad_mult = _LABEL_TIGHT_LAYOUT_W_PAD_MULT
+
+        if not h_pad_in and h_pad is None and h_pad_mult is not None:
             try:
-                h_pad = float(TIGHT_LAYOUT_H_PAD_MULT)
+                h_pad = float(h_pad_mult)
             except Exception:
                 h_pad = None
 
-        if not w_pad_in and w_pad is None and TIGHT_LAYOUT_W_PAD_MULT is not None:
+        if not w_pad_in and w_pad is None and w_pad_mult is not None:
             try:
-                w_pad = float(TIGHT_LAYOUT_W_PAD_MULT)
+                w_pad = float(w_pad_mult)
             except Exception:
                 w_pad = None
 
         out = orig_tight_layout(self, pad=pad_f, h_pad=h_pad, w_pad=w_pad, rect=rect)
+        _apply_subplot_spacing(self)
         _center_wrapped_subplot_rows(self)
         return out
 
@@ -712,6 +755,7 @@ def save_fig_atomic(
     from irl.utils.checkpoint import atomic_replace
 
     _center_wrapped_subplot_rows(fig)
+    _apply_subplot_spacing(fig)
     _layout_axis_labels(fig)
 
     path = Path(path)
