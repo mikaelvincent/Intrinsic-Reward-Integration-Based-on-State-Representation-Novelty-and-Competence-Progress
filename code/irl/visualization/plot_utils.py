@@ -754,8 +754,8 @@ def save_fig_atomic(
 ) -> None:
     from irl.utils.checkpoint import atomic_replace
 
-    _center_wrapped_subplot_rows(fig)
     _apply_subplot_spacing(fig)
+    _center_wrapped_subplot_rows(fig)
     _layout_axis_labels(fig)
 
     path = Path(path)
