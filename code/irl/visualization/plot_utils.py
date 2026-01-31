@@ -22,6 +22,138 @@ _STYLE_RCPARAMS: dict[str, Any] = {
     "ps.fonttype": 42,
 }
 
+_WRAPPED_SUBPLOTS_ATTR: str = "_irl_wrapped_subplots"
+
+
+def _is_ax_visible(ax: object) -> bool:
+    try:
+        return bool(getattr(ax, "get_visible")())
+    except Exception:
+        return False
+
+
+def _axes_x_span(axes: Iterable[object]) -> tuple[float, float] | None:
+    x0s: list[float] = []
+    x1s: list[float] = []
+    for ax in axes:
+        try:
+            pos = getattr(ax, "get_position")()
+        except Exception:
+            continue
+        try:
+            x0 = float(getattr(pos, "x0"))
+            x1 = float(getattr(pos, "x1"))
+        except Exception:
+            continue
+        if not (math.isfinite(x0) and math.isfinite(x1) and x1 > x0):
+            continue
+        x0s.append(x0)
+        x1s.append(x1)
+    if not x0s:
+        return None
+    return float(min(x0s)), float(max(x1s))
+
+
+def _twinned_siblings(ax: object) -> list[object]:
+    tw = getattr(ax, "_twinned_axes", None)
+    if tw is None:
+        return [ax]
+    try:
+        sib = list(tw.get_siblings(ax))
+    except Exception:
+        return [ax]
+    return sib if sib else [ax]
+
+
+def _shift_axes_x(axes: Iterable[object], dx: float) -> None:
+    d = float(dx)
+    if not (math.isfinite(d) and abs(d) > 1e-12):
+        return
+
+    for ax in axes:
+        try:
+            pos = getattr(ax, "get_position")()
+            x0 = float(getattr(pos, "x0")) + d
+            y0 = float(getattr(pos, "y0"))
+            w = float(getattr(pos, "width"))
+            h = float(getattr(pos, "height"))
+        except Exception:
+            continue
+
+        if not all(math.isfinite(v) for v in (x0, y0, w, h)):
+            continue
+
+        try:
+            getattr(ax, "set_position")([float(x0), float(y0), float(w), float(h)])
+        except Exception:
+            continue
+
+
+def _center_wrapped_subplot_rows(fig) -> None:
+    spec = getattr(fig, _WRAPPED_SUBPLOTS_ATTR, None)
+    if not isinstance(spec, dict):
+        return
+
+    try:
+        grid_cols = int(spec.get("grid_cols", 0))
+        grid_rows = int(spec.get("grid_rows", 0))
+        n_used = int(spec.get("n_used", 0))
+    except Exception:
+        return
+
+    axes = spec.get("axes")
+    if grid_cols <= 1 or grid_rows <= 1 or n_used <= 0:
+        return
+    if not isinstance(axes, (list, tuple)) or not axes:
+        return
+
+    axes_list = list(axes)
+    total = int(grid_rows) * int(grid_cols)
+    if total <= 0 or len(axes_list) < int(grid_cols):
+        return
+    axes_list = axes_list[: int(min(total, len(axes_list)))]
+
+    ref = _axes_x_span(axes_list[: int(grid_cols)])
+    if ref is None:
+        return
+
+    grid_left, grid_right = ref
+    full_w = float(grid_right - grid_left)
+    if not (math.isfinite(full_w) and full_w > 0.0):
+        return
+
+    for r in range(int(grid_rows)):
+        start = int(r) * int(grid_cols)
+        used_in_row = int(max(0, min(int(grid_cols), int(n_used) - int(start))))
+        if used_in_row <= 0 or used_in_row >= int(grid_cols):
+            continue
+
+        group = axes_list[start : start + used_in_row]
+        group_vis = [ax for ax in group if _is_ax_visible(ax)]
+        if not group_vis:
+            continue
+
+        group_span = _axes_x_span(group_vis)
+        if group_span is None:
+            continue
+
+        group_left, group_right = group_span
+        group_w = float(group_right - group_left)
+        if not (math.isfinite(group_w) and group_w > 0.0 and full_w > group_w + 1e-12):
+            continue
+
+        target_left = float(grid_left) + 0.5 * float(full_w - group_w)
+        dx = float(target_left - float(group_left))
+        if not (math.isfinite(dx) and abs(dx) > 1e-8):
+            continue
+
+        to_shift: set[object] = set()
+        for ax in group_vis:
+            for sib in _twinned_siblings(ax):
+                to_shift.add(sib)
+
+        _shift_axes_x(to_shift, float(dx))
+
 
 def _disable_matplotlib_titles() -> None:
     import matplotlib.axes
@@ -64,7 +196,9 @@ def _patch_matplotlib_tight_layout_defaults() -> None:
 
     def _tight_layout(self, *args, **kwargs):  # type: ignore[no-untyped-def]
         if args:
-            return orig_tight_layout(self, *args, **kwargs)
+            out = orig_tight_layout(self, *args, **kwargs)
+            _center_wrapped_subplot_rows(self)
+            return out
 
         from irl.visualization.labels import (
             LEGEND_TIGHT_LAYOUT_PAD_MULT,
@@ -100,7 +234,9 @@ def _patch_matplotlib_tight_layout_defaults() -> None:
             except Exception:
                 w_pad = None
 
-        return orig_tight_layout(self, pad=pad_f, h_pad=h_pad, w_pad=w_pad, rect=rect)
+        out = orig_tight_layout(self, pad=pad_f, h_pad=h_pad, w_pad=w_pad, rect=rect)
+        _center_wrapped_subplot_rows(self)
+        return out
 
     matplotlib.figure.Figure.tight_layout = _tight_layout  # type: ignore[assignment]
     setattr(matplotlib.figure.Figure, "_irl_tight_layout_patched", True)
@@ -192,6 +328,27 @@ def _patch_matplotlib_figsize_height_scale() -> None:
 
         try:
             axes_flat = axes_grid.ravel()
+            axes_all = axes_flat.tolist()
+        except Exception:
+            try:
+                axes_all = list(axes_grid)
+            except Exception:
+                axes_all = []
+
+        if axes_all and ncols_i is not None:
+            setattr(
+                fig,
+                _WRAPPED_SUBPLOTS_ATTR,
+                {
+                    "grid_rows": int(grid_rows),
+                    "grid_cols": int(grid_cols),
+                    "n_used": int(ncols_i),
+                    "axes": axes_all,
+                },
+            )
+
+        try:
+            axes_flat = axes_grid.ravel()
         except Exception:
             return fig, axes_grid
 
@@ -201,6 +358,8 @@ def _patch_matplotlib_figsize_height_scale() -> None:
                 ax.set_visible(False)
             except Exception:
                 pass
+
+        _center_wrapped_subplot_rows(fig)
 
         if not squeeze_orig:
             return fig, used.reshape(1, int(ncols_i))
@@ -552,6 +711,7 @@ def save_fig_atomic(
 ) -> None:
     from irl.utils.checkpoint import atomic_replace
 
+    _center_wrapped_subplot_rows(fig)
     _layout_axis_labels(fig)
 
     path = Path(path)
