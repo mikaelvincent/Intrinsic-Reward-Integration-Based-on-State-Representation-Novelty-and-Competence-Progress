@@ -3,7 +3,7 @@ from __future__ import annotations
 import math
 from typing import Any, Sequence
 
-PLOT_HEIGHT_SCALE: float = 1.0
+PLOT_HEIGHT_SCALE: float = 2.0
 
 
 def scale_plot_height(height: float) -> float:
@@ -17,6 +17,7 @@ def scale_plot_height(height: float) -> float:
 
 
 FIG_WIDTH: float = 7.0
+MAX_PANELS_PER_ROW: int = 3
 MULTIPANEL_FIG_WIDTH: float = FIG_WIDTH * 5.0
 FIGSIZE: tuple[float, float] = (FIG_WIDTH, 4.0)
 DPI: int = 300
