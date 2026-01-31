@@ -5,7 +5,7 @@ from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
 
-from irl.visualization.style import AXIS_LABEL_FONTSIZE, DPI, LEGEND_FONTSIZE
+from irl.visualization.style import AXIS_LABEL_FONTSIZE, DPI, LEGEND_FONTSIZE, scale_plot_height
 
 _STYLE_RCPARAMS: dict[str, Any] = {
     "figure.dpi": int(DPI),
@@ -104,6 +104,53 @@ def _patch_matplotlib_tight_layout_defaults() -> None:
     setattr(matplotlib.figure.Figure, "_irl_tight_layout_patched", True)
 
 
+def _scaled_figsize(figsize: object) -> object:
+    try:
+        w, h = figsize  # type: ignore[misc]
+    except Exception:
+        return figsize
+
+    try:
+        w_f = float(w)
+        h_f = float(h)
+    except Exception:
+        return figsize
+
+    return (w_f, scale_plot_height(h_f))
+
+
+def _patch_matplotlib_figsize_height_scale() -> None:
+    import matplotlib.pyplot as plt
+
+    if bool(getattr(plt, "_irl_figsize_height_scale_patched", False)):
+        return
+
+    orig_subplots = plt.subplots
+    orig_figure = plt.figure
+
+    def _subplots(*args, **kwargs):  # type: ignore[no-untyped-def]
+        fs = kwargs.get("figsize", None)
+        if fs is not None:
+            kwargs["figsize"] = _scaled_figsize(fs)
+        return orig_subplots(*args, **kwargs)
+
+    def _figure(*args, **kwargs):  # type: ignore[no-untyped-def]
+        if "figsize" in kwargs and kwargs["figsize"] is not None:
+            kwargs["figsize"] = _scaled_figsize(kwargs["figsize"])
+            return orig_figure(*args, **kwargs)
+
+        if len(args) >= 2:
+            args_l = list(args)
+            args_l[1] = _scaled_figsize(args_l[1])
+            return orig_figure(*args_l, **kwargs)
+
+        return orig_figure(*args, **kwargs)
+
+    plt.subplots = _subplots  # type: ignore[assignment]
+    plt.figure = _figure  # type: ignore[assignment]
+    setattr(plt, "_irl_figsize_height_scale_patched", True)
+
+
 def apply_rcparams_paper():
     import matplotlib
 
@@ -116,6 +163,7 @@ def apply_rcparams_paper():
     plt.rcParams.update(_STYLE_RCPARAMS)
     _disable_matplotlib_titles()
     _patch_matplotlib_tight_layout_defaults()
+    _patch_matplotlib_figsize_height_scale()
     return plt
 
 
