@@ -28,6 +28,12 @@ AXIS_LABEL_FONTSIZE: int = 9
 LEGEND_FONTSIZE: int = 9
 LEGEND_FRAMEALPHA: float = 0.0
 
+# Optional layout overrides. None keeps Matplotlib defaults.
+TIGHT_LAYOUT_W_PAD_MULT: float | None = None
+TIGHT_LAYOUT_H_PAD_MULT: float | None = None
+SUBPLOT_WSPACE: float | None = 0.05
+SUBPLOT_HSPACE: float | None = 0.10
+
 PROPOSED_METHOD_KEY: str = "glpe"
 _GLPE_NOGATE_KEY: str = "glpe_nogate"
 _EMPHASIZED_METHOD_KEYS: frozenset[str] = frozenset((PROPOSED_METHOD_KEY, _GLPE_NOGATE_KEY))
