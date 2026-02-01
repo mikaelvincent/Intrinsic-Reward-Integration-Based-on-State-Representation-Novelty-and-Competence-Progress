@@ -102,7 +102,7 @@ def _center_wrapped_subplot_rows(fig) -> None:
         return
 
     axes = spec.get("axes")
-    if grid_cols <= 1 or grid_rows <= 1 or n_used <= 0:
+    if grid_cols <= 1 or grid_rows <= 0 or n_used <= 0:
         return
     if not isinstance(axes, (list, tuple)) or not axes:
         return
@@ -330,7 +330,7 @@ def _patch_matplotlib_figsize_height_scale() -> None:
             max_per_row = 3
         max_per_row = int(max(1, max_per_row))
 
-        wrap = bool(nrows_i == 1 and ncols_i is not None and ncols_i > max_per_row)
+        wrap = bool(nrows_i == 1 and ncols_i is not None and ncols_i > 1 and ncols_i != max_per_row)
 
         grid_rows = 1
         grid_cols = ncols_i if ncols_i is not None else 1
@@ -714,7 +714,6 @@ def _fix_supylabel(fig, *, renderer, tick_bb, pad_px: float) -> bool:
 
 
 def _layout_axis_labels(fig) -> None:
-    # Two passes: pad changes only apply after a redraw.
     for _ in range(2):
         try:
             fig.canvas.draw()
