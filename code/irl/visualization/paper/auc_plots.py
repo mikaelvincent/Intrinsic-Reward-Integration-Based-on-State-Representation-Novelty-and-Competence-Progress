@@ -418,6 +418,9 @@ def plot_eval_auc_bars_by_env(
     if not want:
         return []
 
+    suffix_slug = slugify(filename_suffix)
+    legend_only = suffix_slug == "all-methods"
+
     ablation_mode = _is_ablation_suffix(filename_suffix)
 
     env_recs: list[tuple[str, list[dict[str, object]]]] = []
@@ -548,16 +551,41 @@ def plot_eval_auc_bars_by_env(
 
         ax.axhline(0.0, linewidth=1.0, alpha=0.6, color="black")
         ax.set_xticks(x)
-        ax.set_xticklabels(labels, rotation=20, ha="right")
+        if legend_only:
+            ax.tick_params(axis="x", which="both", bottom=False, labelbottom=False)
+        else:
+            ax.set_xticklabels(labels, rotation=20, ha="right")
         ax.set_ylabel("AUC (return × steps)")
         apply_grid(ax)
 
         add_row_label(ax, env_label(env_id))
 
-    axes[0, -1].set_xlabel("Method")
-    fig.tight_layout()
+    if not legend_only:
+        axes[0, -1].set_xlabel("Method")
 
-    out = Path(plots_root) / f"eval-auc-steps-{slugify(filename_suffix)}.png"
+    rows: list[tuple[list[object], list[str], int]] = []
+    if legend_only:
+        methods_union: set[str] = set()
+        for _env_id, auc_rows in env_recs:
+            for r in auc_rows:
+                mk = str(r.get("method_key", "")).strip().lower()
+                if mk:
+                    methods_union.add(mk)
+
+        legend_methods = _legend_order(sorted(methods_union))
+        handles = [plt.Line2D([], [], color=_color_for_method(m), lw=3.0 if m == "glpe" else 2.0) for m in legend_methods]
+        labels = [method_label(m) for m in legend_methods]
+        if handles:
+            rows.append((handles, labels, legend_ncol(len(handles))))
+
+    top = 1.0
+    if rows:
+        top = add_legend_rows_top(fig, rows)
+        fig.tight_layout(rect=[0.0, 0.0, 1.0, float(top)])
+    else:
+        fig.tight_layout()
+
+    out = Path(plots_root) / f"eval-auc-steps-{suffix_slug}.png"
     save_fig_atomic(fig, out)
     plt.close(fig)
     return [out]
@@ -610,6 +638,9 @@ def plot_eval_auc_time_bars_by_env(
     want = _legend_order(methods_to_plot)
     if not want:
         return []
+
+    suffix_slug = slugify(filename_suffix)
+    legend_only = suffix_slug == "all-methods"
 
     ablation_mode = _is_ablation_suffix(filename_suffix)
 
@@ -819,7 +850,8 @@ def plot_eval_auc_time_bars_by_env(
         squeeze=False,
     )
     fig.supylabel("AUC (return × time)")
-    fig.supxlabel("Method")
+    if not legend_only:
+        fig.supxlabel("Method")
 
     for i, (env_id, auc_rows) in enumerate(env_recs):
         ax = axes[0, i]
@@ -864,7 +896,10 @@ def plot_eval_auc_time_bars_by_env(
 
         ax.axhline(0.0, linewidth=1.0, alpha=0.6, color="black")
         ax.set_xticks(x)
-        ax.set_xticklabels(labels, rotation=20, ha="right")
+        if legend_only:
+            ax.tick_params(axis="x", which="both", bottom=False, labelbottom=False)
+        else:
+            ax.set_xticklabels(labels, rotation=20, ha="right")
         apply_grid(ax)
 
         add_row_label(ax, env_label(env_id))
@@ -891,7 +926,7 @@ def plot_eval_auc_time_bars_by_env(
 
     fig.tight_layout(rect=[0.0, 0.0, 1.0, float(top)])
 
-    out = Path(plots_root) / f"eval-auc-time-{slugify(filename_suffix)}.png"
+    out = Path(plots_root) / f"eval-auc-time-{suffix_slug}.png"
     save_fig_atomic(fig, out)
     plt.close(fig)
     return [out]
