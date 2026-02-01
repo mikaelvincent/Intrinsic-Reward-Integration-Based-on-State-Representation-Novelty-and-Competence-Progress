@@ -2,10 +2,15 @@ from __future__ import annotations
 
 import math
 import re
-from statistics import median
 from typing import Iterable
 
-from irl.visualization.style import LEGEND_FONTSIZE
+from irl.visualization.style import (
+    LEGEND_FONTSIZE,
+    LEGEND_PANEL_ENTRY_HSPACE,
+    LEGEND_PANEL_ENTRY_VSPACE,
+    LEGEND_PANEL_GROUP_HSPACE,
+    LEGEND_PANEL_POSITION,
+)
 
 _VERSION_RE = re.compile(r"-v\d+$", re.IGNORECASE)
 _SLUG_RE = re.compile(r"[^a-z0-9]+", re.IGNORECASE)
@@ -50,9 +55,11 @@ LEGEND_BLOCK_TO_CONTENT_PAD_PT: float = (
 
 LEGEND_TIGHT_LAYOUT_PAD_MULT: float = 1.08
 
-# If set, overrides tight_layout h_pad/w_pad (multiples of font size).
 TIGHT_LAYOUT_H_PAD_MULT: float | None = None
 TIGHT_LAYOUT_W_PAD_MULT: float | None = None
+
+_LEGEND_PANEL_SPEC_ATTR: str = "_irl_legend_panel_spec"
+_LEGEND_PANEL_TL_PATCHED_ATTR: str = "_irl_legend_panel_tl_patched"
 
 
 def slugify(tag: object) -> str:
@@ -97,7 +104,6 @@ def legend_ncol(n_items: int, *, max_cols: int = 20) -> int:
 
 
 def add_row_label(ax, label: str, *, fontsize: int | None = None) -> None:
-    # Point-based offset keeps the label-to-axes gap consistent across subplot sizes.
     fs = int(LEGEND_FONTSIZE) if fontsize is None else int(fontsize)
     fig = getattr(ax, "figure", None)
     if fig is None:
@@ -121,86 +127,433 @@ def add_row_label(ax, label: str, *, fontsize: int | None = None) -> None:
     )
 
 
-def _median_subplot_row_gap(fig) -> float | None:
-    axes = [ax for ax in getattr(fig, "axes", []) if getattr(ax, "get_visible", lambda: True)()]
-    if len(axes) < 2:
+def _as_panel_position(x: object) -> str:
+    s = str(x).strip().lower()
+    if s in {"first", "left"}:
+        return "first"
+    return "last"
+
+
+def _sanitize_legend_rows(
+    rows: Iterable[tuple[list[object], list[str], int]],
+) -> list[tuple[list[object], list[str], int]]:
+    out: list[tuple[list[object], list[str], int]] = []
+    for handles, labels, ncol in rows:
+        hs = list(handles) if isinstance(handles, (list, tuple)) else []
+        ls = list(labels) if isinstance(labels, (list, tuple)) else []
+
+        n = int(min(len(hs), len(ls)))
+        if n <= 0:
+            continue
+
+        hs = hs[:n]
+        ls = [str(s) for s in ls[:n]]
+
+        try:
+            cap = int(ncol)
+        except Exception:
+            cap = n
+        cap = int(max(1, min(n, cap)))
+
+        out.append((hs, ls, cap))
+    return out
+
+
+def _axis_pos_key(ax: object) -> tuple[float, float, float, float] | None:
+    try:
+        pos = getattr(ax, "get_position")()
+    except Exception:
         return None
 
-    unique: dict[tuple[float, float, float, float], object] = {}
-    for ax in axes:
+    try:
+        x0, y0, x1, y1 = float(pos.x0), float(pos.y0), float(pos.x1), float(pos.y1)
+    except Exception:
+        return None
+
+    if not all(map(math.isfinite, (x0, y0, x1, y1))):
+        return None
+    if (x1 - x0) <= 1e-4 or (y1 - y0) <= 1e-4:
+        return None
+
+    return (round(x0, 4), round(y0, 4), round(x1, 4), round(y1, 4))
+
+
+def _grid_cols(fig, *, exclude: set[object]) -> int:
+    unique: dict[tuple[float, float, float, float], tuple[float, float, float, float]] = {}
+
+    for ax in getattr(fig, "axes", []):
+        if ax in exclude:
+            continue
         try:
-            pos = ax.get_position()
+            if not bool(getattr(ax, "get_visible")()):
+                continue
         except Exception:
             continue
-        x0, y0, x1, y1 = float(pos.x0), float(pos.y0), float(pos.x1), float(pos.y1)
-        if not all(map(math.isfinite, (x0, y0, x1, y1))):
+        try:
+            if hasattr(ax, "get_in_layout") and not bool(getattr(ax, "get_in_layout")()):
+                continue
+        except Exception:
             continue
-        if (x1 - x0) <= 1e-4 or (y1 - y0) <= 1e-4:
+
+        key = _axis_pos_key(ax)
+        if key is None:
             continue
-        key = (round(x0, 4), round(y0, 4), round(x1, 4), round(y1, 4))
-        unique[key] = pos
+        unique[key] = key
 
-    if len(unique) < 2:
-        return None
+    if not unique:
+        return 1
 
-    rows: dict[float, dict[str, float]] = {}
-    for pos in unique.values():
-        y_key = round(float(pos.y1), 3)
-        rec = rows.get(y_key)
-        if rec is None:
-            rows[y_key] = {"top": float(pos.y1), "bottom": float(pos.y0)}
-        else:
-            rec["top"] = max(float(rec["top"]), float(pos.y1))
-            rec["bottom"] = min(float(rec["bottom"]), float(pos.y0))
+    by_row: dict[float, int] = {}
+    for (_x0, _y0, _x1, y1) in unique.values():
+        row_key = round(float(y1), 3)
+        by_row[row_key] = int(by_row.get(row_key, 0)) + 1
 
-    if len(rows) < 2:
-        return None
-
-    row_list = sorted(rows.values(), key=lambda r: float(r["top"]), reverse=True)
-    gaps: list[float] = []
-    for upper, lower in zip(row_list[:-1], row_list[1:]):
-        g = float(upper["bottom"]) - float(lower["top"])
-        if math.isfinite(g) and g > 0.0:
-            gaps.append(g)
-
-    if not gaps:
-        return None
-    return float(median(gaps))
+    return int(max(1, max(by_row.values(), default=1)))
 
 
-def _split_legend_group_even_rows(
-    handles: list[object],
-    labels: list[str],
+def _fig_size_pt(fig) -> tuple[float, float]:
+    try:
+        w = 72.0 * float(fig.get_figwidth())
+    except Exception:
+        w = 0.0
+    try:
+        h = 72.0 * float(fig.get_figheight())
+    except Exception:
+        h = 0.0
+    return float(w), float(h)
+
+
+def _legend_rect_and_pos(
+    fig,
+    rect_in: object,
     *,
-    max_cols: int,
-) -> list[tuple[list[object], list[str], int]]:
-    n = int(len(handles))
-    if n <= 0 or n != int(len(labels)):
-        return [(handles, labels, int(max(1, max_cols)))]
+    grid_cols: int,
+    position: str,
+    fontsize: int,
+) -> tuple[list[float], list[float]]:
+    if rect_in is None:
+        left, bottom, right, top = 0.0, 0.0, 1.0, 1.0
+    else:
+        try:
+            left, bottom, right, top = rect_in  # type: ignore[misc]
+        except Exception:
+            left, bottom, right, top = 0.0, 0.0, 1.0, 1.0
 
-    cols = int(max(1, int(max_cols)))
-    if cols <= 1 or n <= cols:
-        return [(handles, labels, int(min(cols, n)))]
+    try:
+        l = float(left)
+        b = float(bottom)
+        r = float(right)
+        t = float(top)
+    except Exception:
+        l, b, r, t = 0.0, 0.0, 1.0, 1.0
 
-    n_rows = int(math.ceil(float(n) / float(cols)))
-    n_rows = int(max(1, n_rows))
+    l = float(max(0.0, min(1.0, l)))
+    b = float(max(0.0, min(1.0, b)))
+    r = float(max(0.0, min(1.0, r)))
+    t = float(max(0.0, min(1.0, t)))
 
-    base = n // n_rows
-    rem = n % n_rows
+    if r <= l:
+        l, r = 0.0, 1.0
+    if t <= b:
+        b, t = 0.0, 1.0
 
-    out: list[tuple[list[object], list[str], int]] = []
-    i = 0
-    for r in range(n_rows):
-        k = int(base + (1 if r < rem else 0))
-        if k <= 0:
+    fig_w_pt, _fig_h_pt = _fig_size_pt(fig)
+
+    gap_pt = float(LEGEND_PANEL_GROUP_HSPACE) * float(max(1, int(fontsize)))
+    gap_fig = float(gap_pt / fig_w_pt) if fig_w_pt > 0.0 else 0.0
+    gap_fig = float(max(0.0, min(0.1, gap_fig)))
+
+    cols = int(max(1, int(grid_cols)))
+    width = float(r - l)
+    height = float(t - b)
+
+    denom = float(cols + 1)
+    slot_w = (float(width) - float(gap_fig)) / denom if denom > 0.0 else 0.0
+    if not (math.isfinite(slot_w) and slot_w > 0.0):
+        slot_w = float(width) / float(max(2, cols + 1))
+
+    reserve = float(slot_w) + float(gap_fig)
+    if reserve >= 0.95 * float(width):
+        reserve = 0.95 * float(width)
+        slot_w = float(max(0.0, float(reserve) - float(gap_fig)))
+
+    if _as_panel_position(position) == "first":
+        rect_out = [float(l + reserve), float(b), float(r), float(t)]
+        leg_pos = [float(l), float(b), float(slot_w), float(height)]
+    else:
+        rect_out = [float(l), float(b), float(r - reserve), float(t)]
+        leg_pos = [float(r - slot_w), float(b), float(slot_w), float(height)]
+
+    rect_out[0] = float(max(0.0, min(1.0, rect_out[0])))
+    rect_out[2] = float(max(0.0, min(1.0, rect_out[2])))
+    if rect_out[2] <= rect_out[0] + 1e-6:
+        rect_out[0] = float(l)
+        rect_out[2] = float(r)
+
+    leg_pos[0] = float(max(0.0, min(1.0, leg_pos[0])))
+    leg_pos[2] = float(max(0.0, min(1.0 - leg_pos[0], leg_pos[2])))
+
+    return rect_out, leg_pos
+
+
+def _adopt_supylabel(fig, *, exclude: set[object]) -> None:
+    sup = getattr(fig, "_supylabel", None)
+    if sup is None:
+        return
+
+    try:
+        txt = str(getattr(sup, "get_text")()).strip()
+    except Exception:
+        txt = ""
+    if not txt:
+        return
+
+    for ax in getattr(fig, "axes", []):
+        if ax in exclude:
             continue
-        out.append((handles[i : i + k], labels[i : i + k], k))
-        i += k
+        try:
+            if not bool(getattr(ax, "get_visible")()):
+                continue
+        except Exception:
+            continue
+        try:
+            if hasattr(ax, "get_in_layout") and not bool(getattr(ax, "get_in_layout")()):
+                continue
+        except Exception:
+            continue
+        try:
+            pos = str(getattr(ax, "yaxis").get_label_position()).strip().lower()
+        except Exception:
+            pos = "left"
+        if pos == "right":
+            continue
+        try:
+            ax.set_ylabel(txt)
+        except Exception:
+            continue
 
-    if i < n:
-        out.append((handles[i:], labels[i:], int(n - i)))
+    try:
+        sup.set_text("")
+        sup.set_visible(False)
+    except Exception:
+        return
 
-    return out
+
+def render_legend_panel(
+    ax,
+    rows: Iterable[tuple[list[object], list[str], int]],
+    *,
+    fontsize: int | None = None,
+    legend_kwargs: dict[str, object] | None = None,
+) -> None:
+    keep_visible = True
+    keep_in_layout = True
+    try:
+        keep_visible = bool(ax.get_visible())
+    except Exception:
+        keep_visible = True
+    try:
+        keep_in_layout = bool(ax.get_in_layout()) if hasattr(ax, "get_in_layout") else True
+    except Exception:
+        keep_in_layout = True
+
+    try:
+        ax.cla()
+    except Exception:
+        return
+
+    try:
+        ax.set_visible(bool(keep_visible))
+    except Exception:
+        pass
+    if hasattr(ax, "set_in_layout"):
+        try:
+            ax.set_in_layout(bool(keep_in_layout))
+        except Exception:
+            pass
+
+    try:
+        ax.set_axis_off()
+        ax.set_xticks([])
+        ax.set_yticks([])
+        ax.set_xlabel("")
+        ax.set_ylabel("")
+        ax.yaxis.set_label_position("right")
+    except Exception:
+        pass
+
+    rows_s = _sanitize_legend_rows(rows)
+    if not rows_s:
+        return
+
+    fs = int(LEGEND_FONTSIZE) if fontsize is None else int(fontsize)
+
+    base_leg_kwargs: dict[str, object] = {
+        "frameon": False,
+        "fontsize": fs,
+        "handlelength": 2.2,
+        "columnspacing": float(LEGEND_PANEL_ENTRY_HSPACE),
+        "labelspacing": float(LEGEND_PANEL_ENTRY_VSPACE),
+        "handletextpad": 0.6,
+        "borderaxespad": 0.0,
+    }
+    if isinstance(legend_kwargs, dict):
+        for k, v in legend_kwargs.items():
+            if v is None:
+                continue
+            base_leg_kwargs[str(k)] = v
+
+    fig = getattr(ax, "figure", None)
+    if fig is None:
+        return
+
+    try:
+        ax_pos = ax.get_position()
+        ax_w = float(getattr(ax_pos, "width", 0.0))
+        ax_h = float(getattr(ax_pos, "height", 0.0))
+    except Exception:
+        ax_w = 0.0
+        ax_h = 0.0
+
+    fig_w_pt, fig_h_pt = _fig_size_pt(fig)
+    ax_w_pt = float(fig_w_pt) * float(ax_w) if ax_w > 0.0 else 0.0
+    ax_h_pt = float(fig_h_pt) * float(ax_h) if ax_h > 0.0 else 0.0
+
+    pad_pt = float(LEGEND_PANEL_GROUP_HSPACE) * float(max(1, fs))
+    pad_x = float(pad_pt / ax_w_pt) if ax_w_pt > 0.0 else 0.02
+    pad_y = float(pad_pt / ax_h_pt) if ax_h_pt > 0.0 else 0.02
+    pad_x = float(max(0.0, min(0.15, pad_x)))
+    pad_y = float(max(0.0, min(0.15, pad_y)))
+
+    group_gap = float(pad_y)
+    max_w = float(max(0.1, 1.0 - 2.0 * float(pad_x)))
+
+    try:
+        import matplotlib.legend as mlegend
+    except Exception:
+        return
+
+    def _legend_extent_frac(hs: list[object], ls: list[str], *, ncol: int) -> tuple[float, float]:
+        leg = mlegend.Legend(
+            ax,
+            hs,
+            ls,
+            loc="upper left",
+            bbox_to_anchor=(0.0, 1.0),
+            bbox_transform=ax.transAxes,
+            ncol=int(max(1, ncol)),
+            **base_leg_kwargs,
+        )
+        ax.add_artist(leg)
+
+        w_out = 0.0
+        h_out = 0.0
+        try:
+            fig.canvas.draw()
+            renderer = fig.canvas.get_renderer()
+            bb = leg.get_window_extent(renderer=renderer)
+            bb_fig = bb.transformed(fig.transFigure.inverted())
+            w_fig = float(getattr(bb_fig, "width", 0.0))
+            h_fig = float(getattr(bb_fig, "height", 0.0))
+
+            ax_pos_local = ax.get_position()
+            w_out = float(w_fig / float(ax_pos_local.width)) if float(ax_pos_local.width) > 0.0 else 0.0
+            h_out = float(h_fig / float(ax_pos_local.height)) if float(ax_pos_local.height) > 0.0 else 0.0
+        except Exception:
+            w_out = 0.0
+            h_out = 0.0
+        finally:
+            try:
+                leg.remove()
+            except Exception:
+                pass
+
+        return float(w_out), float(h_out)
+
+    y = float(1.0 - float(pad_y))
+
+    for hs, ls, max_cols in rows_s:
+        n = int(min(len(hs), len(ls)))
+        if n <= 0:
+            continue
+
+        cap = int(max(1, min(n, int(max_cols))))
+        chosen = 1
+        chosen_h = 0.0
+
+        for k in range(int(cap), 0, -1):
+            w, h = _legend_extent_frac(hs[:n], ls[:n], ncol=int(k))
+            if float(w) <= float(max_w) or int(k) == 1:
+                chosen = int(k)
+                chosen_h = float(h)
+                break
+
+        if chosen_h <= 0.0:
+            _w2, chosen_h = _legend_extent_frac(hs[:n], ls[:n], ncol=int(chosen))
+
+        leg = mlegend.Legend(
+            ax,
+            hs[:n],
+            ls[:n],
+            loc="upper left",
+            bbox_to_anchor=(float(pad_x), float(y)),
+            bbox_transform=ax.transAxes,
+            ncol=int(chosen),
+            **base_leg_kwargs,
+        )
+        ax.add_artist(leg)
+
+        y = float(y - float(chosen_h) - float(group_gap))
+
+
+def _try_reuse_hidden_subplot_axis(fig) -> object | None:
+    spec = getattr(fig, "_irl_wrapped_subplots", None)
+    if not isinstance(spec, dict):
+        return None
+
+    axes = spec.get("axes", None)
+    if not isinstance(axes, (list, tuple)) or not axes:
+        return None
+
+    try:
+        n_used = int(spec.get("n_used", 0))
+    except Exception:
+        return None
+
+    if n_used < 0 or n_used >= int(len(axes)):
+        return None
+
+    ax = axes[int(n_used)]
+    if ax is None:
+        return None
+
+    try:
+        ax.set_visible(True)
+    except Exception:
+        return None
+
+    try:
+        spec["n_used"] = int(n_used) + 1
+    except Exception:
+        pass
+
+    try:
+        if hasattr(ax, "set_in_layout"):
+            ax.set_in_layout(True)
+    except Exception:
+        pass
+
+    return ax
+
+
+def _create_external_legend_axis(fig):
+    ax = fig.add_axes([0.0, 0.0, 0.05, 0.05])
+    try:
+        if hasattr(ax, "set_in_layout"):
+            ax.set_in_layout(False)
+    except Exception:
+        pass
+    return ax
 
 
 def add_legend_rows_top(
@@ -216,389 +569,133 @@ def add_legend_rows_top(
     legend_col_spacing_em: float = LEGEND_COL_SPACING_EM,
     legend_group_col_gap_pt: float | None = None,
 ) -> float:
-    fs = int(LEGEND_FONTSIZE) if fontsize is None else int(fontsize)
+    _ = y_top
+    _ = row_gap
+    _ = pad_axes_pt
+    _ = max_row_usage_frac
+    _ = legend_col_spacing_em
+    _ = legend_group_col_gap_pt
 
-    try:
-        fig_h_pt = 72.0 * float(fig.get_figheight())
-    except Exception:
-        fig_h_pt = 0.0
-
-    try:
-        fig_w_pt = 72.0 * float(fig.get_figwidth())
-    except Exception:
-        fig_w_pt = 0.0
-
-    def _pt_to_fig_y(pt: float) -> float:
-        if not (fig_h_pt > 0.0):
-            return 0.0
-        return float(pt) / float(fig_h_pt)
-
-    def _pt_to_fig_x(pt: float) -> float:
-        if not (fig_w_pt > 0.0):
-            return 0.0
-        return float(pt) / float(fig_w_pt)
-
-    group_gap_pt = float(LEGEND_GROUP_GAP_PT)
-    try:
-        req_gap_pt = float(row_gap) * float(fig_h_pt)
-        if math.isfinite(req_gap_pt) and req_gap_pt > 0.0:
-            group_gap_pt = float(min(float(LEGEND_GROUP_GAP_PT), float(req_gap_pt)))
-    except Exception:
-        group_gap_pt = float(LEGEND_GROUP_GAP_PT)
-    group_gap_fig = _pt_to_fig_y(group_gap_pt)
-
-    block_pad_pt = float(LEGEND_BLOCK_TO_CONTENT_PAD_PT)
-    if pad_axes_pt is not None:
-        try:
-            req_pad = float(pad_axes_pt)
-            if math.isfinite(req_pad) and req_pad > 0.0:
-                block_pad_pt = float(max(block_pad_pt, req_pad))
-        except Exception:
-            pass
-    block_pad_fig = _pt_to_fig_y(block_pad_pt)
-
-    base_fs = float(fs)
-    try:
-        import matplotlib as mpl
-
-        base_fs = float(mpl.rcParams.get("font.size", base_fs))
-    except Exception:
-        base_fs = float(fs)
-
-    tight_pad_fig = _pt_to_fig_y(float(LEGEND_TIGHT_LAYOUT_PAD_MULT) * float(base_fs))
-
-    try:
-        max_frac = float(max_row_usage_frac)
-    except Exception:
-        max_frac = float(LEGEND_ROW_MAX_USAGE_FRAC)
-    if not math.isfinite(max_frac):
-        max_frac = float(LEGEND_ROW_MAX_USAGE_FRAC)
-    max_frac = float(max(0.05, min(1.0, max_frac)))
-
-    try:
-        col_spacing = float(legend_col_spacing_em)
-    except Exception:
-        col_spacing = float(LEGEND_COL_SPACING_EM)
-    if not math.isfinite(col_spacing) or col_spacing <= 0.0:
-        col_spacing = float(LEGEND_COL_SPACING_EM)
-
-    if legend_group_col_gap_pt is None:
-        col_gap_pt = float(LEGEND_GROUP_COL_GAP_PT)
-    else:
-        try:
-            col_gap_pt = float(legend_group_col_gap_pt)
-        except Exception:
-            col_gap_pt = float(LEGEND_GROUP_COL_GAP_PT)
-    if not math.isfinite(col_gap_pt) or col_gap_pt < 0.0:
-        col_gap_pt = float(LEGEND_GROUP_COL_GAP_PT)
-    col_gap_fig = _pt_to_fig_x(col_gap_pt)
-
-    base_leg_kwargs: dict[str, object] = {
-        "frameon": False,
-        "fontsize": fs,
-        "handlelength": 2.2,
-        "columnspacing": float(col_spacing),
-        "handletextpad": 0.6,
-    }
-    if isinstance(legend_kwargs, dict):
-        for k, v in legend_kwargs.items():
-            if v is None:
-                continue
-            base_leg_kwargs[str(k)] = v
-
-    groups: list[dict[str, object]] = []
-    for handles, labels, ncol in rows:
-        hs = list(handles) if isinstance(handles, (list, tuple)) else []
-        ls = list(labels) if isinstance(labels, (list, tuple)) else []
-
-        n = int(min(int(len(hs)), int(len(ls))))
-        if n <= 0:
-            continue
-
-        hs = hs[:n]
-        ls = [str(s) for s in ls[:n]]
-
-        try:
-            cap = int(ncol)
-        except Exception:
-            cap = n
-        cap = int(max(1, min(int(n), int(cap))))
-
-        groups.append({"handles": hs, "labels": ls, "max_cols": cap})
-
-    if not groups:
+    rows_s = _sanitize_legend_rows(rows)
+    if not rows_s:
         return 1.0
 
-    def _legend_size(
-        hs: list[object],
-        ls: list[str],
-        *,
-        ncol: int,
-    ) -> tuple[float, float]:
-        if not hs or not ls:
-            return 0.0, 0.0
+    pos = _as_panel_position(LEGEND_PANEL_POSITION)
+    fs = int(LEGEND_FONTSIZE) if fontsize is None else int(fontsize)
 
-        n = int(min(int(len(hs)), int(len(ls))))
-        if n <= 0:
-            return 0.0, 0.0
+    spec_prev = getattr(fig, _LEGEND_PANEL_SPEC_ATTR, None)
+    ax_prev = spec_prev.get("ax") if isinstance(spec_prev, dict) else None
 
-        leg = fig.legend(
-            handles=hs[:n],
-            labels=ls[:n],
-            loc="upper left",
-            bbox_to_anchor=(0.0, float(y_top)),
-            ncol=int(max(1, ncol)),
-            **base_leg_kwargs,
-        )
+    ax_leg = None
+    external = False
 
-        w = 0.0
-        h = 0.0
+    if ax_prev is not None:
         try:
-            fig.canvas.draw()
-            renderer = fig.canvas.get_renderer()
-            bb = leg.get_window_extent(renderer=renderer)
-            bb_fig = bb.transformed(fig.transFigure.inverted())
-            w = float(getattr(bb_fig, "width", 0.0))
-            h = float(getattr(bb_fig, "height", 0.0))
+            if getattr(ax_prev, "figure", None) is fig:
+                ax_leg = ax_prev
+                external = bool(spec_prev.get("external", False)) if isinstance(spec_prev, dict) else False
         except Exception:
-            w = 0.0
-            h = 0.0
+            ax_leg = None
 
-        try:
-            leg.remove()
-        except Exception:
+    if ax_leg is None and pos == "last":
+        ax_reuse = _try_reuse_hidden_subplot_axis(fig)
+        if ax_reuse is not None:
+            ax_leg = ax_reuse
+            external = False
+
+    if ax_leg is None:
+        ax_leg = _create_external_legend_axis(fig)
+        external = True
+
+    setattr(
+        fig,
+        _LEGEND_PANEL_SPEC_ATTR,
+        {
+            "ax": ax_leg,
+            "external": bool(external),
+            "position": str(pos),
+            "rows": rows_s,
+            "fontsize": int(fs),
+            "legend_kwargs": legend_kwargs if isinstance(legend_kwargs, dict) else None,
+        },
+    )
+
+    try:
+        render_legend_panel(ax_leg, rows_s, fontsize=int(fs), legend_kwargs=legend_kwargs)
+    except Exception:
+        pass
+
+    if bool(getattr(fig, _LEGEND_PANEL_TL_PATCHED_ATTR, False)):
+        return 1.0
+
+    orig_tight_layout = fig.tight_layout
+
+    def _tight_layout_with_legend(*args, **kwargs):  # type: ignore[no-untyped-def]
+        spec = getattr(fig, _LEGEND_PANEL_SPEC_ATTR, None)
+        if not isinstance(spec, dict):
+            return orig_tight_layout(*args, **dict(kwargs))
+
+        ax = spec.get("ax", None)
+        if ax is None:
+            return orig_tight_layout(*args, **dict(kwargs))
+
+        rows_local = spec.get("rows", [])
+        fs_local = int(spec.get("fontsize", int(LEGEND_FONTSIZE)))
+        legend_kwargs_local = spec.get("legend_kwargs", None)
+        external_local = bool(spec.get("external", False))
+        pos_local = _as_panel_position(spec.get("position", "last"))
+
+        if external_local:
+            out1 = orig_tight_layout(*args, **dict(kwargs))
+
+            grid_cols = _grid_cols(fig, exclude={ax})
+            rect_in = kwargs.get("rect", None)
+            rect2, ax_pos = _legend_rect_and_pos(
+                fig,
+                rect_in,
+                grid_cols=int(grid_cols),
+                position=str(pos_local),
+                fontsize=int(fs_local),
+            )
+
+            if pos_local == "first":
+                _adopt_supylabel(fig, exclude={ax})
+
+            kwargs2 = dict(kwargs)
+            kwargs2["rect"] = rect2
+            out2 = orig_tight_layout(*args, **kwargs2)
+
             try:
-                fig.legends.remove(leg)
+                ax.set_position(ax_pos)
             except Exception:
                 pass
 
-        return float(w), float(h)
+            try:
+                render_legend_panel(
+                    ax,
+                    rows_local,
+                    fontsize=int(fs_local),
+                    legend_kwargs=legend_kwargs_local if isinstance(legend_kwargs_local, dict) else None,
+                )
+            except Exception:
+                pass
 
-    def _pack_group(
-        hs: list[object],
-        ls: list[str],
-        *,
-        max_cols: int,
-    ) -> list[dict[str, object]]:
-        n = int(min(int(len(hs)), int(len(ls))))
-        if n <= 0:
-            return []
+            return out2
 
-        cap = int(max_cols)
-        cap = int(max(1, min(int(n), int(cap))))
+        out = orig_tight_layout(*args, **dict(kwargs))
 
-        out: list[dict[str, object]] = []
-        i = 0
-        while i < n:
-            rem = int(n - i)
-            k_max = int(min(int(cap), int(rem)))
-
-            chosen_k = 1
-            chosen_w = 0.0
-            chosen_h = 0.0
-
-            for k in range(int(k_max), 0, -1):
-                w, h = _legend_size(hs[i : i + k], ls[i : i + k], ncol=int(k))
-                if not (math.isfinite(w) and w > 0.0 and math.isfinite(h) and h > 0.0):
-                    continue
-
-                if float(w) <= float(max_frac) or int(k) == 1:
-                    chosen_k = int(k)
-                    chosen_w = float(w)
-                    chosen_h = float(h)
-                    if float(w) <= float(max_frac):
-                        break
-
-            if chosen_k <= 0:
-                chosen_k = 1
-
-            out.append(
-                {
-                    "handles": hs[i : i + chosen_k],
-                    "labels": ls[i : i + chosen_k],
-                    "width": float(chosen_w),
-                    "height": float(chosen_h),
-                }
+        try:
+            render_legend_panel(
+                ax,
+                rows_local,
+                fontsize=int(fs_local),
+                legend_kwargs=legend_kwargs_local if isinstance(legend_kwargs_local, dict) else None,
             )
-            i += int(chosen_k)
+        except Exception:
+            pass
 
         return out
 
-    blocks: list[dict[str, object]] = []
-    for g in groups:
-        hs = list(g.get("handles", []))
-        ls = list(g.get("labels", []))
-        try:
-            cap = int(g.get("max_cols", len(hs)))
-        except Exception:
-            cap = len(hs)
-
-        row_specs = _pack_group(hs, ls, max_cols=int(cap))
-        if not row_specs:
-            continue
-
-        widths = [float(r.get("width", 0.0)) for r in row_specs]
-        heights = [float(r.get("height", 0.0)) for r in row_specs]
-
-        w = float(max(widths)) if widths else 0.0
-        h_sum = float(sum(heights))
-        h = float(h_sum + float(group_gap_fig) * float(max(0, len(row_specs) - 1)))
-
-        blocks.append({"rows": row_specs, "width": float(w), "height": float(h)})
-
-    if not blocks:
-        return 1.0
-
-    lines: list[dict[str, object]] = []
-    cur: list[dict[str, object]] = []
-    cur_w = 0.0
-    cur_h = 0.0
-
-    for blk in blocks:
-        try:
-            bw = float(blk.get("width", 0.0))
-        except Exception:
-            bw = 0.0
-        try:
-            bh = float(blk.get("height", 0.0))
-        except Exception:
-            bh = 0.0
-
-        if not cur:
-            cur = [blk]
-            cur_w = float(bw)
-            cur_h = float(bh)
-            continue
-
-        proposed = float(cur_w) + float(col_gap_fig) + float(bw)
-        if float(proposed) <= float(max_frac) or not (cur_w > 0.0):
-            cur.append(blk)
-            cur_w = float(proposed)
-            cur_h = float(max(float(cur_h), float(bh)))
-            continue
-
-        lines.append({"blocks": cur, "width": float(cur_w), "height": float(cur_h)})
-        cur = [blk]
-        cur_w = float(bw)
-        cur_h = float(bh)
-
-    if cur:
-        lines.append({"blocks": cur, "width": float(cur_w), "height": float(cur_h)})
-
-    if not lines:
-        return 1.0
-
-    legends: list[object] = []
-    y = float(y_top)
-
-    for line in lines:
-        b_list = line.get("blocks", [])
-        if not isinstance(b_list, list) or not b_list:
-            continue
-
-        try:
-            line_w = float(line.get("width", 0.0))
-        except Exception:
-            line_w = 0.0
-        try:
-            line_h = float(line.get("height", 0.0))
-        except Exception:
-            line_h = 0.0
-
-        if not math.isfinite(line_w) or line_w <= 0.0:
-            line_w = 0.0
-        if not math.isfinite(line_h) or line_h < 0.0:
-            line_h = 0.0
-
-        start_x = float(0.5 - 0.5 * float(line_w))
-        if not math.isfinite(start_x):
-            start_x = 0.0
-        start_x = float(max(0.0, start_x))
-
-        x = float(start_x)
-
-        for blk in b_list:
-            try:
-                bw = float(blk.get("width", 0.0))
-            except Exception:
-                bw = 0.0
-
-            row_specs = blk.get("rows", [])
-            if not isinstance(row_specs, list) or not row_specs:
-                x = float(x) + float(bw) + float(col_gap_fig)
-                continue
-
-            y_row = float(y)
-
-            for ri, r in enumerate(row_specs):
-                hs = r.get("handles", [])
-                ls = r.get("labels", [])
-                if not isinstance(hs, list) or not isinstance(ls, list) or not hs or not ls:
-                    continue
-
-                k = int(min(int(len(hs)), int(len(ls))))
-                if k <= 0:
-                    continue
-
-                try:
-                    row_w = float(r.get("width", 0.0))
-                except Exception:
-                    row_w = 0.0
-                try:
-                    row_h = float(r.get("height", 0.0))
-                except Exception:
-                    row_h = 0.0
-
-                row_x = float(x)
-                if (
-                    math.isfinite(bw)
-                    and math.isfinite(row_w)
-                    and float(bw) > 0.0
-                    and float(row_w) > 0.0
-                    and float(bw) > float(row_w)
-                ):
-                    row_x = float(x) + 0.5 * float(float(bw) - float(row_w))
-
-                leg = fig.legend(
-                    handles=hs[:k],
-                    labels=[str(s) for s in ls[:k]],
-                    loc="upper left",
-                    bbox_to_anchor=(float(row_x), float(y_row)),
-                    ncol=int(k),
-                    **base_leg_kwargs,
-                )
-                legends.append(leg)
-
-                if ri < int(len(row_specs) - 1):
-                    y_row = float(y_row) - float(row_h) - float(group_gap_fig)
-                else:
-                    y_row = float(y_row) - float(row_h)
-
-            x = float(x) + float(bw) + float(col_gap_fig)
-
-        y = float(y) - float(line_h) - float(group_gap_fig)
-
-    if not legends:
-        return 1.0
-
-    min_y0 = None
-    try:
-        fig.canvas.draw()
-        renderer = fig.canvas.get_renderer()
-
-        bottoms: list[float] = []
-        for leg in legends:
-            bb = leg.get_window_extent(renderer=renderer)
-            bb_fig = bb.transformed(fig.transFigure.inverted())
-            bottoms.append(float(getattr(bb_fig, "y0", 0.0)))
-
-        if bottoms:
-            min_y0 = float(min(bottoms))
-    except Exception:
-        min_y0 = None
-
-    if min_y0 is None:
-        min_y0 = float(y)
-
-    top = float(min_y0) - float(block_pad_fig) + float(tight_pad_fig)
-    return float(max(0.0, min(1.0, top)))
+    fig.tight_layout = _tight_layout_with_legend  # type: ignore[assignment]
+    setattr(fig, _LEGEND_PANEL_TL_PATCHED_ATTR, True)
+    return 1.0
