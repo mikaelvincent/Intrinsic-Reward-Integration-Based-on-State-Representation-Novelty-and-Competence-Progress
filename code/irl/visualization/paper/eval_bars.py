@@ -7,7 +7,7 @@ from typing import Sequence
 import numpy as np
 import pandas as pd
 
-from irl.visualization.labels import add_legend_rows_top, add_row_label, env_label, method_label, slugify
+from irl.visualization.labels import add_legend_rows_top, add_row_label, env_label, legend_ncol, method_label, slugify
 from irl.visualization.palette import color_for_method as _color_for_method
 from irl.visualization.plot_utils import apply_rcparams_paper, save_fig_atomic, sort_env_ids as _sort_env_ids
 from irl.visualization.style import DPI, MULTIPANEL_FIG_WIDTH, apply_grid, legend_order as _legend_order
@@ -147,6 +147,9 @@ def plot_eval_bars_by_env(
     if not want:
         return []
 
+    suffix_slug = slugify(filename_suffix)
+    legend_only = suffix_slug == "all-methods"
+
     ablation_mode = _is_ablation_suffix(filename_suffix)
 
     env_recs: list[tuple[str, dict[str, pd.Series], list[str]]] = []
@@ -268,15 +271,33 @@ def plot_eval_bars_by_env(
         ax.set_ylabel("Mean return")
         ax.set_xticks(x)
 
-        tick_labels = [method_label(mk) for mk in methods_present]
-        ax.set_xticklabels(tick_labels, rotation=20, ha="right")
+        if legend_only:
+            ax.tick_params(axis="x", which="both", bottom=False, labelbottom=False)
+        else:
+            tick_labels = [method_label(mk) for mk in methods_present]
+            ax.set_xticklabels(tick_labels, rotation=20, ha="right")
 
         apply_grid(ax)
         add_row_label(ax, env_label(env_id))
 
-    axes[0, -1].set_xlabel("Method")
+    if not legend_only:
+        axes[0, -1].set_xlabel("Method")
 
     rows = []
+
+    if legend_only:
+        methods_union: set[str] = set()
+        for _env_id, _rows_by_method, methods_present in env_recs:
+            methods_union |= set(methods_present)
+
+        legend_methods = _legend_order(sorted(methods_union))
+        method_handles = [
+            plt.Line2D([], [], color=_color_for_method(m), lw=3.0 if m == "glpe" else 2.0) for m in legend_methods
+        ]
+        method_labels = [method_label(m) for m in legend_methods]
+        if method_handles:
+            rows.append((method_handles, method_labels, legend_ncol(len(method_handles))))
+
     if has_solved_threshold:
         rows.append(([solved_threshold_legend_handle(plt)], [SOLVED_THRESHOLD_LABEL], 1))
 
@@ -285,7 +306,7 @@ def plot_eval_bars_by_env(
         top = add_legend_rows_top(fig, rows)
     fig.tight_layout(rect=[0.0, 0.0, 1.0, float(top)])
 
-    out = plots_root / f"eval-bars-{slugify(filename_suffix)}.png"
+    out = plots_root / f"eval-bars-{suffix_slug}.png"
     save_fig_atomic(fig, out)
     plt.close(fig)
     return [out]
