@@ -147,12 +147,8 @@ def _center_wrapped_subplot_rows(fig) -> None:
         if not (math.isfinite(dx) and abs(dx) > 1e-8):
             continue
 
-        to_shift: set[object] = set()
-        for ax in group_vis:
-            for sib in _twinned_siblings(ax):
-                to_shift.add(sib)
-
-        _shift_axes_x(to_shift, float(dx))
+        # Axes.set_position propagates to twinned siblings; shifting both doubles the offset.
+        _shift_axes_x(set(group_vis), float(dx))
 
 
 def _apply_subplot_spacing(fig) -> None:
