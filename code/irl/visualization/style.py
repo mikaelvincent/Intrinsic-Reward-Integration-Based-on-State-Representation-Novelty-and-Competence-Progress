@@ -28,6 +28,11 @@ AXIS_LABEL_FONTSIZE: int = 12.0
 LEGEND_FONTSIZE: int = 12.0
 LEGEND_FRAMEALPHA: float = 0.0
 
+LEGEND_PANEL_POSITION: str = "last"
+LEGEND_PANEL_ENTRY_VSPACE: float = 0.35
+LEGEND_PANEL_ENTRY_HSPACE: float = 1.2
+LEGEND_PANEL_GROUP_HSPACE: float = 0.75
+
 # Optional layout overrides. None keeps Matplotlib defaults.
 TIGHT_LAYOUT_W_PAD_MULT: float | None = None
 TIGHT_LAYOUT_H_PAD_MULT: float | None = None
