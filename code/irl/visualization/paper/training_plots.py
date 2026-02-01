@@ -189,7 +189,6 @@ def _plot_multienv_reward_decomp(
         squeeze=False,
     )
     fig.supylabel("Extrinsic reward")
-    fig.text(0.995, 0.5, "Intrinsic reward", va="center", ha="right", rotation=-90)
 
     methods_union: set[str] = set()
 
@@ -253,6 +252,7 @@ def _plot_multienv_reward_decomp(
             )
 
         apply_grid(ax_ext)
+        ax_int.set_ylabel("Intrinsic reward")
 
         if i == ncols - 1:
             ax_ext.set_xlabel("Training steps")
