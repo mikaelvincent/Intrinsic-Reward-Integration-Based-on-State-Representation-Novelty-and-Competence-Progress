@@ -219,6 +219,48 @@ def _disable_matplotlib_titles() -> None:
     setattr(matplotlib.axes.Axes, "_irl_titles_disabled", True)
 
 
+def _patch_matplotlib_supylabel() -> None:
+    import matplotlib.figure
+
+    if bool(getattr(matplotlib.figure.Figure, "_irl_supylabel_patched", False)):
+        return
+
+    orig_supylabel = matplotlib.figure.Figure.supylabel
+
+    def _supylabel(self, t, *args, **kwargs):  # type: ignore[no-untyped-def]
+        axes = [ax for ax in getattr(self, "axes", []) if _is_ax_visible(ax)]
+        left_axes: list[object] = []
+        for ax in axes:
+            try:
+                pos = str(getattr(ax, "yaxis").get_label_position()).strip().lower()
+            except Exception:
+                pos = "left"
+            if pos == "right":
+                continue
+            left_axes.append(ax)
+
+        if int(len(left_axes)) > 1:
+            label = str(t) if t is not None else ""
+            if label:
+                for ax in left_axes:
+                    try:
+                        ax.set_ylabel(label)
+                    except Exception:
+                        continue
+
+            txt = orig_supylabel(self, "", *args, **kwargs)
+            try:
+                txt.set_visible(False)
+            except Exception:
+                pass
+            return txt
+
+        return orig_supylabel(self, t, *args, **kwargs)
+
+    matplotlib.figure.Figure.supylabel = _supylabel  # type: ignore[assignment]
+    setattr(matplotlib.figure.Figure, "_irl_supylabel_patched", True)
+
+
 def _patch_matplotlib_tight_layout_defaults() -> None:
     import matplotlib.figure
 
@@ -436,6 +478,7 @@ def apply_rcparams_paper():
 
     plt.rcParams.update(_STYLE_RCPARAMS)
     _disable_matplotlib_titles()
+    _patch_matplotlib_supylabel()
     _patch_matplotlib_tight_layout_defaults()
     _patch_matplotlib_figsize_height_scale()
     return plt
