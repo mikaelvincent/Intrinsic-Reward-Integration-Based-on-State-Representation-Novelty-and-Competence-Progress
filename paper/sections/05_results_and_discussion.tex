@@ -10,10 +10,12 @@ Figure~\ref{fig:eval_curves_baselines} shows evaluation learning curves versus e
 Across tasks, GLPE (no gate) tracks the best-performing baseline closely and exhibits stable between-seed behavior.
 The gated variant differs mainly in sparse-reward or exploration-sensitive regimes: it is most beneficial on \textsc{MountainCar-v0} and can be overly conservative on \textsc{Humanoid-v5}, where variance across seeds dominates.
 
+\input{figures/eval_curves_baselines}
+
 Table~\ref{tab:final_returns_glpe_vs_baselines} summarizes final-checkpoint return, while Table~\ref{tab:auc_steps_glpe_vs_baselines} reports step-AUC, which rewards both early learning and sustained performance over the fixed interaction budget.
 
-On \textsc{MountainCar-v0}, GLPE attains the best final return and the strongest step-AUC among all compared methods, and both GLPE variants solve in all seeds (Tables~\ref{tab:final_returns_glpe_vs_baselines} and~\ref{tab:solved_threshold_stats}).
-On \textsc{BipedalWalker-v3}, GLPE (no gate) improves rapidly and remains competitive by step-AUC, but many runs plateau just below the solved threshold of $300$, making solved counts sensitive to small differences near the cutoff (Table~\ref{tab:solved_threshold_stats}).
+On \textsc{MountainCar-v0}, GLPE attains the best final return and the strongest step-AUC among all compared methods, and both GLPE variants solve in all seeds under the solved-threshold criterion (Figure~\ref{fig:steps_to_threshold_baselines}, 100\% threshold).
+On \textsc{BipedalWalker-v3}, GLPE (no gate) improves rapidly and remains competitive by step-AUC, but many runs plateau just below the solved threshold of $300$, making thresholded success counts sensitive to small differences near the cutoff (Figure~\ref{fig:steps_to_threshold_baselines}, 100\% threshold).
 On the MuJoCo locomotion tasks, where extrinsic reward is comparatively dense, the two GLPE variants behave similarly and remain within a modest gap of the strongest intrinsic baseline under both summaries (Tables~\ref{tab:final_returns_glpe_vs_baselines} and~\ref{tab:auc_steps_glpe_vs_baselines}).
 \textsc{Humanoid-v5} exhibits particularly high variance, with wide confidence intervals across all methods, so method rankings are not stable under bootstrap uncertainty.
 
@@ -21,7 +23,6 @@ Some diagnostic plots additionally include auxiliary GLPE variants (e.g., cached
 
 \input{tables/final_returns_glpe_vs_baselines}
 \input{tables/auc_steps_glpe_vs_baselines}
-\input{tables/solved_threshold_stats}
 
 \subsection{Ablations: impact vs.\ learning progress}
 
@@ -36,14 +37,14 @@ These patterns motivate the combined score as a robust default when the ``right'
 \subsection{Thresholded reliability and steps-to-threshold}
 
 Learning curves can obscure whether a method is merely slower or is failing entirely.
-We therefore evaluate reliability at fixed return thresholds using steps-to-threshold statistics (Figure~\ref{fig:steps_to_threshold_baselines}) and success counts (Tables~\ref{tab:half_solved_threshold_stats} and~\ref{tab:solved_threshold_stats}).
+We therefore evaluate reliability at fixed return thresholds using steps-to-threshold statistics that report both time-to-threshold and reach rates across seeds (Figure~\ref{fig:steps_to_threshold_baselines}).
 We use task-specific solved thresholds (\textsc{MountainCar-v0}: $-110$, \textsc{BipedalWalker-v3}: $300$, \textsc{Ant-v5}: $5{,}000$, \textsc{HalfCheetah-v5}: $6{,}000$, \textsc{Humanoid-v5}: $3{,}000$) and additionally report results at 25\% and 50\% of these levels.
 
-At the 50\% threshold, GLPE (no gate) reaches the target in all seeds on four tasks and in 4/5 seeds on \textsc{Humanoid-v5}, matching or exceeding the best baseline reach count on every environment (Table~\ref{tab:half_solved_threshold_stats}).
-The gap between 50\% and 100\% success is concentrated in high-variance or near-cutoff regimes: \textsc{Humanoid-v5} and \textsc{BipedalWalker-v3} show many runs that reach competent behavior without consistently clearing the full solved cutoff (Table~\ref{tab:solved_threshold_stats}).
-On \textsc{MountainCar-v0}, by contrast, both GLPE variants reach the solved threshold quickly and reliably, and several baselines exhibit occasional failures that remain near the minimum return (Figure~\ref{fig:eval_curves_baselines}).
+\input{figures/steps_to_threshold_baselines}
 
-\input{tables/half_solved_threshold_stats}
+At the 50\% threshold, GLPE (no gate) reaches the target in all seeds on four tasks and in 4/5 seeds on \textsc{Humanoid-v5}, matching or exceeding the best baseline reach count on every environment (Figure~\ref{fig:steps_to_threshold_baselines}, 50\% threshold).
+The gap between 50\% and 100\% success is concentrated in high-variance or near-cutoff regimes: \textsc{Humanoid-v5} and \textsc{BipedalWalker-v3} show many runs that reach competent behavior without consistently clearing the full solved cutoff (Figure~\ref{fig:steps_to_threshold_baselines}, 100\% threshold).
+On \textsc{MountainCar-v0}, by contrast, both GLPE variants reach the solved threshold quickly and reliably, and several baselines exhibit occasional failures that remain near the minimum return (Figure~\ref{fig:eval_curves_baselines}).
 
 \subsection{Intrinsic shaping dynamics and gating behavior}
 
