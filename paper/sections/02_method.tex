@@ -6,12 +6,12 @@
 We consider an episodic Markov decision process with observations $o_t \in \mathcal{O}$, actions $a_t \in \mathcal{A}$, and extrinsic rewards $r_t^{\mathrm{ext}}$.
 A stochastic policy $\pi_\theta(a\mid o)$ is trained to maximize the expected discounted return.
 
-We augment the extrinsic reward with an intrinsic term computed from single-step transitions,
+We augment the extrinsic reward with an intrinsic term computed per transition,
 \begin{equation}
     r_t = r_t^{\mathrm{ext}} + \eta_t\,\mathrm{clip}\big(r_t^{\mathrm{int}}, -r_{\max}, r_{\max}\big),
 \end{equation}
 where $\eta_t\ge 0$ controls the intrinsic--extrinsic trade-off and $r_{\max}>0$ bounds the magnitude of intrinsic shaping.
-For environment-terminal transitions we set $r_t^{\mathrm{int}}=0$ so that intrinsic shaping does not depend on episode termination.
+For environment-terminal transitions, we set $r_t^{\mathrm{int}}=0$ so that intrinsic shaping does not depend on episode termination.
 
 We propose two intrinsic reward formulations within a shared framework: GLPE and GLPE (no gate).
 Both combine feature-space impact with region-local learning progress.
@@ -21,7 +21,7 @@ We refer to these two variants collectively as the \emph{GLPE family}.
 \subsection{Latent dynamics model}
 
 Let $\phi_\omega$ be a learned encoder producing a $d$-dimensional feature vector $z_t = \phi_\omega(o_t)$.
-We train (i) a forward dynamics predictor $f_\psi$ that maps $(z_t,a_t)$ to a prediction of the next feature vector, and (ii) an inverse dynamics predictor $g_\xi$ that maps $(z_t,z_{t+1})$ to an action distribution.
+We train (i) a forward dynamics predictor $f_\psi$ that maps $(z_t,a_t)$ to a prediction of $z_{t+1}$, and (ii) an inverse dynamics predictor $g_\xi$ that maps $(z_t,z_{t+1})$ to an action distribution.
 The inverse model is instantiated as a classifier for discrete actions and as a Gaussian likelihood model for continuous actions.
 
 Training uses the combined loss
@@ -45,13 +45,12 @@ To localize learning progress, we maintain an online partition of the latent spa
 Each region corresponds to a leaf in a binary space-partitioning tree over the $d$-dimensional feature space.
 
 Given an embedding $z_t$, we assign it to a leaf region $\rho_t$ by routing it through the tree.
-Each leaf maintains a visit counter and, when it can still be split, a buffer of stored points used to choose a split dimension and threshold.
-When the number of assigned points to a leaf reaches a capacity $C$ and the leaf depth is below a maximum depth $D_{\max}$, the leaf is split.
-We choose the highest-variance coordinate that yields a non-degenerate split and split at the median value along that coordinate.
-When a leaf splits, one child retains the parent region identifier (and its accumulated statistics), while the other child is assigned a new identifier whose statistics are created on its first visit.
-This procedure yields a growing set of regions that adaptively refines frequently visited parts of feature space.
+Each leaf maintains a visit counter and, while it remains splittable, a buffer of points used to choose a split dimension and threshold.
+Once a leaf has accumulated $C$ assigned points and its depth is below $D_{\max}$, we split it by selecting the highest-variance coordinate that yields a non-degenerate partition and cutting at the median along that coordinate.
+One child retains the parent region identifier (and its accumulated statistics); the other child receives a new identifier whose statistics are initialized on its first visit.
+This procedure yields a growing set of regions that progressively refines frequently visited parts of feature space.
 
-Region statistics (defined next) are updated using the region assignment based on the current embedding $z_t$.
+We update region statistics (defined next) using the region assignment for the current embedding $z_t$.
 The capacity $C$ and maximum depth $D_{\max}$ control the granularity of the partition.
 
 \subsection{Region-local learning progress}
@@ -65,7 +64,7 @@ When a transition at time $t$ is assigned to region $\rho_t=r$, we update
 with $0<\beta_{\mathrm{long}}<1$, $0<\beta_{\mathrm{short}}<1$, and typically $\beta_{\mathrm{long}}>\beta_{\mathrm{short}}$ so that $\mu^{\mathrm{long}}_r$ changes more slowly.
 On the first visit to a newly created region identifier, we initialize $\mu^{\mathrm{long}}_r=\mu^{\mathrm{short}}_r=e_t$.
 
-We define the current learning progress of a region $r$ as the positive part of the discrepancy between the long and short averages,
+We define the current learning progress of a region $r$ as the positive part of the difference between the long and short averages,
 \begin{equation}
     \mathrm{LP}(r) = \max\big(0,\,\mu^{\mathrm{long}}_{r}-\mu^{\mathrm{short}}_{r}\big).
 \end{equation}
@@ -83,7 +82,7 @@ Unlike count-based novelty, impact depends on the learned representation and can
 \subsection{Component-wise scale stabilization}
 
 The magnitudes of $I_t$ and $\mathrm{LP}_t$ can vary across tasks and throughout training.
-To obtain a stable scale without task-specific tuning, we maintain running root-mean-square (RMS) normalizers for each component using an exponential average of squared values.
+To obtain a stable scale without task-specific tuning, we maintain running root-mean-square (RMS) normalizers for each component via an exponential moving average of squared values.
 For a scalar signal $x_t$ we update an accumulator
 \begin{equation}
     v \leftarrow \beta_{\mathrm{rms}}\,v + (1-\beta_{\mathrm{rms}})\,x_t^2,
@@ -129,14 +128,14 @@ We define a learning-progress threshold $\tau_{\mathrm{LP}} = \kappa\,\mathrm{LP
     s_r = \frac{\mu^{\mathrm{short}}_r}{e_{\mathrm{med}} + \varepsilon},
 \end{equation}
 where $\varepsilon>0$ avoids division by zero.
-A region $r$ is considered \emph{unproductive} at a visit if it simultaneously has low learning progress and high normalized error,
+A region $r$ is considered \emph{unproductive} on a visit if it simultaneously has low learning progress and high normalized error,
 \begin{equation}
     \mathrm{LP}(r) < \tau_{\mathrm{LP}} \quad\text{and}\quad s_r > \tau_s,
 \end{equation}
 with $\tau_s>0$ a fixed threshold.
 
 \paragraph{Gate dynamics.}
-Each region maintains a gate value $g_r\in\{0,1\}$ and two small counters tracking consecutive unproductive and productive visits.
+Each region maintains a gate value $g_r\in\{0,1\}$ and two counters tracking consecutive unproductive and productive visits.
 Gating is only activated once at least $R_{\min}$ regions have been visited so that the medians are meaningful.
 When gating is active, the update uses persistence and hysteresis: (i) if $g_r=1$ and the region is unproductive for $K$ consecutive visits, set $g_r\leftarrow 0$; and (ii) if $g_r=0$, re-enable the region when $\mathrm{LP}(r) > h\,\tau_{\mathrm{LP}}$ for two consecutive visits, where $h>1$ is a hysteresis multiplier.
 If gating is inactive (fewer than $R_{\min}$ visited regions), we set $g_r\leftarrow 1$ and reset the counters.
