@@ -4,7 +4,7 @@
 \caption{
 Sample efficiency and reliability at fixed return thresholds.
 For each task, bars report the median number of environment steps required to first reach a target return level, computed by linearly interpolating between evaluation checkpoints.
-The three x-axis positions correspond to 25\%, 50\%, and 100\% of that task's solved threshold (the dashed line in Figure~\ref{fig:eval_curves_baselines}); for tasks with negative solved thresholds (MountainCar), the intermediate thresholds are defined by the same monotonic mapping used in the plotting code.
+The three x-axis positions correspond to 25\%, 50\%, and 100\% of each task's solved threshold (the dashed line in Figure~\ref{fig:eval_curves_baselines}); intermediate thresholds are computed using the same monotonic mapping across tasks.
 Error bars show the standard deviation of steps among seeds that reached the threshold.
 Bar opacity encodes the fraction of seeds that reached the threshold by the end of training, and the number above each bar is the count of successful seeds.
 Lower bars and higher opacities indicate faster and more reliable learning.
