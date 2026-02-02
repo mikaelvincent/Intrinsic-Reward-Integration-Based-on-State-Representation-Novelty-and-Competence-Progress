@@ -12,14 +12,14 @@ The gated variant differs mainly in sparse-reward or exploration-sensitive regim
 
 \input{figures/eval_curves_baselines}
 
-Table~\ref{tab:final_returns_glpe_vs_baselines} summarizes final-checkpoint return, while Table~\ref{tab:auc_steps_glpe_vs_baselines} reports step-AUC, which rewards both early learning and sustained performance over the fixed interaction budget.
+Final-checkpoint performance is reflected by the rightmost points in Figure~\ref{fig:eval_curves_baselines}.
+Table~\ref{tab:auc_steps_glpe_vs_baselines} reports step-AUC, which rewards both early learning and sustained performance over the fixed interaction budget.
 
-\input{tables/final_returns_glpe_vs_baselines}
 \input{tables/auc_steps_glpe_vs_baselines}
 
 On \textsc{MountainCar-v0}, GLPE attains the best final return and the strongest step-AUC among all compared methods, and both GLPE variants solve in all seeds under the solved-threshold criterion (Figure~\ref{fig:steps_to_threshold_baselines}, 100\% threshold).
 On \textsc{BipedalWalker-v3}, GLPE (no gate) improves rapidly and remains competitive by step-AUC, but many runs plateau just below the solved threshold of $300$, making thresholded success counts sensitive to small differences near the cutoff (Figure~\ref{fig:steps_to_threshold_baselines}, 100\% threshold).
-On the MuJoCo locomotion tasks, where extrinsic reward is comparatively dense, the two GLPE variants behave similarly and remain within a modest gap of the strongest intrinsic baseline under both summaries (Tables~\ref{tab:final_returns_glpe_vs_baselines} and~\ref{tab:auc_steps_glpe_vs_baselines}).
+On the MuJoCo locomotion tasks, where extrinsic reward is comparatively dense, the two GLPE variants behave similarly and remain within a modest gap of the strongest intrinsic baseline under both the learning-curve view (Figure~\ref{fig:eval_curves_baselines}) and the step-AUC summary (Table~\ref{tab:auc_steps_glpe_vs_baselines}).
 \textsc{Humanoid-v5} exhibits particularly high variance, with wide confidence intervals across all methods, so method rankings are not stable under bootstrap uncertainty.
 
 Some diagnostic plots additionally include auxiliary GLPE variants (e.g., cached medians and single-component ablations) to isolate computational and signal contributions; we treat these as supporting analyses rather than primary baselines.
