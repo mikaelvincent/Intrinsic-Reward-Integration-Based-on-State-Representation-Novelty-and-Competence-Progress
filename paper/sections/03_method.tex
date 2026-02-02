@@ -166,5 +166,6 @@ and set $\eta_t=\eta\,w(p_t)$ in the augmented reward.
 When $p_{\mathrm{start}}$ and $p_{\mathrm{end}}$ are omitted, we hold $\eta_t=\eta$ fixed throughout training.
 
 The latent dynamics model parameters $(\omega,\psi,\xi)$ are updated using the same on-policy transitions that generate intrinsic rewards, while the region statistics, gates, and RMS normalizers are updated online during intrinsic computation.
+Figure~\ref{fig:algorithm_glpe} summarizes the intrinsic reward computation within one PPO update.
 
 \input{figures/algorithm_glpe}
