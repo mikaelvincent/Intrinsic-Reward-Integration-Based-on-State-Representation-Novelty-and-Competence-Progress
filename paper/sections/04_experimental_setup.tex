@@ -15,11 +15,11 @@ To match the total step budget exactly, the final update may use a smaller batch
 Table~\ref{tab:env_suite} summarizes the suite, interaction budgets, and parallelization settings.
 For each environment we evaluate every method using the same set of training seeds (Table~\ref{tab:env_suite}) and enable deterministic execution where supported.
 
+\input{tables/env_suite}
+
 \paragraph{Training budgets beyond the early-learning regime.}
 The total environment-step budgets in Table~\ref{tab:env_suite} are intentionally generous so that runs extend beyond the initial improvement phase.
 This provides sufficient budget to assess long-horizon stability of exploration behavior and intrinsic shaping, including late-training drift, regressions, or oscillations.
-
-\input{tables/env_suite}
 
 \subsection{Methods compared}
 \label{sec:experimental_setup:methods}
@@ -92,8 +92,8 @@ This ensures that summaries do not rely on extrapolation beyond the measured run
 Tables~\ref{tab:ppo_hparams} and~\ref{tab:glpe_hparams} list the PPO and GLPE hyperparameters used in all experiments.
 Unless specified in the tables, we use $\gamma=0.99$ and value-loss coefficient 0.5 for PPO.
 
+\input{tables/ppo_hparams}
+
 For methods that learn a latent dynamics model (ICM, RIDE, RIAC, and the GLPE family), the shared encoder produces 128-dimensional features and is implemented as a two-layer MLP (256 units per layer, ReLU) for these vector-observation tasks.
 Forward and inverse model losses are weighted equally.
 The model is trained with Adam at learning rate $3\times 10^{-4}$, and intrinsic-model gradient norms are clipped to 5.0.
-
-\input{tables/ppo_hparams}
