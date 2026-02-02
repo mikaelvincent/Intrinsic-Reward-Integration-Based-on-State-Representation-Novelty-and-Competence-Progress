@@ -49,10 +49,10 @@ On \textsc{MountainCar-v0}, by contrast, both GLPE variants reach the solved thr
 \subsection{Intrinsic shaping dynamics and gating behavior}
 
 The GLPE family is designed as a transient exploration aid rather than a permanent auxiliary objective.
-Figure~\ref{fig:glpe_intrinsic_taper} visualizes the cosine taper schedule used to anneal the applied intrinsic reward late in training, and Figure~\ref{fig:train_reward_decomp_baselines} decomposes the training-time rollout reward into extrinsic and intrinsic components.
-Compared to baselines that maintain a nonzero intrinsic term throughout training, GLPE and GLPE (no gate) smoothly reduce the intrinsic contribution while the underlying (untapered) intrinsic signal remains present.
+We therefore anneal the intrinsic coefficient $\eta_t$ using the cosine taper defined in Section~\ref{sec:method}, down-weighting intrinsic shaping late in training.
+Figure~\ref{fig:train_reward_decomp_baselines} decomposes the training-time rollout reward into extrinsic and intrinsic components.
+Compared to baselines that maintain a nonzero intrinsic term throughout training, GLPE and GLPE (no gate) reduce the applied intrinsic contribution as training progresses.
 
-\input{figures/glpe_intrinsic_taper}
 \input{figures/training_reward_decomposition_baselines}
 
 To make the gate's effect concrete, Figure~\ref{fig:glpe_gate_map} shows state-space projections of final-checkpoint trajectories with timesteps colored by whether intrinsic shaping is active.
