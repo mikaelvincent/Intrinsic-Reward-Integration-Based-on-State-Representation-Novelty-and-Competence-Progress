@@ -16,7 +16,7 @@ Environment & GLPE & GLPE (no gate) & Best baseline \\
 Step-AUC of deterministic evaluation return versus cumulative environment steps, computed by trapezoidal integration of the mean return--by--steps curve over evaluation checkpoints and dividing by the environment's step budget.
 This yields the average evaluation return over training, rewarding methods that learn quickly and sustain high returns.
 Intervals are obtained by integrating the per-checkpoint 95\% bootstrap confidence bands over seeds and should be interpreted as an approximate uncertainty range for the integrated metric.
-Higher is better; for \textsc{MountainCar-v0} this corresponds to less negative return.
+Higher is better.
 The best baseline is selected (per environment) among Vanilla PPO, ICM, RND, RIDE, and RIAC by highest mean step-AUC.
 }
 \label{tab:auc_steps_glpe_vs_baselines}
