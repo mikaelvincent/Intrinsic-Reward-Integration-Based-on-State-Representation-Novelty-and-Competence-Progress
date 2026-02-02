@@ -20,10 +20,5 @@ The resulting base score favors transitions that both change the representation 
 To mitigate unproductive curiosity, GLPE optionally applies a simple, region-specific \emph{gate} that suppresses intrinsic shaping in regions with persistently high prediction error but low learning progress, acting as a targeted guardrail rather than a global annealing heuristic.
 We also study \emph{GLPE (no gate)}, which uses the same base score without any gating and serves as a low-overhead default.
 
-Our contributions are threefold.
-First, we introduce the GLPE family, combining region-local learning progress with feature-space impact under lightweight online normalization.
-Second, we propose a simple gating mechanism that suppresses intrinsic shaping in high-error, low-progress regions and evaluate it relative to an ungated variant.
-Third, we provide an empirical study on a five-environment Gymnasium suite with a common PPO backbone, reporting both step-normalized and wall-clock-normalized comparisons, along with ablations and diagnostics of intrinsic dynamics and computational overhead.
-
-We evaluate on \textsc{MountainCar-v0}, \textsc{BipedalWalker-v3}, and three MuJoCo locomotion tasks (\textsc{Ant-v5}, \textsc{HalfCheetah-v5}, \textsc{Humanoid-v5}), comparing against widely used intrinsic-reward baselines including ICM \cite{pathak-2017}, RND \cite{burda-2018B}, RIDE \cite{raileanu-2020}, and RIAC \cite{baranes-2009}.
+We evaluate both GLPE variants on \textsc{MountainCar-v0}, \textsc{BipedalWalker-v3}, and three MuJoCo locomotion tasks (\textsc{Ant-v5}, \textsc{HalfCheetah-v5}, \textsc{Humanoid-v5}), comparing against widely used intrinsic-reward baselines including ICM \cite{pathak-2017}, RND \cite{burda-2018B}, RIDE \cite{raileanu-2020}, and RIAC \cite{baranes-2009}.
 Across this suite, GLPE (no gate) remains consistently competitive under both step and wall-clock views, while the gated variant is most helpful on the sparse-reward \textsc{MountainCar-v0} task, where it improves reliability and reduces instability relative to ungated shaping (Section~\ref{sec:results}).
