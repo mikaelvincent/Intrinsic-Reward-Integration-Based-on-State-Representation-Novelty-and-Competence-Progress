@@ -16,16 +16,16 @@ def scale_plot_height(height: float) -> float:
     return float(height) * float(s)
 
 
-FIG_WIDTH: float = 3.0
-MAX_PANELS_PER_ROW: int = 3
+FIG_WIDTH: float = 2.0
+MAX_PANELS_PER_ROW: int = 2
 MULTIPANEL_FIG_WIDTH: float = FIG_WIDTH * 5.0
 FIGSIZE: tuple[float, float] = (FIG_WIDTH, 4.0)
 DPI: int = 300
 
 GRID_ALPHA: float = 0.25
 
-AXIS_LABEL_FONTSIZE: int = 12.0
-LEGEND_FONTSIZE: int = 12.0
+AXIS_LABEL_FONTSIZE: int = 12.5
+LEGEND_FONTSIZE: int = 12.5
 LEGEND_FRAMEALPHA: float = 0.0
 
 LEGEND_PANEL_POSITION: str = "last"
@@ -36,7 +36,7 @@ LEGEND_PANEL_GROUP_HSPACE: float = 0.75
 # Optional layout overrides. None keeps Matplotlib defaults.
 TIGHT_LAYOUT_W_PAD_MULT: float | None = None
 TIGHT_LAYOUT_H_PAD_MULT: float | None = None
-SUBPLOT_WSPACE: float | None = 0.25
+SUBPLOT_WSPACE: float | None = 0.30
 SUBPLOT_HSPACE: float | None = 0.35
 
 PROPOSED_METHOD_KEY: str = "glpe"
