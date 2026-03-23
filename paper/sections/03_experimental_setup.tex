@@ -4,7 +4,7 @@
 \subsection{Tasks and environments}
 
 We evaluate exploration and control on five standard Gymnasium benchmarks spanning discrete and continuous control: \textsc{MountainCar-v0}, \textsc{BipedalWalker-v3}, and the MuJoCo locomotion tasks \textsc{Ant-v5}, \textsc{HalfCheetah-v5}, and \textsc{Humanoid-v5}.
-Across all experiments we use the default environment reward functions and termination conditions, with no domain randomization and no additional frame skipping.
+Across experiments, we use the default environment reward functions and termination conditions, with no domain randomization and no additional frame skipping.
 Training uses vectorized environments with $B$ parallel instances and rollouts of length $T$ per instance.
 We set $(B,T)$ so that the nominal on-policy batch size per PPO update is
 \begin{equation}
@@ -13,18 +13,18 @@ We set $(B,T)$ so that the nominal on-policy batch size per PPO update is
 transitions, varying $(B,T)$ only to accommodate environment throughput and episode structure.
 To match the total step budget exactly, the final update may use a smaller batch when fewer than $N$ steps remain.
 Table~\ref{tab:env_suite} summarizes the suite, interaction budgets, and parallelization settings.
-For each environment we evaluate every method using the same set of training seeds (Table~\ref{tab:env_suite}) and enable deterministic execution where supported.
+For each environment, we evaluate all methods using the same set of training seeds (Table~\ref{tab:env_suite}) and enable deterministic execution where supported.
+
+\input{tables/env_suite}
 
 \paragraph{Training budgets beyond the early-learning regime.}
 The total environment-step budgets in Table~\ref{tab:env_suite} are intentionally generous so that runs extend beyond the initial improvement phase.
-This provides headroom to assess long-horizon stability of exploration behavior and intrinsic shaping, including late-training drift, regressions, or oscillations.
-
-\input{tables/env_suite}
+This provides sufficient budget to assess long-horizon stability of exploration behavior and intrinsic shaping, including late-training drift, regressions, or oscillations.
 
 \subsection{Methods compared}
 \label{sec:experimental_setup:methods}
 
-We compare two proposed intrinsic-reward methods, GLPE and GLPE (no gate) (Section~\ref{sec:method}), against a set of commonly used exploration baselines: Vanilla PPO, ICM, RND, RIDE, and RIAC.
+We compare the two GLPE variants, GLPE and GLPE (no gate) (Section~\ref{sec:method}), against commonly used exploration baselines: Vanilla PPO, ICM, RND, RIDE, and RIAC.
 Vanilla PPO optimizes only the extrinsic environment reward.
 ICM uses forward-model prediction error in a learned feature space as an intrinsic signal, while RND uses the prediction error of a trainable predictor against a fixed random target network.
 RIDE rewards feature-space impact, down-weighted by episodic visitation counts obtained by discretizing features, and RIAC uses region-local learning progress computed from changes in forward-model error within an adaptive partition of feature space.
@@ -40,7 +40,7 @@ GLPE (no gate) uses the same base intrinsic score as GLPE but disables the gatin
 \subsection{RL backbone and training protocol}
 \label{sec:experimental_setup:training}
 
-All agents are trained with Proximal Policy Optimization (PPO; \cite{schulman-2017}) with generalized advantage estimation (GAE; \cite{schulman-2015}).
+All agents are trained with Proximal Policy Optimization (PPO; \cite{schulman-2017}) and generalized advantage estimation (GAE; \cite{schulman-2015}).
 The policy and value function are parameterized by separate multilayer perceptrons with two hidden layers of width 256 and ReLU activations.
 For continuous-control tasks, the policy outputs a diagonal Gaussian distribution.
 Actions are squashed to the environment bounds when those bounds are finite.
@@ -92,8 +92,8 @@ This ensures that summaries do not rely on extrapolation beyond the measured run
 Tables~\ref{tab:ppo_hparams} and~\ref{tab:glpe_hparams} list the PPO and GLPE hyperparameters used in all experiments.
 Unless specified in the tables, we use $\gamma=0.99$ and value-loss coefficient 0.5 for PPO.
 
+\input{tables/ppo_hparams}
+
 For methods that learn a latent dynamics model (ICM, RIDE, RIAC, and the GLPE family), the shared encoder produces 128-dimensional features and is implemented as a two-layer MLP (256 units per layer, ReLU) for these vector-observation tasks.
 Forward and inverse model losses are weighted equally.
 The model is trained with Adam at learning rate $3\times 10^{-4}$, and intrinsic-model gradient norms are clipped to 5.0.
-
-\input{tables/ppo_hparams}

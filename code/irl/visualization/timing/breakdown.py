@@ -12,7 +12,7 @@ from irl.visualization.data import read_scalars
 from irl.visualization.labels import add_legend_rows_top, add_row_label, env_label, legend_ncol, method_label
 from irl.visualization.palette import color_for_component as _color_for_component
 from irl.visualization.plot_utils import apply_rcparams_paper, save_fig_atomic, sort_env_ids as _sort_env_ids
-from irl.visualization.style import DPI, FIG_WIDTH, apply_grid, legend_order as _legend_order
+from irl.visualization.style import DPI, MULTIPANEL_FIG_WIDTH, apply_grid, legend_order as _legend_order
 
 _LABEL_TEXT_PAD_FRAC: float = 0.03
 _LABEL_BG_ALPHA: float = 0.25
@@ -240,23 +240,24 @@ def plot_timing_breakdown(
     if not per_env:
         return []
 
-    fig_w = float(FIG_WIDTH)
-    fig_h = max(3.4, 2.3 * float(len(per_env)))
+    fig_w = float(MULTIPANEL_FIG_WIDTH)
+    fig_h = max(3.4, 2.3 * 1.0)
 
     fig, axes = plt.subplots(
-        int(len(per_env)),
         1,
+        int(len(per_env)),
         figsize=(fig_w, float(fig_h)),
         dpi=int(DPI),
         sharex=False,
         squeeze=False,
     )
+    fig.supylabel("Seconds per update")
 
     legend_handles = [plt.Line2D([], [], color=col, lw=8.0) for _k, _lab, col in components]
     legend_labels = [str(lab) for _k, lab, _c in components]
 
     for i, rec in enumerate(per_env):
-        ax = axes[i, 0]
+        ax = axes[0, i]
         env_id = str(rec.get("env_id", ""))
         by_name = rec.get("by_name", {})
         methods_env = rec.get("methods_env", [])
@@ -311,7 +312,6 @@ def plot_timing_breakdown(
         )
 
         ax.set_xlim(-0.5, float(n_methods) - 0.5)
-        ax.set_ylabel("Seconds per update")
         ax.set_xticks(x)
         ax.set_xticklabels([method_label(m) for m in methods_env], rotation=25, ha="right")
         if i == len(per_env) - 1:

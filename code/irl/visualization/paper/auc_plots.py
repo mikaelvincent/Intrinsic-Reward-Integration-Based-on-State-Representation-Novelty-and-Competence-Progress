@@ -9,10 +9,17 @@ import numpy as np
 import pandas as pd
 
 from irl.visualization.data import read_scalars
-from irl.visualization.labels import add_row_label, env_label, method_label, slugify
+from irl.visualization.labels import (
+    add_legend_rows_top,
+    add_row_label,
+    env_label,
+    legend_ncol,
+    method_label,
+    slugify,
+)
 from irl.visualization.palette import color_for_method as _color_for_method
 from irl.visualization.plot_utils import apply_rcparams_paper, save_fig_atomic, sort_env_ids as _sort_env_ids
-from irl.visualization.style import DPI, FIG_WIDTH, apply_grid, legend_order as _legend_order
+from irl.visualization.style import DPI, MULTIPANEL_FIG_WIDTH, apply_grid, legend_order as _legend_order
 
 _LABEL_TEXT_PAD_FRAC: float = 0.03
 _LABEL_BG_ALPHA: float = 0.25
@@ -411,6 +418,9 @@ def plot_eval_auc_bars_by_env(
     if not want:
         return []
 
+    suffix_slug = slugify(filename_suffix)
+    legend_only = suffix_slug == "all-methods"
+
     ablation_mode = _is_ablation_suffix(filename_suffix)
 
     env_recs: list[tuple[str, list[dict[str, object]]]] = []
@@ -486,20 +496,20 @@ def plot_eval_auc_bars_by_env(
     plots_root = Path(plots_root)
     plots_root.mkdir(parents=True, exist_ok=True)
 
-    nrows = int(len(env_recs))
-    height = max(2.8, 2.2 * float(nrows))
+    ncols = int(len(env_recs))
+    height = max(2.8, 2.2 * 1.0)
 
     plt = apply_rcparams_paper()
     fig, axes = plt.subplots(
-        nrows,
         1,
-        figsize=(float(FIG_WIDTH), float(height)),
+        ncols,
+        figsize=(float(MULTIPANEL_FIG_WIDTH), float(height)),
         dpi=int(DPI),
         squeeze=False,
     )
 
     for i, (env_id, auc_rows) in enumerate(env_recs):
-        ax = axes[i, 0]
+        ax = axes[0, i]
 
         labels = [str(r["label"]) for r in auc_rows]
         vals = np.asarray([float(r["auc"]) for r in auc_rows], dtype=np.float64)
@@ -541,19 +551,41 @@ def plot_eval_auc_bars_by_env(
 
         ax.axhline(0.0, linewidth=1.0, alpha=0.6, color="black")
         ax.set_xticks(x)
-        ax.set_xticklabels(labels, rotation=20, ha="right")
+        if legend_only:
+            ax.tick_params(axis="x", which="both", bottom=False, labelbottom=False)
+        else:
+            ax.set_xticklabels(labels, rotation=20, ha="right")
         ax.set_ylabel("AUC (return × steps)")
         apply_grid(ax)
 
-        if i != nrows - 1:
-            ax.tick_params(axis="x", which="both", labelbottom=False)
-
         add_row_label(ax, env_label(env_id))
 
-    axes[-1, 0].set_xlabel("Method")
-    fig.tight_layout()
+    if not legend_only:
+        axes[0, -1].set_xlabel("Method")
 
-    out = Path(plots_root) / f"eval-auc-steps-{slugify(filename_suffix)}.png"
+    rows: list[tuple[list[object], list[str], int]] = []
+    if legend_only:
+        methods_union: set[str] = set()
+        for _env_id, auc_rows in env_recs:
+            for r in auc_rows:
+                mk = str(r.get("method_key", "")).strip().lower()
+                if mk:
+                    methods_union.add(mk)
+
+        legend_methods = _legend_order(sorted(methods_union))
+        handles = [plt.Line2D([], [], color=_color_for_method(m), lw=3.0 if m == "glpe" else 2.0) for m in legend_methods]
+        labels = [method_label(m) for m in legend_methods]
+        if handles:
+            rows.append((handles, labels, legend_ncol(len(handles))))
+
+    top = 1.0
+    if rows:
+        top = add_legend_rows_top(fig, rows)
+        fig.tight_layout(rect=[0.0, 0.0, 1.0, float(top)])
+    else:
+        fig.tight_layout()
+
+    out = Path(plots_root) / f"eval-auc-steps-{suffix_slug}.png"
     save_fig_atomic(fig, out)
     plt.close(fig)
     return [out]
@@ -606,6 +638,9 @@ def plot_eval_auc_time_bars_by_env(
     want = _legend_order(methods_to_plot)
     if not want:
         return []
+
+    suffix_slug = slugify(filename_suffix)
+    legend_only = suffix_slug == "all-methods"
 
     ablation_mode = _is_ablation_suffix(filename_suffix)
 
@@ -803,20 +838,23 @@ def plot_eval_auc_time_bars_by_env(
     if not env_recs:
         return []
 
-    nrows = int(len(env_recs))
-    height = max(2.8, 2.2 * float(nrows))
+    ncols = int(len(env_recs))
+    height = max(2.8, 2.2 * 1.0)
 
     plt = apply_rcparams_paper()
     fig, axes = plt.subplots(
-        nrows,
         1,
-        figsize=(float(FIG_WIDTH), float(height)),
+        ncols,
+        figsize=(float(MULTIPANEL_FIG_WIDTH), float(height)),
         dpi=int(DPI),
         squeeze=False,
     )
+    fig.supylabel("AUC (return × time)")
+    if not legend_only:
+        fig.supxlabel("Method")
 
     for i, (env_id, auc_rows) in enumerate(env_recs):
-        ax = axes[i, 0]
+        ax = axes[0, i]
 
         labels = [str(r["label"]) for r in auc_rows]
         vals = np.asarray([float(r["auc"]) for r in auc_rows], dtype=np.float64)
@@ -858,19 +896,37 @@ def plot_eval_auc_time_bars_by_env(
 
         ax.axhline(0.0, linewidth=1.0, alpha=0.6, color="black")
         ax.set_xticks(x)
-        ax.set_xticklabels(labels, rotation=20, ha="right")
-        ax.set_ylabel("AUC (return × time)")
+        if legend_only:
+            ax.tick_params(axis="x", which="both", bottom=False, labelbottom=False)
+        else:
+            ax.set_xticklabels(labels, rotation=20, ha="right")
         apply_grid(ax)
-
-        if i != nrows - 1:
-            ax.tick_params(axis="x", which="both", labelbottom=False)
 
         add_row_label(ax, env_label(env_id))
 
-    axes[-1, 0].set_xlabel("Method")
-    fig.tight_layout()
+    methods_legend: list[str] = []
+    seen: set[str] = set()
+    for _env_id, auc_rows in env_recs:
+        for r in auc_rows:
+            mk = str(r.get("method_key", "")).strip().lower()
+            if not mk or mk in seen:
+                continue
+            methods_legend.append(mk)
+            seen.add(mk)
 
-    out = Path(plots_root) / f"eval-auc-time-{slugify(filename_suffix)}.png"
+    legend_methods = _legend_order(methods_legend)
+    leg_handles = [
+        plt.Line2D([], [], color=_color_for_method(m), lw=3.0 if m == "glpe" else 2.0) for m in legend_methods
+    ]
+    leg_labels = [method_label(m) for m in legend_methods]
+
+    top = 1.0
+    if leg_handles:
+        top = add_legend_rows_top(fig, [(leg_handles, leg_labels, legend_ncol(len(leg_handles)))])
+
+    fig.tight_layout(rect=[0.0, 0.0, 1.0, float(top)])
+
+    out = Path(plots_root) / f"eval-auc-time-{suffix_slug}.png"
     save_fig_atomic(fig, out)
     plt.close(fig)
     return [out]

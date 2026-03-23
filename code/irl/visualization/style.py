@@ -1,15 +1,43 @@
 from __future__ import annotations
 
+import math
 from typing import Any, Sequence
 
-FIG_WIDTH: float = 7.0
+PLOT_HEIGHT_SCALE: float = 0.75
+
+
+def scale_plot_height(height: float) -> float:
+    try:
+        s = float(PLOT_HEIGHT_SCALE)
+    except Exception:
+        s = 1.0
+    if not (math.isfinite(s) and s > 0.0):
+        s = 1.0
+    return float(height) * float(s)
+
+
+FIG_WIDTH: float = 2.0
+MAX_PANELS_PER_ROW: int = 2
+MULTIPANEL_FIG_WIDTH: float = FIG_WIDTH * 5.0
 FIGSIZE: tuple[float, float] = (FIG_WIDTH, 4.0)
 DPI: int = 300
 
 GRID_ALPHA: float = 0.25
 
-LEGEND_FONTSIZE: int = 9
+AXIS_LABEL_FONTSIZE: int = 8
+LEGEND_FONTSIZE: int = 8
 LEGEND_FRAMEALPHA: float = 0.0
+
+LEGEND_PANEL_POSITION: str = "last"
+LEGEND_PANEL_ENTRY_VSPACE: float = 0.35
+LEGEND_PANEL_ENTRY_HSPACE: float = 1.2
+LEGEND_PANEL_GROUP_HSPACE: float = 0.75
+
+# Optional layout overrides. None keeps Matplotlib defaults.
+TIGHT_LAYOUT_W_PAD_MULT: float | None = None
+TIGHT_LAYOUT_H_PAD_MULT: float | None = None
+SUBPLOT_WSPACE: float | None = 0.35
+SUBPLOT_HSPACE: float | None = 0.75
 
 PROPOSED_METHOD_KEY: str = "glpe"
 _GLPE_NOGATE_KEY: str = "glpe_nogate"

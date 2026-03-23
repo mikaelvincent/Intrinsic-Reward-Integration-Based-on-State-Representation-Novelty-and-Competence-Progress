@@ -13,8 +13,8 @@ from irl.visualization.palette import color_for_method as _color_for_method
 from irl.visualization.plot_utils import apply_rcparams_paper, save_fig_atomic, sort_env_ids as _sort_env_ids
 from irl.visualization.style import (
     DPI,
-    FIG_WIDTH,
     LEGEND_FONTSIZE,
+    MULTIPANEL_FIG_WIDTH,
     alpha_for_method,
     apply_grid,
     draw_order,
@@ -177,22 +177,23 @@ def _plot_multienv_reward_decomp(
     if not envs:
         return None
 
-    nrows = int(len(envs))
-    height = max(2.8, 2.3 * float(nrows))
+    ncols = int(len(envs))
+    height = max(2.8, 2.3 * 1.0)
 
     plt = apply_rcparams_paper()
     fig, axes = plt.subplots(
-        nrows,
         1,
-        figsize=(float(FIG_WIDTH), float(height)),
+        ncols,
+        figsize=(float(MULTIPANEL_FIG_WIDTH), float(height)),
         dpi=int(DPI),
         squeeze=False,
     )
+    fig.supylabel("Extrinsic reward")
 
     methods_union: set[str] = set()
 
     for i, env_id in enumerate(envs):
-        ax_ext = axes[i, 0]
+        ax_ext = axes[0, i]
         ax_int = ax_ext.twinx()
 
         series = series_by_env.get(env_id, {})
@@ -251,14 +252,10 @@ def _plot_multienv_reward_decomp(
             )
 
         apply_grid(ax_ext)
-
-        if i == nrows - 1:
-            ax_ext.set_xlabel("Training steps")
-        else:
-            ax_ext.tick_params(axis="x", which="both", labelbottom=False)
-
-        ax_ext.set_ylabel("Extrinsic reward")
         ax_int.set_ylabel("Intrinsic reward")
+
+        if i == ncols - 1:
+            ax_ext.set_xlabel("Training steps")
 
         ax_int.tick_params(axis="y", which="major", length=4, width=1)
         ax_int.tick_params(axis="y", which="minor", length=2, width=1)

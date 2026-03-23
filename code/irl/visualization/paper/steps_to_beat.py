@@ -11,9 +11,9 @@ from irl.visualization.palette import color_for_method as _color_for_method
 from irl.visualization.plot_utils import apply_rcparams_paper, save_fig_atomic, sort_env_ids as _sort_env_ids
 from irl.visualization.style import (
     DPI,
-    FIG_WIDTH,
     LEGEND_FRAMEALPHA,
     LEGEND_FONTSIZE,
+    MULTIPANEL_FIG_WIDTH,
     apply_grid,
     legend_order as _legend_order,
 )
@@ -273,15 +273,16 @@ def plot_steps_to_beat_by_env(
     width = 0.8 / float(max(1, n_methods))
     x = np.arange(n_thr, dtype=np.float64)
 
-    fig_h = max(3.4, 2.3 * float(n_env))
+    fig_h = max(3.4, 2.3 * 1.0)
     fig, axes = plt.subplots(
-        n_env,
         1,
-        figsize=(float(FIG_WIDTH), float(fig_h)),
+        n_env,
+        figsize=(float(MULTIPANEL_FIG_WIDTH), float(fig_h)),
         dpi=int(DPI),
         sharex=True,
         squeeze=False,
     )
+    fig.supylabel("Training steps")
 
     def _panel(ax, *, env_id: str) -> None:
         import matplotlib.colors as mcolors
@@ -379,7 +380,6 @@ def plot_steps_to_beat_by_env(
             )
 
         ax.set_xlim(-0.5, float(n_thr) - 0.5)
-        ax.set_ylabel("Training steps")
         ax.set_xticks(x)
 
         apply_grid(ax)
@@ -440,13 +440,12 @@ def plot_steps_to_beat_by_env(
                 )
 
     for i, env_id in enumerate(envs):
-        ax = axes[i, 0]
+        ax = axes[0, i]
         _panel(ax, env_id=str(env_id))
-        if i != n_env - 1:
-            ax.tick_params(axis="x", which="both", labelbottom=False)
 
-    axes[-1, 0].set_xticklabels(list(thr_labels))
-    axes[-1, 0].set_xlabel("Solved threshold")
+    for ax in axes[0, :]:
+        ax.set_xticklabels(list(thr_labels))
+    axes[0, -1].set_xlabel("Solved threshold")
 
     handles = []
     labels = []

@@ -1,4 +1,4 @@
-\begin{figure*}[h]
+\begin{figure}[!hbp]
 \centering
 \includegraphics[width=\glpefigwidth,height=\glpefigheight,keepaspectratio]{figures/eval-curves-baselines-curves.png}
 \caption{
@@ -6,7 +6,7 @@ Evaluation learning curves for GLPE and baseline intrinsic-reward methods.
 Each panel plots mean \emph{extrinsic} return (higher is better) versus environment steps for one task.
 Solid lines show the mean across seeds at each checkpoint; markers show the corresponding per-seed means (20 evaluation episodes per checkpoint).
 The horizontal dashed line is a fixed ``solved'' return threshold used for summary analyses.
-These curves summarize both learning speed and cross-seed stability; in particular, tight clustering of per-seed markers indicates robust performance.
+These curves summarize learning speed and stability across seeds; tight clustering of per-seed markers indicates robust performance.
 }
 \label{fig:eval_curves_baselines}
-\end{figure*}
+\end{figure}

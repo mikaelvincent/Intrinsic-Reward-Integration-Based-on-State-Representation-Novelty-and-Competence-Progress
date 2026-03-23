@@ -1,4 +1,4 @@
-\begin{figure*}[h]
+\begin{figure}[!hbp]
 \centering
 \includegraphics[width=\glpefigwidth,height=\glpefigheight,keepaspectratio]{figures/timing-breakdown.png}
 \caption{
@@ -6,7 +6,6 @@ Timing breakdown per PPO update.
 Each panel shows a stacked decomposition of wall-clock seconds per training update for one task.
 For each method, we take the final quarter of recorded updates in each run, compute per-component medians, and then average these medians across runs (stacked bars).
 The black error bar on each stack is a 95\% confidence interval for the total seconds per update across runs.
-This view helps interpret wall-clock tradeoffs: larger intrinsic segments indicate greater exploration-computation overhead, while large environment-step segments indicate simulation-dominated regimes.
 }
 \label{fig:timing_breakdown}
-\end{figure*}
+\end{figure}

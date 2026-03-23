@@ -7,7 +7,7 @@ import numpy as np
 from irl.visualization.labels import add_legend_rows_top, add_row_label, env_label, legend_ncol, method_label
 from irl.visualization.palette import color_for_method as _color_for_method
 from irl.visualization.plot_utils import apply_rcparams_paper, save_fig_atomic, sort_env_ids as _sort_env_ids
-from irl.visualization.style import DPI, FIG_WIDTH, LEGEND_FONTSIZE, apply_grid
+from irl.visualization.style import DPI, LEGEND_FONTSIZE, MULTIPANEL_FIG_WIDTH, apply_grid
 from irl.visualization.trajectory_projection import trajectory_projection
 
 from .glpe_common import sample_idx, sample_seed, select_latest_glpe_trajectories
@@ -94,13 +94,13 @@ def plot_glpe_state_gate_map(
     plots_root.mkdir(parents=True, exist_ok=True)
     plt = apply_rcparams_paper()
 
-    nrows = int(len(env_recs))
-    height = max(2.8, 2.2 * float(nrows))
+    ncols = int(len(env_recs))
+    height = max(2.8, 2.2 * 1.0)
 
     fig, axes = plt.subplots(
-        nrows,
         1,
-        figsize=(float(FIG_WIDTH), float(height)),
+        ncols,
+        figsize=(float(MULTIPANEL_FIG_WIDTH), float(height)),
         dpi=int(DPI),
         squeeze=False,
     )
@@ -109,7 +109,7 @@ def plot_glpe_state_gate_map(
     gate_off_c = _color_for_method("glpe_nogate")
 
     for i, rec in enumerate(env_recs):
-        ax = axes[i, 0]
+        ax = axes[0, i]
         env_id = str(rec["env_id"])
         x = np.asarray(rec["x"], dtype=np.float64)
         y = np.asarray(rec["y"], dtype=np.float64)
