@@ -1,1 +1,13 @@
-#### 4.14.3 Schedule and Timeline
+### 4.14.3 Schedule and Timeline
+
+Schedule management followed milestone-based progression across proposal preparation, framework implementation, controlled experimentation, result analysis, and manuscript consolidation [18]. Timeline control prioritized completion of dependency-critical activities first, particularly implementation validation before full benchmark execution and final figure production [18].
+
+| Project Phase | Timeline Description |
+|---|---|
+| Proposal and planning | Initial scope definition, methodological framing, and evaluation criteria alignment were completed before full implementation cycles. |
+| Implementation and internal validation | Core modules for training, intrinsic reward computation, and evaluation were completed with iterative verification against configured protocols. |
+| Full experimentation | Multi-seed benchmark runs were executed under fixed per-environment budgets, followed by consolidation of intermediate artifacts. |
+| Analysis and manuscript integration | Quantitative outputs, plots, and interpretive discussion were synchronized with thesis chapter structure and citation requirements. |
+| Final packaging and defense preparation | Document refinement, formatting checks, and presentation-aligned material preparation were completed for final submission stages. |
+
+This structure reflected the dependency order of technical work products already represented in the repository, including source modules, benchmark outputs, and thesis-ready visual artifacts [18].
