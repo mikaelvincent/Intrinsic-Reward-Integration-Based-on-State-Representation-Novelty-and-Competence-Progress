@@ -1,7 +1,30 @@
 ### 4.8 Algorithmic Workflow
 
-Per PPO iteration, the workflow followed four stages. First, on-policy transitions were collected from vectorized environments until the target batch size was reached. Second, intrinsic quantities were computed per transition from latent dynamics outputs, region statistics, normalization states, and, for GLPE, gate states. Third, augmented rewards were formed, advantages and value targets were computed with GAE, and rollout data were prepared for optimization. Fourth, policy and value networks were updated through multi-epoch PPO minibatch optimization, while intrinsic-model parameters were updated once on the same on-policy batch [16-18].
+The intrinsic reward workflow followed the same sequence described in the source paper: latent encoding, forward-error computation, online region assignment, region-level EMA updates, impact and learning-progress normalization, weighted intrinsic-score construction, optional gating, and PPO optimization with augmented reward [18].
 
-Intrinsic and region-level states were updated online during transition processing. These included partition-tree assignments and splits, EMA statistics, RMS accumulators, gate counters, and gate states when applicable. The use of shared on-policy data for both policy optimization and intrinsic-model updates aligned training signals temporally and avoided off-policy replay dependencies [9], [13], [16], [18].
+Figure 4.1. High-level pseudocode for computing GLPE-family intrinsic rewards within one PPO update [18].
 
-A full pseudocode view of the intrinsic computation pipeline was provided in the source paper's algorithm figure, and the thesis narrative retained the same operational sequence to ensure implementation consistency with reported experiments [18].
+```text
+Input: on-policy transitions {(o_t, a_t, o_{t+1})}_{t=1}^N;
+       encoder phi_omega; forward model f_psi; inverse model g_xi;
+       region assignment rho; region EMAs; RMS accumulators; optional gate states
+Output: intrinsic rewards {r_t^int}_{t=1}^N; updated region statistics; updated intrinsic model parameters
+
+for t = 1 to N:
+    z_t <- phi_omega(o_t), z_{t+1} <- phi_omega(o_{t+1})
+    e_t <- (1/d) ||f_psi(z_t, a_t) - z_{t+1}||^2
+    r <- rho(z_t), including insertion and split when needed
+    update short and long EMAs for region r with e_t
+    LP_t <- max(0, mu_long(r) - mu_short(r))
+    I_t <- ||z_{t+1} - z_t||
+    normalize I_t and LP_t with running RMS
+    u_t <- alpha_impact * I_t_tilde + alpha_LP * LP_t_tilde
+    if gating enabled:
+        compute global medians across visited regions
+        update gate state with persistence and hysteresis
+        r_t^int <- g_r * u_t
+    else:
+        r_t^int <- u_t
+
+update intrinsic model parameters using supervised forward and inverse losses
+```
