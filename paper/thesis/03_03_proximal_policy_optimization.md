@@ -1,5 +1,5 @@
 ### 3.3 Proximal Policy Optimization
 
-Proximal Policy Optimization (PPO) is an on-policy actor-critic method that stabilizes policy updates through clipped probability-ratio objectives. The clipping mechanism constrains update size, which reduces destructive policy shifts while preserving sample-efficient gradient-based improvement [16].
+Proximal Policy Optimization (PPO) is an on-policy actor-critic method that stabilizes policy updates through clipped probability-ratio objectives. The clipping mechanism constrains update size, which reduces destructive policy shifts while preserving sample-efficient gradient-based improvement [19].
 
-The repository implementation used PPO as the common reinforcement learning backbone for all compared methods. Transition batches were collected with vectorized environments, advantages were computed from rollout data, and multiple shuffled minibatch epochs were used per update. Shared PPO settings across methods isolated the effect of intrinsic objective design rather than changes in the optimizer itself [16].
+The repository implementation used PPO as the common reinforcement learning backbone for all compared methods. Transition batches were collected with vectorized environments, advantages were computed from rollout data, and multiple shuffled minibatch epochs were used per update. Shared PPO settings across methods isolated the effect of intrinsic objective design rather than changes in the optimizer itself [19].
