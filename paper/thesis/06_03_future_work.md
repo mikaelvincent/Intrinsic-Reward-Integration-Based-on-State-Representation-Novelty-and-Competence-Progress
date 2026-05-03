@@ -1,6 +1,6 @@
 ### 6.3 Future Work
 
-Future work may extend GLPE to richer observation modalities, including image-based inputs, where latent representation quality and dynamics-model calibration can affect both impact and progress estimates [13][6].
+Future work may extend GLPE to richer observation modalities, including image-based inputs, where latent representation quality and dynamics-model calibration can affect both impact and progress estimates [6,13].
 
 Additional investigation is warranted for off-policy or hybrid training regimes to determine whether the same intrinsic formulation preserves its practical advantages when replay dynamics, target networks, and update frequencies differ from PPO [19].
 

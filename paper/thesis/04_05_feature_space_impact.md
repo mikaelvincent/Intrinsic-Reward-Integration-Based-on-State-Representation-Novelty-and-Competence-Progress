@@ -4,7 +4,7 @@ The second intrinsic component measured latent-state displacement between consec
 \[
 I_t=\lVert z_{t+1}-z_t\rVert_2.
 \]
-This term rewarded transitions that changed the learned representation, and therefore emphasized state changes that were significant in latent feature geometry rather than raw observation space [15], .
+This term rewarded transitions that changed the learned representation, and therefore emphasized state changes that were significant in latent feature geometry rather than raw observation space [15].
 
 To stabilize scale across environments and across training phases, component-wise RMS normalization was applied. For a scalar signal \(x_t\), a running accumulator was updated as
 \[
