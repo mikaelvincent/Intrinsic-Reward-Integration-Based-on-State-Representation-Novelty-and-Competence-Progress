@@ -1,1 +1,9 @@
 ### 1.1 Rationale of the Study
+
+Intrinsic reward design remains a central issue in deep reinforcement learning because exploration quality strongly affects convergence speed, final policy quality, and training stability in environments with limited external feedback [1], [2], [3]. Methods that reward novelty or prediction error can accelerate early discovery, but these signals may remain high in stochastic or difficult-to-model regions that are weakly connected to long-term task improvement [10], [11], [14].
+
+Prior work on learning progress suggested that exploration should prioritize regions where predictive capability is improving, which provides a principled way to differentiate informative uncertainty from persistent unpredictability [15], [4], [16]. However, applying this idea effectively in high-dimensional function approximation settings requires practical mechanisms for localization, scaling, and integration with modern policy optimization pipelines [9], [17], [18].
+
+The present study was motivated by this methodological gap. The GLPE family was designed to combine three requirements in a single framework: region-aware progress estimation, impact sensitivity in learned feature space, and optional suppression of unproductive intrinsic shaping through a lightweight gate. This design preserved compatibility with standard PPO training while targeting the recurring failure mode of unproductive curiosity [9], [14], [17], [18].
+
+The rationale also followed an evaluation need. Exploration methods are often compared mainly by return versus steps, which can obscure computational overhead and practical deployment tradeoffs. For this reason, the study assessed both environment-step performance and wall-clock performance under common runtime budgets, together with thresholded reliability metrics across multiple benchmark tasks [17], [18].
