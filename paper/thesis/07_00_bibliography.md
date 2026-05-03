@@ -35,3 +35,7 @@
 [17] John Schulman et al., High-Dimensional Continuous Control Using Generalized Advantage Estimation (2015). DOI: https://doi.org/10.48550/arXiv.1506.02438
 
 [18] Project source paper, Method and Experimental Setup sections in paper/pcsc (local repository source).
+
+[19] Mark Towers et al., Gymnasium (2023). Source: https://gymnasium.farama.org/
+
+[20] Emanuel Todorov, Tom Erez, and Yuval Tassa, MuJoCo: A Physics Engine for Model-Based Control (2012). DOI: https://doi.org/10.1109/IROS.2012.6386109
