@@ -1,6 +1,6 @@
 ### 4.7 Intrinsic Reward Scheduling
 
-Intrinsic shaping strength was scheduled over training using a cosine taper in the GLPE family. Let \(p\in[0, 3]\) denote training progress as fraction of total environment steps, and let \(p_{\mathrm{start}}<p_{\mathrm{end}}\) define taper interval. The schedule was
+Intrinsic shaping strength was scheduled over training using a cosine taper in the GLPE family. Let \(p\in[0,3]\) denote training progress as fraction of total environment steps, and let \(p_{\mathrm{start}}<p_{\mathrm{end}}\) define taper interval. The schedule was
 \[
 w(p)=
 \begin{cases}
@@ -11,4 +11,4 @@ w(p)=
 \]
 The effective intrinsic coefficient became \(\eta_t=\eta\,w(p_t)\), and remained constant at \(\eta_t=\eta\) when schedule bounds were not specified .
 
-This schedule treated intrinsic reward as a transient exploration aid, with stronger influence early in learning and reduced influence later when policy refinement depended more on extrinsic objective optimization. The same scheduling rule was used in GLPE and GLPE (no gate), preserving comparability between the two proposed variants [19], .
+This schedule treated intrinsic reward as a transient exploration aid, with stronger influence early in learning and reduced influence later when policy refinement depended more on extrinsic objective optimization. The same scheduling rule was used in GLPE and GLPE (no gate), preserving comparability between the two proposed variants [19].

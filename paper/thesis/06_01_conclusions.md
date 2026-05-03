@@ -1,6 +1,6 @@
 ### 6.1 Conclusions
 
-The study showed that intrinsic-reward shaping based on combined feature-space impact and region-local learning progress can improve exploration quality while preserving practical training stability across mixed task regimes [15][2]. Under the benchmark conditions used in this work, GLPE without gating behaved as the most consistent default variant, remaining competitive with strong intrinsic baselines on both step-normalized and wall-clock views in most tested environments [13][6].
+The study showed that intrinsic-reward shaping based on combined feature-space impact and region-local learning progress can improve exploration quality while preserving practical training stability across mixed task regimes [2,15]. Under the benchmark conditions used in this work, GLPE without gating behaved as the most consistent default variant, remaining competitive with strong intrinsic baselines on both step-normalized and wall-clock views in most tested environments [6,13].
 
 The strongest gains were observed in sparse-reward exploration, particularly on MountainCar-v0, where GLPE produced favorable threshold reliability and step-efficiency behavior relative to compared methods . On dense-reward locomotion tasks, outcomes indicated competitive but non-uniform superiority, which is consistent with the higher variance and task-dependent exploration demands of those settings .
 
@@ -8,4 +8,4 @@ The gated GLPE variant provided targeted suppression of intrinsic shaping in reg
 
 The cosine taper schedule for intrinsic-reward scaling supported the intended transition from exploration assistance to task-return optimization later in training . This schedule design helped maintain compatibility with PPO optimization dynamics while limiting late-stage dependence on intrinsic bonuses [19].
 
-The study remained bounded to vector-observation control benchmarks and an on-policy PPO backbone, and the applied intrinsic shaping was not policy-invariant in the formal reward-transformation sense [9][19]. Therefore, conclusions should be interpreted as evidence of practical effectiveness within the evaluated setup rather than universal guarantees across architectures, observation modalities, or training paradigms .
+The study remained bounded to vector-observation control benchmarks and an on-policy PPO backbone, and the applied intrinsic shaping was not policy-invariant in the formal reward-transformation sense [9,19]. Therefore, conclusions should be interpreted as evidence of practical effectiveness within the evaluated setup rather than universal guarantees across architectures, observation modalities, or training paradigms .
