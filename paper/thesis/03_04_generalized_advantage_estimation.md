@@ -1,5 +1,5 @@
 ### 3.4 Generalized Advantage Estimation
 
-Generalized Advantage Estimation (GAE) provides a bias-variance tradeoff for policy-gradient updates by exponentially weighting temporal-difference residuals. Compared with single-step estimators, GAE generally reduces variance in advantage estimates and improves optimization stability in continuous control settings {{CIT:18}}.
+Generalized Advantage Estimation (GAE) provides a controlled bias-variance trade-off for policy-gradient methods by exponentially weighting temporal-difference residuals [18]. Compared with high-variance short-horizon estimators, GAE generally yields smoother advantage targets and more stable policy updates in continuous-control settings [18].
 
-In the study pipeline, GAE was applied to rewards after intrinsic augmentation when intrinsic methods were enabled. Bootstrapping behavior for time-limit truncations followed the available final-observation signal in the logged rollouts, which maintained consistent target construction across methods {{CIT:18,19}}.
+In the training pipeline, GAE was computed on augmented rewards when intrinsic methods were enabled. Bootstrapping for truncated episodes followed rollout terminal-observation handling used by the PPO implementation, so advantage construction remained consistent across compared methods.

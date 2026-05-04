@@ -1,9 +1,11 @@
 ### 3.2 Reinforcement Learning Objective
 
-In policy-gradient reinforcement learning, parameters are updated to maximize expected return under the current policy distribution. The study used an augmented per-transition reward,
+Policy parameters were optimized using rewards augmented by an intrinsic shaping term. For each transition, the scalar reward was defined as
+
 \[
 r_t = r_t^{\mathrm{ext}} + \eta_t\,\mathrm{clip}(r_t^{\mathrm{int}},-r_{\max},r_{\max}),
 \]
-where \(r_t^{\mathrm{int}}\) denotes intrinsic reward, \(\eta_t\) controls intrinsic strength, and \(r_{\max}\) bounds intrinsic magnitude. This formulation is consistent with reward shaping practices that preserve task-directed optimization while improving exploration behavior {{CIT:9}}.
 
-For GLPE-family methods, intrinsic weight was optionally annealed by a cosine schedule over training progress, so intrinsic guidance was emphasized in earlier phases and reduced later when exploitation became more important. Intrinsic rewards were set to zero on environment-terminal transitions to avoid dependence on termination artifacts {{CIT:19}}.
+where η_t controlled the intrinsic contribution and r_max bounded intrinsic magnitude. This bounded augmentation preserved a stable reward scale while allowing intrinsic guidance during exploration. Intrinsic reward was set to zero on environment-terminal transitions to avoid dependence on episode termination effects.
+
+For GLPE-family methods, η_t could be annealed over training progress with a cosine taper, which emphasized exploration earlier in training and reduced intrinsic influence in later stages when policy exploitation became more important.
