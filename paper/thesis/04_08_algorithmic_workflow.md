@@ -1,8 +1,8 @@
 ### 4.8 Algorithmic Workflow
 
-The intrinsic reward workflow followed the same sequence described in the source paper: latent encoding, forward-error computation, online region assignment, region-level EMA updates, impact and learning-progress normalization, weighted intrinsic-score construction, optional gating, and PPO optimization with augmented reward .
+The intrinsic reward workflow followed the same sequence described in the source paper: latent encoding, forward-error computation, online region assignment, region-level EMA updates, impact and learning-progress normalization, weighted intrinsic-score construction, optional gating, and PPO optimization with augmented reward.
 
-Figure 4.1. High-level pseudocode for computing GLPE-family intrinsic rewards within one PPO update .
+Figure 4.1. High-level pseudocode for computing GLPE-family intrinsic rewards within one PPO update.
 
 ```text
 Input: on-policy transitions {(o_t, a_t, o_{t+1})}_{t=1}^N;

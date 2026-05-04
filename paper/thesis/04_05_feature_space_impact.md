@@ -14,4 +14,4 @@ then normalized using \(\mathrm{RMS}(x_t)=\sqrt{v+\varepsilon}\). This produced
 \[
 \widetilde{I}_t=\frac{I_t}{\mathrm{RMS}(I_t)}, \qquad \widetilde{\mathrm{LP}}_t=\frac{\mathrm{LP}_t}{\mathrm{RMS}(\mathrm{LP}_t)}.
 \]
-The normalized values reduced method sensitivity to absolute signal magnitude and supported a shared mixing rule for GLPE and GLPE (no gate) .
+The normalized values reduced method sensitivity to absolute signal magnitude and supported a shared mixing rule for GLPE and GLPE (no gate).

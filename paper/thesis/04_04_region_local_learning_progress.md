@@ -9,7 +9,7 @@ For each region \(r\), long-horizon and short-horizon exponential moving average
 \[
 \mu_r^{\mathrm{short}}\leftarrow\beta_{\mathrm{short}}\mu_r^{\mathrm{short}}+(1-\beta_{\mathrm{short}})e_t,
 \]
-for transitions assigned to region \(r\). Newly created region identifiers were initialized with \(\mu_r^{\mathrm{long}}=\mu_r^{\mathrm{short}}=e_t\) at first visit .
+for transitions assigned to region \(r\). Newly created region identifiers were initialized with \(\mu_r^{\mathrm{long}}=\mu_r^{\mathrm{short}}=e_t\) at first visit.
 
 Region-local learning progress was defined as
 \[

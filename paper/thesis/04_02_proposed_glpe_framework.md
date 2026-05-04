@@ -4,7 +4,7 @@ The proposed framework augmented extrinsic reward with a clipped intrinsic term,
 \[
 r_t = r_t^{\mathrm{ext}} + \eta_t\,\mathrm{clip}(r_t^{\mathrm{int}},-r_{\max},r_{\max}),
 \]
-where \(\eta_t\) controlled intrinsic strength over training and \(r_{\max}\) bounded intrinsic magnitude [19]. Intrinsic reward was set to zero on environment-terminal transitions so that shaping did not depend on episode termination .
+where \(\eta_t\) controlled intrinsic strength over training and \(r_{\max}\) bounded intrinsic magnitude [19]. Intrinsic reward was set to zero on environment-terminal transitions so that shaping did not depend on episode termination.
 
 A shared base score was computed from two components: feature-space impact and region-local learning progress. Let \(z_t=\phi_\omega(o_t)\) be the learned latent representation. The base intrinsic score was defined as
 \[
