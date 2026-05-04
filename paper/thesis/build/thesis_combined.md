@@ -10,25 +10,25 @@ Evaluation was conducted on MountainCar-v0, BipedalWalker-v3, Ant-v5, HalfCheeta
 
 ## 1. Introduction
 
-Deep reinforcement learning has shown strong performance in control tasks when extrinsic rewards are dense and informative, but training quality often declines when rewards are sparse, delayed, or weakly aligned with early exploration behavior [3,20]. Intrinsic motivation methods were introduced to address this condition by augmenting extrinsic rewards with auxiliary signals that encourage exploration when task feedback is limited [11,12,17].
+Deep reinforcement learning has shown strong performance in control tasks when extrinsic rewards are dense and informative, but training quality often declines when rewards are sparse, delayed, or weakly aligned with early exploration behavior (Barto, 2012; Singh et al., 2005). Intrinsic motivation methods were introduced to address this condition by augmenting extrinsic rewards with auxiliary signals that encourage exploration when task feedback is limited (Oudeyer, 2007; Oudeyer et al., 2007; Schmidhuber, 1991).
 
-Existing intrinsic reward formulations include visitation-based novelty, information gain, prediction error, and impact-oriented signals [2,4,6,9,10,13,15,22]. Although these approaches can improve exploration, they can also produce unproductive curiosity, where an agent repeatedly visits transitions that remain surprising but provide limited task progress, particularly in sparse-reward settings [8].
+Existing intrinsic reward formulations include visitation-based novelty, information gain, prediction error, and impact-oriented signals (Baranes & Oudeyer, 2009; Bellemare et al., 2016; Burda, Edwards, Storkey, et al., 2018; Ng et al., 1999; Ostrovski et al., 2017; Pathak et al., 2017; Raileanu & Rocktäschel, 2020; Tang et al., 2016). Although these approaches can improve exploration, they can also produce unproductive curiosity, where an agent repeatedly visits transitions that remain surprising but provide limited task progress, particularly in sparse-reward settings (Mavor-Parker et al., 2021).
 
-A complementary direction is learning-progress-driven exploration, where a transition is considered useful when predictive performance improves over time rather than when surprise is high in isolation [7,12,19]. This perspective motivates region-aware mechanisms that distinguish learnable regions from persistently high-error regions.
+A complementary direction is learning-progress-driven exploration, where a transition is considered useful when predictive performance improves over time rather than when surprise is high in isolation (Houthooft et al., 2016; Oudeyer et al., 2007; Schulman et al., 2017). This perspective motivates region-aware mechanisms that distinguish learnable regions from persistently high-error regions.
 
-The study implemented and evaluated a family of intrinsic reward methods called Gated Learning-Progress Exploration (GLPE), including a gated variant and a non-gated variant under a common Proximal Policy Optimization backbone [13,18]. The framework combined feature-space impact with region-local learning progress estimated from online latent-space partitioning and short- versus long-horizon error trends. The gated variant further suppressed intrinsic shaping in regions that remained high-error with low progress, while the non-gated variant retained the same core score without suppression.
+The study implemented and evaluated a family of intrinsic reward methods called Gated Learning-Progress Exploration (GLPE), including a gated variant and a non-gated variant under a common Proximal Policy Optimization backbone (Pathak et al., 2017; Schulman et al., 2015). The framework combined feature-space impact with region-local learning progress estimated from online latent-space partitioning and short- versus long-horizon error trends. The gated variant further suppressed intrinsic shaping in regions that remained high-error with low progress, while the non-gated variant retained the same core score without suppression.
 
-Evaluation was conducted on MountainCar-v0, BipedalWalker-v3, Ant-v5, HalfCheetah-v5, and Humanoid-v5 using a consistent training and evaluation protocol, and comparisons were performed against Vanilla PPO, ICM, RND, RIDE, and RIAC [2,6,13,15,18,19]. The study focused on both sample-efficiency and wall-clock-efficiency views to characterize practical exploration performance in sparse and dense reward regimes.
+Evaluation was conducted on MountainCar-v0, BipedalWalker-v3, Ant-v5, HalfCheetah-v5, and Humanoid-v5 using a consistent training and evaluation protocol, and comparisons were performed against Vanilla PPO, ICM, RND, RIDE, and RIAC (Baranes & Oudeyer, 2009; Burda, Edwards, Storkey, et al., 2018; Pathak et al., 2017; Raileanu & Rocktäschel, 2020; Schulman et al., 2015; Schulman et al., 2017). The study focused on both sample-efficiency and wall-clock-efficiency views to characterize practical exploration performance in sparse and dense reward regimes.
 
 ### 1.1 Rationale of the Study
 
-Intrinsic reward design remains a central issue in deep reinforcement learning because exploration quality strongly affects convergence speed, final policy quality, and training stability in environments with limited external feedback [3,11,20]. Methods that reward novelty or prediction error can accelerate early discovery, but these signals may remain high in stochastic or difficult-to-model regions that are weakly connected to long-term task improvement [6,8,15].
+Intrinsic reward design remains a central issue in deep reinforcement learning because exploration quality strongly affects convergence speed, final policy quality, and training stability in environments with limited external feedback (Barto, 2012; Oudeyer, 2007; Singh et al., 2005). Methods that reward novelty or prediction error can accelerate early discovery, but these signals may remain high in stochastic or difficult-to-model regions that are weakly connected to long-term task improvement (Burda, Edwards, Storkey, et al., 2018; Mavor-Parker et al., 2021; Raileanu & Rocktäschel, 2020).
 
-Prior work on learning progress suggested that exploration should prioritize regions where predictive capability is improving, which provides a principled way to differentiate informative uncertainty from persistent unpredictability [7,12,19]. However, applying this idea effectively in high-dimensional function approximation settings requires practical mechanisms for localization, scaling, and integration with modern policy optimization pipelines [13,18].
+Prior work on learning progress suggested that exploration should prioritize regions where predictive capability is improving, which provides a principled way to differentiate informative uncertainty from persistent unpredictability (Houthooft et al., 2016; Oudeyer et al., 2007; Schulman et al., 2017). However, applying this idea effectively in high-dimensional function approximation settings requires practical mechanisms for localization, scaling, and integration with modern policy optimization pipelines (Pathak et al., 2017; Schulman et al., 2015).
 
-The present study was motivated by this methodological gap. The GLPE family was designed to combine three requirements in a single framework: region-aware progress estimation, impact sensitivity in learned feature space, and optional suppression of unproductive intrinsic shaping through a lightweight gate. This design preserved compatibility with standard PPO training while targeting the recurring failure mode of unproductive curiosity [8,13,18].
+The present study was motivated by this methodological gap. The GLPE family was designed to combine three requirements in a single framework: region-aware progress estimation, impact sensitivity in learned feature space, and optional suppression of unproductive intrinsic shaping through a lightweight gate. This design preserved compatibility with standard PPO training while targeting the recurring failure mode of unproductive curiosity (Mavor-Parker et al., 2021; Pathak et al., 2017; Schulman et al., 2015).
 
-The rationale also followed an evaluation need. Exploration methods are often compared mainly by return versus steps, which can obscure computational overhead and practical deployment tradeoffs. For this reason, the study assessed both environment-step performance and wall-clock performance under common runtime budgets, together with thresholded reliability metrics across multiple benchmark tasks [18].
+The rationale also followed an evaluation need. Exploration methods are often compared mainly by return versus steps, which can obscure computational overhead and practical deployment tradeoffs. For this reason, the study assessed both environment-step performance and wall-clock performance under common runtime budgets, together with thresholded reliability metrics across multiple benchmark tasks (Schulman et al., 2015).
 
 #### 1.2.1 General Objective
 
@@ -44,107 +44,107 @@ To design, implement, and evaluate a learning-progress-aware intrinsic reward fr
 
 ### 1.2 Statement of the Problem
 
-Many intrinsic motivation methods improve exploration, but their signals can be misaligned with actual learning progress in sparse-reward or high-variance environments [2,6,8,15]. As a result, agents may allocate substantial interaction budget to transitions that remain surprising without producing sustained policy improvement.
+Many intrinsic motivation methods improve exploration, but their signals can be misaligned with actual learning progress in sparse-reward or high-variance environments (Baranes & Oudeyer, 2009; Burda, Edwards, Storkey, et al., 2018; Mavor-Parker et al., 2021; Raileanu & Rocktäschel, 2020). As a result, agents may allocate substantial interaction budget to transitions that remain surprising without producing sustained policy improvement.
 
-This study addressed the following problem: how to construct an intrinsic reward mechanism that preserves exploratory behavior while reducing unproductive curiosity, and how to evaluate its effectiveness relative to established baselines under both sample-efficiency and wall-clock-efficiency criteria [13,18,19].
+This study addressed the following problem: how to construct an intrinsic reward mechanism that preserves exploratory behavior while reducing unproductive curiosity, and how to evaluate its effectiveness relative to established baselines under both sample-efficiency and wall-clock-efficiency criteria (Pathak et al., 2017; Schulman et al., 2015; Schulman et al., 2017).
 
-Specifically, the work examined whether combining feature-space impact with region-local learning progress, and optionally applying a region-specific gating mechanism, can yield reliable and competitive performance across sparse and dense reward benchmarks when trained with a common PPO backbone [2,13,18,19].
+Specifically, the work examined whether combining feature-space impact with region-local learning progress, and optionally applying a region-specific gating mechanism, can yield reliable and competitive performance across sparse and dense reward benchmarks when trained with a common PPO backbone (Baranes & Oudeyer, 2009; Pathak et al., 2017; Schulman et al., 2015; Schulman et al., 2017).
 
 ### 1.3 Significance of the Study
 
-For reinforcement learning research, the study provided an empirically grounded formulation of intrinsic shaping that links representation change to localized model improvement, extending prior learning-progress ideas to a modern on-policy deep RL setting [7,13,18,19].
+For reinforcement learning research, the study provided an empirically grounded formulation of intrinsic shaping that links representation change to localized model improvement, extending prior learning-progress ideas to a modern on-policy deep RL setting (Houthooft et al., 2016; Pathak et al., 2017; Schulman et al., 2015; Schulman et al., 2017).
 
-For method developers, the GLPE family offered a practical design that can be integrated with existing PPO-based training systems without requiring privileged environment state, while retaining interpretable components for diagnostic analysis [13,18]. The gated and non-gated variants also provided a controlled comparison for understanding when suppression mechanisms are beneficial and when simpler shaping is sufficient.
+For method developers, the GLPE family offered a practical design that can be integrated with existing PPO-based training systems without requiring privileged environment state, while retaining interpretable components for diagnostic analysis (Pathak et al., 2017; Schulman et al., 2015). The gated and non-gated variants also provided a controlled comparison for understanding when suppression mechanisms are beneficial and when simpler shaping is sufficient.
 
-For benchmark-driven evaluation practice, the study emphasized that step-based efficiency alone is not a complete indicator of utility. By including wall-clock summaries, per-component timing analysis, and thresholded reliability, the work supported more comprehensive assessment of exploration methods intended for real training pipelines [18].
+For benchmark-driven evaluation practice, the study emphasized that step-based efficiency alone is not a complete indicator of utility. By including wall-clock summaries, per-component timing analysis, and thresholded reliability, the work supported more comprehensive assessment of exploration methods intended for real training pipelines (Schulman et al., 2015).
 
-For undergraduate-level computer science inquiry, the study contributed a reproducible and technically coherent case of how theoretical concepts in curiosity and reward shaping can be operationalized, tested, and critically analyzed across heterogeneous control tasks [9,11,17,18].
+For undergraduate-level computer science inquiry, the study contributed a reproducible and technically coherent case of how theoretical concepts in curiosity and reward shaping can be operationalized, tested, and critically analyzed across heterogeneous control tasks (Ng et al., 1999; Oudeyer, 2007; Schmidhuber, 1991; Schulman et al., 2015).
 
 ### 1.4 Scope and Limitations of the Study
 
-The study covered intrinsic reward design and evaluation for on-policy deep reinforcement learning using a shared PPO backbone with generalized advantage estimation [18]. The proposed methods were limited to the GLPE family, consisting of a gated variant and a non-gated variant that shared the same base intrinsic score [13,18].
+The study covered intrinsic reward design and evaluation for on-policy deep reinforcement learning using a shared PPO backbone with generalized advantage estimation (Schulman et al., 2015). The proposed methods were limited to the GLPE family, consisting of a gated variant and a non-gated variant that shared the same base intrinsic score (Pathak et al., 2017; Schulman et al., 2015).
 
-Experimental scope was restricted to five Gymnasium benchmarks, namely MountainCar-v0, BipedalWalker-v3, Ant-v5, HalfCheetah-v5, and Humanoid-v5, under fixed environment reward functions and termination rules. Comparisons were limited to Vanilla PPO, ICM, RND, RIDE, and RIAC using common training budgets, aligned checkpoint schedules, and deterministic offline evaluation from saved checkpoints [2,6,15,18,19].
+Experimental scope was restricted to five Gymnasium benchmarks, namely MountainCar-v0, BipedalWalker-v3, Ant-v5, HalfCheetah-v5, and Humanoid-v5, under fixed environment reward functions and termination rules. Comparisons were limited to Vanilla PPO, ICM, RND, RIDE, and RIAC using common training budgets, aligned checkpoint schedules, and deterministic offline evaluation from saved checkpoints (Baranes & Oudeyer, 2009; Burda, Edwards, Storkey, et al., 2018; Raileanu & Rocktäschel, 2020; Schulman et al., 2015; Schulman et al., 2017).
 
-The intrinsic formulation relied on learned latent representations, forward and inverse dynamics modeling, online region partitioning, and exponential moving average statistics for learning progress. Therefore, conclusions were bounded by the chosen model classes, hyperparameter settings, and implementation choices documented in the experiment configuration [13,18].
+The intrinsic formulation relied on learned latent representations, forward and inverse dynamics modeling, online region partitioning, and exponential moving average statistics for learning progress. Therefore, conclusions were bounded by the chosen model classes, hyperparameter settings, and implementation choices documented in the experiment configuration (Pathak et al., 2017; Schulman et al., 2015).
 
-The computational analysis was performed in the execution setting used by the project, with wall-clock comparisons derived from logged runtime components and common per-environment time budgets. Consequently, absolute timing results may vary under different hardware or software stacks, although the reported procedure remains reproducible within the documented setup [18].
+The computational analysis was performed in the execution setting used by the project, with wall-clock comparisons derived from logged runtime components and common per-environment time budgets. Consequently, absolute timing results may vary under different hardware or software stacks, although the reported procedure remains reproducible within the documented setup (Schulman et al., 2015).
 
-The study did not claim policy invariance of intrinsic shaping and did not treat intrinsic reward terms as theoretically neutral transformations of the task objective. Findings were interpreted empirically in relation to exploration behavior, final returns, reliability at selected thresholds, and measured computational overhead [9,18].
+The study did not claim policy invariance of intrinsic shaping and did not treat intrinsic reward terms as theoretically neutral transformations of the task objective. Findings were interpreted empirically in relation to exploration behavior, final returns, reliability at selected thresholds, and measured computational overhead (Ng et al., 1999; Schulman et al., 2015).
 
 ## 2. Review of Related Literature
 
 This chapter reviews prior work on intrinsic motivation for reinforcement learning and establishes the conceptual basis for the GLPE family studied in this thesis. The discussion is organized around five themes: intrinsic motivation foundations, novelty and prediction-error signals, learning-progress methods, impact-driven exploration, and reward shaping theory.
 
-Across these themes, prior studies consistently showed that intrinsic rewards can improve exploration when extrinsic rewards are sparse or delayed [3,11,12,20]. However, they also identified a recurring risk that exploration may be drawn toward transitions that remain surprising without improving task learning, especially in stochastic or poorly learnable regions [8,15]. This limitation motivated approaches that track not only surprise, but also whether model error decreases over time, which is the central idea behind learning progress [2,17].
+Across these themes, prior studies consistently showed that intrinsic rewards can improve exploration when extrinsic rewards are sparse or delayed (Barto, 2012; Oudeyer, 2007; Oudeyer et al., 2007; Singh et al., 2005). However, they also identified a recurring risk that exploration may be drawn toward transitions that remain surprising without improving task learning, especially in stochastic or poorly learnable regions (Mavor-Parker et al., 2021; Raileanu & Rocktäschel, 2020). This limitation motivated approaches that track not only surprise, but also whether model error decreases over time, which is the central idea behind learning progress (Baranes & Oudeyer, 2009; Schmidhuber, 1991).
 
-The related literature therefore suggested a gap between broad exploratory drive and sustained usefulness of collected experience. The GLPE formulation addressed this gap by combining representation-level impact with region-local estimates of learning progress, and by introducing an optional region-wise gate to suppress persistently unproductive intrinsic shaping [2,15].
+The related literature therefore suggested a gap between broad exploratory drive and sustained usefulness of collected experience. The GLPE formulation addressed this gap by combining representation-level impact with region-local estimates of learning progress, and by introducing an optional region-wise gate to suppress persistently unproductive intrinsic shaping (Baranes & Oudeyer, 2009; Raileanu & Rocktäschel, 2020).
 
 ### 2.1 Intrinsic Motivation in Reinforcement Learning
 
-Intrinsic motivation in reinforcement learning refers to internally generated reward signals that complement environment reward during policy optimization [3,20]. In sparse-reward tasks, these auxiliary signals were used to encourage exploration before reliable extrinsic feedback became available [11,12].
+Intrinsic motivation in reinforcement learning refers to internally generated reward signals that complement environment reward during policy optimization (Barto, 2012; Singh et al., 2005). In sparse-reward tasks, these auxiliary signals were used to encourage exploration before reliable extrinsic feedback became available (Oudeyer, 2007; Oudeyer et al., 2007).
 
-Early formulations described intrinsically motivated behavior as a mechanism for seeking experiences that improve predictive competence rather than only maximizing immediate external payoff [17,20]. Later surveys and taxonomies grouped intrinsic methods into families such as novelty seeking, prediction-error curiosity, information gain, and competence or progress based objectives [1,11,12].
+Early formulations described intrinsically motivated behavior as a mechanism for seeking experiences that improve predictive competence rather than only maximizing immediate external payoff (Schmidhuber, 1991; Singh et al., 2005). Later surveys and taxonomies grouped intrinsic methods into families such as novelty seeking, prediction-error curiosity, information gain, and competence or progress based objectives (Badia et al., 2020; Oudeyer, 2007; Oudeyer et al., 2007).
 
-Within deep reinforcement learning, intrinsic rewards were commonly implemented as additive shaping terms combined with extrinsic reward and scaled by a task-dependent coefficient [6,13,15]. This formulation was practical and effective in many benchmarks, but it did not generally preserve policy invariance because the intrinsic term can alter which trajectories are preferred during optimization [9]. For that reason, intrinsic methods were typically evaluated empirically through sample efficiency, asymptotic return, and reliability across seeds [15,18,19].
+Within deep reinforcement learning, intrinsic rewards were commonly implemented as additive shaping terms combined with extrinsic reward and scaled by a task-dependent coefficient (Burda, Edwards, Storkey, et al., 2018; Pathak et al., 2017; Raileanu & Rocktäschel, 2020). This formulation was practical and effective in many benchmarks, but it did not generally preserve policy invariance because the intrinsic term can alter which trajectories are preferred during optimization (Ng et al., 1999). For that reason, intrinsic methods were typically evaluated empirically through sample efficiency, asymptotic return, and reliability across seeds (Raileanu & Rocktäschel, 2020; Schulman et al., 2015; Schulman et al., 2017).
 
-The literature established two relevant observations for this study. First, intrinsic rewards can produce substantial gains in early exploration and learning speed [6,13,15]. Second, intrinsic objectives may remain active in regions where surprise stays high but useful learning has saturated, creating a mismatch between exploration pressure and task progress [8]. These observations motivated the present focus on progress-sensitive intrinsic shaping.
+The literature established two relevant observations for this study. First, intrinsic rewards can produce substantial gains in early exploration and learning speed (Burda, Edwards, Storkey, et al., 2018; Pathak et al., 2017; Raileanu & Rocktäschel, 2020). Second, intrinsic objectives may remain active in regions where surprise stays high but useful learning has saturated, creating a mismatch between exploration pressure and task progress (Mavor-Parker et al., 2021). These observations motivated the present focus on progress-sensitive intrinsic shaping.
 
 ### 2.2 Novelty and Prediction-Error Methods
 
-A major line of exploration research used novelty estimates to reward rarely visited or weakly modeled states. Count-based approaches formalized this idea through visitation frequencies and pseudo-counts, including density-model variants designed for high-dimensional observations [4,10,22]. Episodic reachability-based curiosity provided another novelty-oriented mechanism by rewarding experiences that expanded short-horizon behavioral coverage [16]. These methods provided a principled exploration bonus and often improved state-space coverage.
+A major line of exploration research used novelty estimates to reward rarely visited or weakly modeled states. Count-based approaches formalized this idea through visitation frequencies and pseudo-counts, including density-model variants designed for high-dimensional observations (Bellemare et al., 2016; Ostrovski et al., 2017; Tang et al., 2016). Episodic reachability-based curiosity provided another novelty-oriented mechanism by rewarding experiences that expanded short-horizon behavioral coverage (Savinov et al., 2018). These methods provided a principled exploration bonus and often improved state-space coverage.
 
-Prediction-error curiosity provided a complementary strategy. Instead of explicit counts, these methods rewarded transitions whose outcomes were difficult for a learned forward model to predict [13]. Deep predictive exploration and later feature-space curiosity models, including ICM, operationalized novelty through model mismatch in learned representations [13]. Random Network Distillation used prediction error against a fixed random target network, yielding a simple and scalable novelty signal [6]. Related prediction-error and ensemble-disagreement variants were also reported in deep exploration studies, including early deep predictive exploration, disagreement-based self-supervised exploration, and large-scale curiosity evaluations [5,14,21].
+Prediction-error curiosity provided a complementary strategy. Instead of explicit counts, these methods rewarded transitions whose outcomes were difficult for a learned forward model to predict (Pathak et al., 2017). Deep predictive exploration and later feature-space curiosity models, including ICM, operationalized novelty through model mismatch in learned representations (Pathak et al., 2017). Random Network Distillation used prediction error against a fixed random target network, yielding a simple and scalable novelty signal (Burda, Edwards, Storkey, et al., 2018). Related prediction-error and ensemble-disagreement variants were also reported in deep exploration studies, including early deep predictive exploration, disagreement-based self-supervised exploration, and large-scale curiosity evaluations (Burda, Edwards, Pathak, et al., 2018; Pathak et al., 2019; Stadie et al., 2015).
 
-The common strength of novelty and prediction-error methods was broad exploratory pressure with minimal environment-specific engineering [4,6,13]. The common weakness was sensitivity to stochastic or chaotic dynamics where prediction error can remain high without yielding meaningful progress in task-relevant competence [8,15]. This failure pattern is often described as unproductive curiosity and is exemplified by the noisy-TV effect [8].
+The common strength of novelty and prediction-error methods was broad exploratory pressure with minimal environment-specific engineering (Bellemare et al., 2016; Burda, Edwards, Storkey, et al., 2018; Pathak et al., 2017). The common weakness was sensitivity to stochastic or chaotic dynamics where prediction error can remain high without yielding meaningful progress in task-relevant competence (Mavor-Parker et al., 2021; Raileanu & Rocktäschel, 2020). This failure pattern is often described as unproductive curiosity and is exemplified by the noisy-TV effect (Mavor-Parker et al., 2021).
 
-These findings were directly relevant to the present thesis. They indicated that high surprise alone is not a sufficient criterion for useful exploration, and they motivated augmenting novelty-style signals with explicit estimates of whether model quality is improving locally over time [2,17].
+These findings were directly relevant to the present thesis. They indicated that high surprise alone is not a sufficient criterion for useful exploration, and they motivated augmenting novelty-style signals with explicit estimates of whether model quality is improving locally over time (Baranes & Oudeyer, 2009; Schmidhuber, 1991).
 
 ### 2.3 Learning Progress Based Exploration
 
-Learning-progress exploration was motivated by the idea that intrinsically valuable experience is experience that improves predictive performance, not merely experience that is difficult [17]. Classical formulations tracked reductions in prediction error over time, often by comparing short-term and long-term competence statistics within local regions of the state space [2,12].
+Learning-progress exploration was motivated by the idea that intrinsically valuable experience is experience that improves predictive performance, not merely experience that is difficult (Schmidhuber, 1991). Classical formulations tracked reductions in prediction error over time, often by comparing short-term and long-term competence statistics within local regions of the state space (Baranes & Oudeyer, 2009; Oudeyer et al., 2007).
 
-R-IAC is a representative method in this family. It partitioned the space adaptively and prioritized regions where competence improved, while reducing attention to regions that were either already mastered or persistently unpredictable [2]. This mechanism addressed an important limitation of purely novelty-driven exploration by introducing a temporal notion of utility.
+R-IAC is a representative method in this family. It partitioned the space adaptively and prioritized regions where competence improved, while reducing attention to regions that were either already mastered or persistently unpredictable (Baranes & Oudeyer, 2009). This mechanism addressed an important limitation of purely novelty-driven exploration by introducing a temporal notion of utility.
 
-The literature also revealed practical challenges for scaling progress-based ideas to modern deep reinforcement learning. First, progress estimates depend on how locality is represented in high-dimensional observations. Second, progress signals can become unstable without careful smoothing and normalization. Third, exploration behavior may still degrade when regions maintain high error but negligible progress for extended periods [2].
+The literature also revealed practical challenges for scaling progress-based ideas to modern deep reinforcement learning. First, progress estimates depend on how locality is represented in high-dimensional observations. Second, progress signals can become unstable without careful smoothing and normalization. Third, exploration behavior may still degrade when regions maintain high error but negligible progress for extended periods (Baranes & Oudeyer, 2009).
 
-These limitations informed the GLPE design. The proposed framework estimated region-local progress in latent feature space using online partitioning and exponential moving averages, then combined this signal with feature-space impact to retain exploratory coverage while prioritizing learnable regions [2].
+These limitations informed the GLPE design. The proposed framework estimated region-local progress in latent feature space using online partitioning and exponential moving averages, then combined this signal with feature-space impact to retain exploratory coverage while prioritizing learnable regions (Baranes & Oudeyer, 2009).
 
 ### 2.4 Impact-Driven Exploration
 
-Impact-driven exploration rewarded transitions that produced substantial change in the agent's representation of state, rather than rewarding novelty alone [15]. In this view, useful exploration is associated with controllable interaction that moves the agent through behaviorally distinct situations.
+Impact-driven exploration rewarded transitions that produced substantial change in the agent's representation of state, rather than rewarding novelty alone (Raileanu & Rocktäschel, 2020). In this view, useful exploration is associated with controllable interaction that moves the agent through behaviorally distinct situations.
 
-RIDE operationalized this idea through feature-space displacement, combined with visitation-based modulation to reduce repeated reward from revisiting similar states [15]. This approach was especially relevant in environments where many novel observations were not controllable or not informative for policy improvement.
+RIDE operationalized this idea through feature-space displacement, combined with visitation-based modulation to reduce repeated reward from revisiting similar states (Raileanu & Rocktäschel, 2020). This approach was especially relevant in environments where many novel observations were not controllable or not informative for policy improvement.
 
-The impact perspective complemented both novelty and learning-progress approaches. Novelty encouraged broad coverage, learning progress prioritized regions where models improved, and impact emphasized controllable state change [2,15,17]. The synthesis of these viewpoints motivated hybrid objectives.
+The impact perspective complemented both novelty and learning-progress approaches. Novelty encouraged broad coverage, learning progress prioritized regions where models improved, and impact emphasized controllable state change (Baranes & Oudeyer, 2009; Raileanu & Rocktäschel, 2020; Schmidhuber, 1991). The synthesis of these viewpoints motivated hybrid objectives.
 
 The GLPE family adopted impact as one component of its intrinsic score and combined it with region-local learning progress. This combination was intended to preserve movement toward behaviorally meaningful transitions while reducing emphasis on high-error regions that did not exhibit sustained model improvement.
 
 ### 2.5 Reward Shaping and Policy Invariance
 
-Reward shaping modifies the optimization signal to accelerate learning, but shaping terms can alter policy preferences if they are not theoretically constrained [9]. The policy-invariance result of Ng, Harada, and Russell showed that only potential-based shaping guarantees preservation of optimal policies under reward transformation [9].
+Reward shaping modifies the optimization signal to accelerate learning, but shaping terms can alter policy preferences if they are not theoretically constrained (Ng et al., 1999). The policy-invariance result of Ng, Harada, and Russell showed that only potential-based shaping guarantees preservation of optimal policies under reward transformation (Ng et al., 1999).
 
-Most intrinsic rewards used in deep reinforcement learning are not potential-based in this strict sense, because they depend on nonstationary predictive models, visitation statistics, or representation dynamics [2,6,13,15]. Consequently, such methods are generally treated as heuristic but effective objectives whose value must be demonstrated empirically.
+Most intrinsic rewards used in deep reinforcement learning are not potential-based in this strict sense, because they depend on nonstationary predictive models, visitation statistics, or representation dynamics (Baranes & Oudeyer, 2009; Burda, Edwards, Storkey, et al., 2018; Pathak et al., 2017; Raileanu & Rocktäschel, 2020). Consequently, such methods are generally treated as heuristic but effective objectives whose value must be demonstrated empirically.
 
-This theoretical context was important for the present study. The GLPE intrinsic term was applied as additive shaping during PPO training, with clipping and scheduling controls, but it was not claimed to be policy-invariant [9,19]. Therefore, evaluation focused on empirical outcomes, including step efficiency, wall-clock efficiency, thresholded reliability, and final extrinsic return [18,19].
+This theoretical context was important for the present study. The GLPE intrinsic term was applied as additive shaping during PPO training, with clipping and scheduling controls, but it was not claimed to be policy-invariant (Ng et al., 1999; Schulman et al., 2017). Therefore, evaluation focused on empirical outcomes, including step efficiency, wall-clock efficiency, thresholded reliability, and final extrinsic return (Schulman et al., 2015; Schulman et al., 2017).
 
 ### 2.6 Synthesis and Research Gap
 
-The reviewed literature established that intrinsic motivation can substantially improve exploration under sparse or delayed extrinsic feedback [3,11,12,20]. It also showed that novelty and prediction-error bonuses can become misaligned with task progress when stochasticity or model mismatch produces persistent surprise [6,8,13].
+The reviewed literature established that intrinsic motivation can substantially improve exploration under sparse or delayed extrinsic feedback (Barto, 2012; Oudeyer, 2007; Oudeyer et al., 2007; Singh et al., 2005). It also showed that novelty and prediction-error bonuses can become misaligned with task progress when stochasticity or model mismatch produces persistent surprise (Burda, Edwards, Storkey, et al., 2018; Mavor-Parker et al., 2021; Pathak et al., 2017).
 
-Learning-progress methods addressed part of this issue by prioritizing regions where predictive competence improved over time [2,17]. Impact-driven methods added a complementary signal that favored transitions producing meaningful state change [15]. However, prior approaches did not fully resolve the joint requirement of maintaining broad exploratory behavior while suppressing intrinsically attractive but persistently unproductive regions in a lightweight on-policy setting [2,15].
+Learning-progress methods addressed part of this issue by prioritizing regions where predictive competence improved over time (Baranes & Oudeyer, 2009; Schmidhuber, 1991). Impact-driven methods added a complementary signal that favored transitions producing meaningful state change (Raileanu & Rocktäschel, 2020). However, prior approaches did not fully resolve the joint requirement of maintaining broad exploratory behavior while suppressing intrinsically attractive but persistently unproductive regions in a lightweight on-policy setting (Baranes & Oudeyer, 2009; Raileanu & Rocktäschel, 2020).
 
-Based on this gap, the thesis focused on a combined intrinsic formulation that integrated feature-space impact and region-local learning progress, with an optional region-specific gate for high-error low-progress regions. The research direction remained consistent with the project problem statement, scope, and evaluation design by testing this formulation against established baselines under a shared PPO backbone using both sample-based and wall-clock based criteria [18,19].
+Based on this gap, the thesis focused on a combined intrinsic formulation that integrated feature-space impact and region-local learning progress, with an optional region-specific gate for high-error low-progress regions. The research direction remained consistent with the project problem statement, scope, and evaluation design by testing this formulation against established baselines under a shared PPO backbone using both sample-based and wall-clock based criteria (Schulman et al., 2015; Schulman et al., 2017).
 
 ## 3. Technical Background
 
-This chapter presents the theoretical and algorithmic background used by the study. The discussion covers Markov decision processes, the reinforcement learning objective, policy optimization with PPO, variance reduction with GAE, intrinsic reward design, latent dynamics learning, online region partitioning, and evaluation metrics. These concepts establish the foundation for the GLPE and GLPE (no gate) formulations described in the methodology chapter and for the comparative analysis against PPO, ICM, RND, RIDE, and RIAC baselines [2,6,13,15,18,19].
+This chapter presents the theoretical and algorithmic background used by the study. The discussion covers Markov decision processes, the reinforcement learning objective, policy optimization with PPO, variance reduction with GAE, intrinsic reward design, latent dynamics learning, online region partitioning, and evaluation metrics. These concepts establish the foundation for the GLPE and GLPE (no gate) formulations described in the methodology chapter and for the comparative analysis against PPO, ICM, RND, RIDE, and RIAC baselines (Baranes & Oudeyer, 2009; Burda, Edwards, Storkey, et al., 2018; Pathak et al., 2017; Raileanu & Rocktäschel, 2020; Schulman et al., 2015; Schulman et al., 2017).
 
 ### 3.1 Markov Decision Processes
 
-The learning problem was formulated as an episodic Markov decision process (MDP), represented by states or observations, actions, transition dynamics, and rewards. At each time step t, an observation \(o_t\) was received, an action \(a_t\) was sampled from a stochastic policy \(\pi_\theta(a\mid o)\), and an extrinsic reward \(r_t^{\mathrm{ext}}\) was returned by the environment. The objective of this formulation was to maximize the expected discounted return over trajectories generated by policy-environment interaction [18,19].
+The learning problem was formulated as an episodic Markov decision process (MDP), represented by states or observations, actions, transition dynamics, and rewards. At each time step t, an observation \(o_t\) was received, an action \(a_t\) was sampled from a stochastic policy \(\pi_\theta(a\mid o)\), and an extrinsic reward \(r_t^{\mathrm{ext}}\) was returned by the environment. The objective of this formulation was to maximize the expected discounted return over trajectories generated by policy-environment interaction (Schulman et al., 2015; Schulman et al., 2017).
 
-This MDP framing was used across all benchmark tasks in the repository, including discrete control and continuous control domains. A shared formalization allowed direct comparison of exploration methods under the same PPO backbone and the same environment-defined reward functions [19].
+This MDP framing was used across all benchmark tasks in the repository, including discrete control and continuous control domains. A shared formalization allowed direct comparison of exploration methods under the same PPO backbone and the same environment-defined reward functions (Schulman et al., 2017).
 
 ### 3.2 Reinforcement Learning Objective
 
@@ -152,69 +152,69 @@ In policy-gradient reinforcement learning, parameters are updated to maximize ex
 \[
 r_t = r_t^{\mathrm{ext}} + \eta_t\,\mathrm{clip}(r_t^{\mathrm{int}},-r_{\max},r_{\max}),
 \]
-where \(r_t^{\mathrm{int}}\) denotes intrinsic reward, \(\eta_t\) controls intrinsic strength, and \(r_{\max}\) bounds intrinsic magnitude. This formulation is consistent with reward shaping practices that preserve task-directed optimization while improving exploration behavior [9].
+where \(r_t^{\mathrm{int}}\) denotes intrinsic reward, \(\eta_t\) controls intrinsic strength, and \(r_{\max}\) bounds intrinsic magnitude. This formulation is consistent with reward shaping practices that preserve task-directed optimization while improving exploration behavior (Ng et al., 1999).
 
-For GLPE-family methods, intrinsic weight was optionally annealed by a cosine schedule over training progress, so intrinsic guidance was emphasized in earlier phases and reduced later when exploitation became more important. Intrinsic rewards were set to zero on environment-terminal transitions to avoid dependence on termination artifacts [19].
+For GLPE-family methods, intrinsic weight was optionally annealed by a cosine schedule over training progress, so intrinsic guidance was emphasized in earlier phases and reduced later when exploitation became more important. Intrinsic rewards were set to zero on environment-terminal transitions to avoid dependence on termination artifacts (Schulman et al., 2017).
 
 ### 3.3 Proximal Policy Optimization
 
-Proximal Policy Optimization (PPO) is an on-policy actor-critic method that stabilizes policy updates through clipped probability-ratio objectives. The clipping mechanism constrains update size, which reduces destructive policy shifts while preserving sample-efficient gradient-based improvement [19].
+Proximal Policy Optimization (PPO) is an on-policy actor-critic method that stabilizes policy updates through clipped probability-ratio objectives. The clipping mechanism constrains update size, which reduces destructive policy shifts while preserving sample-efficient gradient-based improvement (Schulman et al., 2017).
 
-The repository implementation used PPO as the common reinforcement learning backbone for all compared methods. Transition batches were collected with vectorized environments, advantages were computed from rollout data, and multiple shuffled minibatch epochs were used per update. Shared PPO settings across methods isolated the effect of intrinsic objective design rather than changes in the optimizer itself [19].
+The repository implementation used PPO as the common reinforcement learning backbone for all compared methods. Transition batches were collected with vectorized environments, advantages were computed from rollout data, and multiple shuffled minibatch epochs were used per update. Shared PPO settings across methods isolated the effect of intrinsic objective design rather than changes in the optimizer itself (Schulman et al., 2017).
 
 ### 3.4 Generalized Advantage Estimation
 
-Generalized Advantage Estimation (GAE) provides a bias-variance tradeoff for policy-gradient updates by exponentially weighting temporal-difference residuals. Compared with single-step estimators, GAE generally reduces variance in advantage estimates and improves optimization stability in continuous control settings [18].
+Generalized Advantage Estimation (GAE) provides a bias-variance tradeoff for policy-gradient updates by exponentially weighting temporal-difference residuals. Compared with single-step estimators, GAE generally reduces variance in advantage estimates and improves optimization stability in continuous control settings (Schulman et al., 2015).
 
-In the study pipeline, GAE was applied to rewards after intrinsic augmentation when intrinsic methods were enabled. Bootstrapping behavior for time-limit truncations followed the available final-observation signal in the logged rollouts, which maintained consistent target construction across methods [18,19].
+In the study pipeline, GAE was applied to rewards after intrinsic augmentation when intrinsic methods were enabled. Bootstrapping behavior for time-limit truncations followed the available final-observation signal in the logged rollouts, which maintained consistent target construction across methods (Schulman et al., 2015; Schulman et al., 2017).
 
 ### 3.5 Intrinsic Rewards
 
-Intrinsic rewards were used to complement sparse or delayed extrinsic feedback by assigning additional utility to exploratory transitions. Prior approaches include prediction-error curiosity, random-network disagreement, impact-driven exploration, and region-based competence progress [2,6,13,15].
+Intrinsic rewards were used to complement sparse or delayed extrinsic feedback by assigning additional utility to exploratory transitions. Prior approaches include prediction-error curiosity, random-network disagreement, impact-driven exploration, and region-based competence progress (Baranes & Oudeyer, 2009; Burda, Edwards, Storkey, et al., 2018; Pathak et al., 2017; Raileanu & Rocktäschel, 2020).
 
-The study adopted a composite intrinsic structure built from two components: feature-space impact and region-local learning progress. Impact measured representation change across successive observations, while learning progress captured recent reduction in local forward-model error relative to a slower baseline. Component scales were normalized online with running RMS statistics before weighted combination, which reduced sensitivity to task-dependent magnitude differences. The resulting intrinsic signal was then clipped and scaled before addition to extrinsic reward [2,15,19].
+The study adopted a composite intrinsic structure built from two components: feature-space impact and region-local learning progress. Impact measured representation change across successive observations, while learning progress captured recent reduction in local forward-model error relative to a slower baseline. Component scales were normalized online with running RMS statistics before weighted combination, which reduced sensitivity to task-dependent magnitude differences. The resulting intrinsic signal was then clipped and scaled before addition to extrinsic reward (Baranes & Oudeyer, 2009; Raileanu & Rocktäschel, 2020; Schulman et al., 2017).
 
-Two variants were considered. GLPE (no gate) used the composite score directly. GLPE applied an additional region-specific binary gate that suppressed intrinsically attractive but persistently unproductive regions according to robust global thresholds and hysteretic reactivation conditions [2,19].
+Two variants were considered. GLPE (no gate) used the composite score directly. GLPE applied an additional region-specific binary gate that suppressed intrinsically attractive but persistently unproductive regions according to robust global thresholds and hysteretic reactivation conditions (Baranes & Oudeyer, 2009; Schulman et al., 2017).
 
 ### 3.6 Latent Dynamics Models
 
-A latent dynamics module was used to produce intrinsic quantities from learned features rather than from privileged state variables. An encoder \(\phi_\omega\) mapped observations to latent vectors \(z_t\), a forward model \(f_\psi\) predicted \(z_{t+1}\) from \((z_t,a_t)\), and an inverse model \(g_\xi\) predicted action information from \((z_t,z_{t+1})\). Training minimized a weighted sum of forward and inverse losses [13,19].
+A latent dynamics module was used to produce intrinsic quantities from learned features rather than from privileged state variables. An encoder \(\phi_\omega\) mapped observations to latent vectors \(z_t\), a forward model \(f_\psi\) predicted \(z_{t+1}\) from \((z_t,a_t)\), and an inverse model \(g_\xi\) predicted action information from \((z_t,z_{t+1})\). Training minimized a weighted sum of forward and inverse losses (Pathak et al., 2017; Schulman et al., 2017).
 
 Per-transition forward prediction error,
 \[
 e_t = \frac{1}{d}\lVert f_\psi(z_t,a_t)-z_{t+1}\rVert_2^2,
 \]
-was treated as the core signal for learning-progress tracking. This design aligned with established curiosity frameworks, where representation learning and predictive modeling jointly shape exploratory behavior [13,15].
+was treated as the core signal for learning-progress tracking. This design aligned with established curiosity frameworks, where representation learning and predictive modeling jointly shape exploratory behavior (Pathak et al., 2017; Raileanu & Rocktäschel, 2020).
 
 ### 3.7 Online Region Partitioning
 
-Learning progress was localized through an online partition of latent space. The partition was represented by a binary tree whose leaves defined adaptive regions. As embeddings accumulated in a leaf, splitting was triggered by capacity and depth criteria, and split rules were selected from coordinate variance with median thresholding to avoid degenerate partitions [2,19].
+Learning progress was localized through an online partition of latent space. The partition was represented by a binary tree whose leaves defined adaptive regions. As embeddings accumulated in a leaf, splitting was triggered by capacity and depth criteria, and split rules were selected from coordinate variance with median thresholding to avoid degenerate partitions (Baranes & Oudeyer, 2009; Schulman et al., 2017).
 
 Each region maintained short-horizon and long-horizon exponential moving averages of prediction error. Region-local progress was defined as the positive part of the long-minus-short difference,
 \[
 \mathrm{LP}(r)=\max(0,\mu_r^{\mathrm{long}}-\mu_r^{\mathrm{short}}),
 \]
-which became large when local predictive performance was improving. This mechanism adapted exploration pressure to nonstationary learning dynamics in different parts of feature space [2,19].
+which became large when local predictive performance was improving. This mechanism adapted exploration pressure to nonstationary learning dynamics in different parts of feature space (Baranes & Oudeyer, 2009; Schulman et al., 2017).
 
 ### 3.8 Evaluation Metrics
 
-Evaluation focused on extrinsic task performance and computational efficiency. Primary performance curves used undiscounted episodic return evaluated from offline checkpoints under deterministic action selection. Aggregation across multiple seeds provided mean trends and dispersion summaries per method and environment [19].
+Evaluation focused on extrinsic task performance and computational efficiency. Primary performance curves used undiscounted episodic return evaluated from offline checkpoints under deterministic action selection. Aggregation across multiple seeds provided mean trends and dispersion summaries per method and environment (Schulman et al., 2017).
 
-Two scalar curve summaries were used. Step-AUC integrated return against environment steps and normalized by step budget, which reflected sample efficiency. Wall-clock AUC integrated return against cumulative training time under a common time budget, defined as the minimum final runtime among compared methods in the same environment. This common-budget rule avoided extrapolation beyond measured runtime and enabled fair efficiency comparison [19].
+Two scalar curve summaries were used. Step-AUC integrated return against environment steps and normalized by step budget, which reflected sample efficiency. Wall-clock AUC integrated return against cumulative training time under a common time budget, defined as the minimum final runtime among compared methods in the same environment. This common-budget rule avoided extrapolation beyond measured runtime and enabled fair efficiency comparison (Schulman et al., 2017).
 
 ## 4. Design and Methodology
 
-This chapter presents the methodological design used to transform the proposed intrinsic motivation approach into an implementable and testable reinforcement learning framework. The chapter formalizes the GLPE family, including GLPE and GLPE (no gate), then details the training pipeline, experimental configuration, and statistical analysis procedures used for comparative evaluation. The methodological decisions followed the same technical scope as the source paper, with adaptation to thesis structure and documentation style [2,6,13,15,18,19].
+This chapter presents the methodological design used to transform the proposed intrinsic motivation approach into an implementable and testable reinforcement learning framework. The chapter formalizes the GLPE family, including GLPE and GLPE (no gate), then details the training pipeline, experimental configuration, and statistical analysis procedures used for comparative evaluation. The methodological decisions followed the same technical scope as the source paper, with adaptation to thesis structure and documentation style (Baranes & Oudeyer, 2009; Burda, Edwards, Storkey, et al., 2018; Pathak et al., 2017; Raileanu & Rocktäschel, 2020; Schulman et al., 2015; Schulman et al., 2017).
 
-The overall design used controlled, multi-seed benchmarking with a shared PPO backbone, fixed per-environment training budgets, and common evaluation checkpoints across methods. Intrinsic-reward methods differed only in intrinsic signal construction and associated module updates, while policy optimization, observation handling, and reporting protocol were standardized to isolate the effect of intrinsic objective design [18,19].
+The overall design used controlled, multi-seed benchmarking with a shared PPO backbone, fixed per-environment training budgets, and common evaluation checkpoints across methods. Intrinsic-reward methods differed only in intrinsic signal construction and associated module updates, while policy optimization, observation handling, and reporting protocol were standardized to isolate the effect of intrinsic objective design (Schulman et al., 2015; Schulman et al., 2017).
 
 ### 4.1 Research Design
 
-The study used an experimental comparative design in which two proposed methods, GLPE and GLPE (no gate), were evaluated against five baseline methods: Vanilla PPO, ICM, RND, RIDE, and RIAC [2,6,13,15,18,19]. The core objective was to determine whether combining feature-space impact and region-local learning progress, with or without region-specific gating, improved exploration behavior and downstream control performance under fixed training conditions.
+The study used an experimental comparative design in which two proposed methods, GLPE and GLPE (no gate), were evaluated against five baseline methods: Vanilla PPO, ICM, RND, RIDE, and RIAC (Baranes & Oudeyer, 2009; Burda, Edwards, Storkey, et al., 2018; Pathak et al., 2017; Raileanu & Rocktäschel, 2020; Schulman et al., 2015; Schulman et al., 2017). The core objective was to determine whether combining feature-space impact and region-local learning progress, with or without region-specific gating, improved exploration behavior and downstream control performance under fixed training conditions.
 
-A within-environment control strategy was applied. For each environment, all methods used the same PPO architecture, optimizer family, discounting setup, and total interaction budget. Training and evaluation seeds were aligned across methods, and deterministic evaluation actions were used at each saved checkpoint. This design reduced confounding effects from policy backbone differences and focused comparison on intrinsic reward formulation [18,19].
+A within-environment control strategy was applied. For each environment, all methods used the same PPO architecture, optimizer family, discounting setup, and total interaction budget. Training and evaluation seeds were aligned across methods, and deterministic evaluation actions were used at each saved checkpoint. This design reduced confounding effects from policy backbone differences and focused comparison on intrinsic reward formulation (Schulman et al., 2015; Schulman et al., 2017).
 
-Performance was analyzed from both sample-efficiency and computational-efficiency perspectives. Sample efficiency was examined through learning curves versus environment steps, final-checkpoint return, and step-normalized area under curve. Computational efficiency was examined through wall-clock AUC and per-component runtime decomposition [18]. Reliability was further examined using threshold-based reach rates and steps-to-threshold summaries across seeds.
+Performance was analyzed from both sample-efficiency and computational-efficiency perspectives. Sample efficiency was examined through learning curves versus environment steps, final-checkpoint return, and step-normalized area under curve. Computational efficiency was examined through wall-clock AUC and per-component runtime decomposition (Schulman et al., 2015). Reliability was further examined using threshold-based reach rates and steps-to-threshold summaries across seeds.
 
 ### 4.2 Proposed GLPE Framework
 
@@ -222,19 +222,19 @@ The proposed framework augmented extrinsic reward with a clipped intrinsic term,
 \[
 r_t = r_t^{\mathrm{ext}} + \eta_t\,\mathrm{clip}(r_t^{\mathrm{int}},-r_{\max},r_{\max}),
 \]
-where \(\eta_t\) controlled intrinsic strength over training and \(r_{\max}\) bounded intrinsic magnitude [19]. Intrinsic reward was set to zero on environment-terminal transitions so that shaping did not depend on episode termination.
+where \(\eta_t\) controlled intrinsic strength over training and \(r_{\max}\) bounded intrinsic magnitude (Schulman et al., 2017). Intrinsic reward was set to zero on environment-terminal transitions so that shaping did not depend on episode termination.
 
 A shared base score was computed from two components: feature-space impact and region-local learning progress. Let \(z_t=\phi_\omega(o_t)\) be the learned latent representation. The base intrinsic score was defined as
 \[
 u_t = \alpha_{\mathrm{impact}}\widetilde{I}_t + \alpha_{\mathrm{LP}}\widetilde{\mathrm{LP}}_t,
 \]
-where \(\widetilde{I}_t\) and \(\widetilde{\mathrm{LP}}_t\) were RMS-normalized components and \(\alpha_{\mathrm{impact}},\alpha_{\mathrm{LP}}\ge 0\) were mixing weights [2,15].
+where \(\widetilde{I}_t\) and \(\widetilde{\mathrm{LP}}_t\) were RMS-normalized components and \(\alpha_{\mathrm{impact}},\alpha_{\mathrm{LP}}\ge 0\) were mixing weights (Baranes & Oudeyer, 2009; Raileanu & Rocktäschel, 2020).
 
-Two variants were implemented within this shared structure. GLPE (no gate) used \(r_t^{\mathrm{int}}=u_t\). GLPE applied a binary, region-specific gate and used \(r_t^{\mathrm{int}}=g_{\rho_t}u_t\), where \(\rho_t\) denoted the assigned latent-space region for transition \(t\) [2]. This separation preserved a common signal foundation while isolating the effect of gating behavior in comparative analysis.
+Two variants were implemented within this shared structure. GLPE (no gate) used \(r_t^{\mathrm{int}}=u_t\). GLPE applied a binary, region-specific gate and used \(r_t^{\mathrm{int}}=g_{\rho_t}u_t\), where \(\rho_t\) denoted the assigned latent-space region for transition \(t\) (Baranes & Oudeyer, 2009). This separation preserved a common signal foundation while isolating the effect of gating behavior in comparative analysis.
 
 ### 4.3 Latent Representation and Dynamics Model
 
-Intrinsic computation relied on a learned latent dynamics model. Observations were encoded as \(z_t=\phi_\omega(o_t)\), then used by a forward predictor \(f_\psi(z_t,a_t)\) to estimate \(z_{t+1}\), and by an inverse predictor \(g_\xi(z_t,z_{t+1})\) to infer action information [13]. The inverse model was treated as a classifier in discrete-action tasks and as a Gaussian-likelihood model in continuous-action tasks.
+Intrinsic computation relied on a learned latent dynamics model. Observations were encoded as \(z_t=\phi_\omega(o_t)\), then used by a forward predictor \(f_\psi(z_t,a_t)\) to estimate \(z_{t+1}\), and by an inverse predictor \(g_\xi(z_t,z_{t+1})\) to infer action information (Pathak et al., 2017). The inverse model was treated as a classifier in discrete-action tasks and as a Gaussian-likelihood model in continuous-action tasks.
 
 Training used the composite objective
 \[
@@ -244,13 +244,13 @@ with positive coefficients for forward and inverse losses. The forward loss used
 \[
 \mathcal{L}_{\mathrm{fwd}}(t)=\frac{1}{d}\lVert f_\psi(z_t,a_t)-z_{t+1}\rVert_2^2,
 \]
-and per-transition prediction error was defined as \(e_t=\mathcal{L}_{\mathrm{fwd}}(t)\) [13].
+and per-transition prediction error was defined as \(e_t=\mathcal{L}_{\mathrm{fwd}}(t)\) (Pathak et al., 2017).
 
 For vector-observation tasks in the experiment suite, the encoder used a two-layer multilayer perceptron with 256 hidden units per layer and produced a 128-dimensional latent feature. Dynamics modules were optimized with Adam at learning rate \(3\times10^{-4}\), with intrinsic-model gradient clipping at 5.0.
 
 ### 4.4 Region-Local Learning Progress
 
-Learning progress was localized through an online binary partition tree over latent space. Each embedding \(z_t\) was routed to a leaf region \(\rho_t\). A leaf was split when it reached capacity \(C\), had depth below \(D_{\max}\), and allowed a non-degenerate partition. Split dimension selection followed highest coordinate variance, and thresholding used the coordinate median [2].
+Learning progress was localized through an online binary partition tree over latent space. Each embedding \(z_t\) was routed to a leaf region \(\rho_t\). A leaf was split when it reached capacity \(C\), had depth below \(D_{\max}\), and allowed a non-degenerate partition. Split dimension selection followed highest coordinate variance, and thresholding used the coordinate median (Baranes & Oudeyer, 2009).
 
 For each region \(r\), long-horizon and short-horizon exponential moving averages of forward prediction error were maintained,
 \[
@@ -265,7 +265,7 @@ Region-local learning progress was defined as
 \[
 \mathrm{LP}(r)=\max(0,\mu_r^{\mathrm{long}}-\mu_r^{\mathrm{short}}).
 \]
-The transition-level value used in intrinsic computation was \(\mathrm{LP}_t=\mathrm{LP}(\rho_t)\). This definition emphasized areas where recent prediction error dropped below longer-horizon baseline, which indicated active local model improvement [2].
+The transition-level value used in intrinsic computation was \(\mathrm{LP}_t=\mathrm{LP}(\rho_t)\). This definition emphasized areas where recent prediction error dropped below longer-horizon baseline, which indicated active local model improvement (Baranes & Oudeyer, 2009).
 
 ### 4.5 Feature-Space Impact
 
@@ -273,7 +273,7 @@ The second intrinsic component measured latent-state displacement between consec
 \[
 I_t=\lVert z_{t+1}-z_t\rVert_2.
 \]
-This term rewarded transitions that changed the learned representation, and therefore emphasized state changes that were significant in latent feature geometry rather than raw observation space [15].
+This term rewarded transitions that changed the learned representation, and therefore emphasized state changes that were significant in latent feature geometry rather than raw observation space (Raileanu & Rocktäschel, 2020).
 
 To stabilize scale across environments and across training phases, component-wise RMS normalization was applied. For a scalar signal \(x_t\), a running accumulator was updated as
 \[
@@ -295,7 +295,7 @@ A learning-progress threshold was defined as \(\tau_{\mathrm{LP}}=\kappa\,\mathr
 \[
 s_r=\frac{\mu_r^{\mathrm{short}}}{e_{\mathrm{med}}+\varepsilon}.
 \]
-Region \(r\) was marked unproductive on a visit when both \(\mathrm{LP}(r)<\tau_{\mathrm{LP}}\) and \(s_r>\tau_s\) held [8].
+Region \(r\) was marked unproductive on a visit when both \(\mathrm{LP}(r)<\tau_{\mathrm{LP}}\) and \(s_r>\tau_s\) held (Mavor-Parker et al., 2021).
 
 Each region maintained binary gate state \(g_r\in\{0,1\}\) and persistence counters. Gating was activated only after at least \(R_{\min}\) regions had been visited, so that median references were sufficiently informative. With gating active, persistence and hysteresis were enforced: an active gate was turned off after \(K\) consecutive unproductive visits, while a disabled gate was re-enabled only after two consecutive visits satisfying \(\mathrm{LP}(r)>h\tau_{\mathrm{LP}}\), with \(h>1\). If gating was inactive, gates remained enabled and counters were reset.
 
@@ -303,11 +303,11 @@ The final intrinsic reward for GLPE used
 \[
 r_t^{\mathrm{int}}=g_{\rho_t}u_t.
 \]
-This operation retained the same base score used by GLPE (no gate), while introducing selective suppression as a guardrail against persistent curiosity traps [8].
+This operation retained the same base score used by GLPE (no gate), while introducing selective suppression as a guardrail against persistent curiosity traps (Mavor-Parker et al., 2021).
 
 ### 4.7 Intrinsic Reward Scheduling
 
-Intrinsic shaping strength was scheduled over training using a cosine taper in the GLPE family. Let \(p\in[0,3]\) denote training progress as fraction of total environment steps, and let \(p_{\mathrm{start}}<p_{\mathrm{end}}\) define taper interval. The schedule was
+Intrinsic shaping strength was scheduled over training using a cosine taper in the GLPE family. Let \(p\in(Barto, 2012)\) denote training progress as fraction of total environment steps, and let \(p_{\mathrm{start}}<p_{\mathrm{end}}\) define taper interval. The schedule was
 \[
 w(p)=
 \begin{cases}
@@ -318,7 +318,7 @@ w(p)=
 \]
 The effective intrinsic coefficient became \(\eta_t=\eta\,w(p_t)\), and remained constant at \(\eta_t=\eta\) when schedule bounds were not specified.
 
-This schedule treated intrinsic reward as a transient exploration aid, with stronger influence early in learning and reduced influence later when policy refinement depended more on extrinsic objective optimization. The same scheduling rule was used in GLPE and GLPE (no gate), preserving comparability between the two proposed variants [19].
+This schedule treated intrinsic reward as a transient exploration aid, with stronger influence early in learning and reduced influence later when policy refinement depended more on extrinsic objective optimization. The same scheduling rule was used in GLPE and GLPE (no gate), preserving comparability between the two proposed variants (Schulman et al., 2017).
 
 ### 4.8 Algorithmic Workflow
 
@@ -378,17 +378,17 @@ The symbol B denotes the number of parallel environment instances, T denotes rol
 
 ### 4.10 Baseline Methods
 
-The proposed methods were compared against five baselines that represent established intrinsic-reward or control references: Vanilla PPO, ICM, RND, RIDE, and RIAC [2,6,13,15,19]. Vanilla PPO optimized only extrinsic reward and served as the non-intrinsic control baseline.
+The proposed methods were compared against five baselines that represent established intrinsic-reward or control references: Vanilla PPO, ICM, RND, RIDE, and RIAC (Baranes & Oudeyer, 2009; Burda, Edwards, Storkey, et al., 2018; Pathak et al., 2017; Raileanu & Rocktäschel, 2020; Schulman et al., 2017). Vanilla PPO optimized only extrinsic reward and served as the non-intrinsic control baseline.
 
-ICM used forward-model prediction error in learned feature space as intrinsic reward. RND used predictor error against a fixed random target network. RIDE used feature-space impact modulated by episodic visitation counts from discretized features. RIAC used region-local learning progress from adaptive partitioning of feature space [2,6,13,15].
+ICM used forward-model prediction error in learned feature space as intrinsic reward. RND used predictor error against a fixed random target network. RIDE used feature-space impact modulated by episodic visitation counts from discretized features. RIAC used region-local learning progress from adaptive partitioning of feature space (Baranes & Oudeyer, 2009; Burda, Edwards, Storkey, et al., 2018; Pathak et al., 2017; Raileanu & Rocktäschel, 2020).
 
-All methods shared the same PPO backbone and policy-value architecture within each environment. Intrinsic-reward methods used a common augmented-reward form with scaling and clipping, and per-environment intrinsic scale parameters were held constant across methods to reduce reward-scale confounding in cross-method comparison [19].
+All methods shared the same PPO backbone and policy-value architecture within each environment. Intrinsic-reward methods used a common augmented-reward form with scaling and clipping, and per-environment intrinsic scale parameters were held constant across methods to reduce reward-scale confounding in cross-method comparison (Schulman et al., 2017).
 
 ### 4.11 Training Protocol
 
-All agents were trained with PPO and GAE using separate policy and value multilayer perceptrons with two hidden layers of width 256 and ReLU activations [18,19]. Continuous-control policies used diagonal Gaussian outputs with action squashing to finite environment bounds when required.
+All agents were trained with PPO and GAE using separate policy and value multilayer perceptrons with two hidden layers of width 256 and ReLU activations (Schulman et al., 2015; Schulman et al., 2017). Continuous-control policies used diagonal Gaussian outputs with action squashing to finite environment bounds when required.
 
-Each training iteration collected up to \(N=16{,}384\) on-policy transitions, computed intrinsic rewards when applicable, set intrinsic rewards to zero on terminal transitions and specific truncation cases without final observation, then computed advantages and value targets. PPO updates were applied across shuffled minibatches for multiple epochs. Adam optimization, per-batch advantage normalization, and gradient-norm clipping at 1.0 were used for policy and value updates [18,19].
+Each training iteration collected up to \(N=16{,}384\) on-policy transitions, computed intrinsic rewards when applicable, set intrinsic rewards to zero on terminal transitions and specific truncation cases without final observation, then computed advantages and value targets. PPO updates were applied across shuffled minibatches for multiple epochs. Adam optimization, per-batch advantage normalization, and gradient-norm clipping at 1.0 were used for policy and value updates (Schulman et al., 2015; Schulman et al., 2017).
 
 Vector observations were normalized online using running mean and variance, and the same normalization was applied across policy, value, and intrinsic modules. Trainable intrinsic modules were updated once per PPO iteration using the same collected on-policy batch. For methods without internal intrinsic normalization, running RMS normalization was applied to raw intrinsic output before scaling and clipping. For methods with intrinsically normalized outputs, scaling and clipping were applied directly.
 
@@ -443,7 +443,7 @@ The cost profile was consistent with the experimental design, where multiple met
 
 ### 4.14.2 Software Development Tools
 
-Software development and experimentation were implemented through a Python-based research stack with explicit separation of training, evaluation, benchmarking, visualization, and testing modules in the codebase. The selected tools supported the PPO-centered pipeline, intrinsic reward modules, and benchmark environments described in prior sections [19].
+Software development and experimentation were implemented through a Python-based research stack with explicit separation of training, evaluation, benchmarking, visualization, and testing modules in the codebase. The selected tools supported the PPO-centered pipeline, intrinsic reward modules, and benchmark environments described in prior sections (Schulman et al., 2017).
 
 | Tool or Library | Role in the Study | Evidence in Repository |
 |---|---|---|
@@ -492,7 +492,7 @@ This allocation supported consistent progression from implementation to reportin
 
 Project management was implemented to maintain methodological consistency across model design, experimental execution, result consolidation, and thesis integration. The management approach followed a reproducible research workflow centered on version-controlled code, fixed training and evaluation protocols, and explicit artifact generation for plots and summary tables.
 
-Operational planning covered four areas: budget and cost management, software development tools, schedule and timeline control, and role responsibilities. These areas supported the same technical scope used in the experimental sections, particularly PPO-based training, intrinsic reward computation, and multi-environment evaluation under fixed budgets [19].
+Operational planning covered four areas: budget and cost management, software development tools, schedule and timeline control, and role responsibilities. These areas supported the same technical scope used in the experimental sections, particularly PPO-based training, intrinsic reward computation, and multi-environment evaluation under fixed budgets (Schulman et al., 2017).
 
 #### 4.14.1 Budget and Cost Management
 
@@ -504,7 +504,7 @@ Operational planning covered four areas: budget and cost management, software de
 
 ## 5. Results and Analysis
 
-This chapter reports comparative results for GLPE, GLPE without gating, Vanilla PPO, ICM, RND, RIDE, and RIAC on the five-task benchmark suite defined in Chapter 4 [2,6,13,15,19]. Consistent with the evaluation protocol, reported task performance uses deterministic offline evaluation and extrinsic return unless explicitly stated otherwise.
+This chapter reports comparative results for GLPE, GLPE without gating, Vanilla PPO, ICM, RND, RIDE, and RIAC on the five-task benchmark suite defined in Chapter 4 (Baranes & Oudeyer, 2009; Burda, Edwards, Storkey, et al., 2018; Pathak et al., 2017; Raileanu & Rocktäschel, 2020; Schulman et al., 2017). Consistent with the evaluation protocol, reported task performance uses deterministic offline evaluation and extrinsic return unless explicitly stated otherwise.
 
 The analysis is organized into curve-level behavior, integrated performance summaries, thresholded reliability, component ablation, intrinsic shaping diagnostics, gating behavior, and wall-clock efficiency. This organization follows the same experimental logic used in the source paper, while aligning with thesis chapter structure.
 
@@ -512,7 +512,7 @@ The analysis is organized into curve-level behavior, integrated performance summ
 
 Learning curves versus environment steps showed that GLPE without gating tracked the strongest baseline closely across most tasks, with stable behavior across random seeds. The gated variant differed most clearly in exploration-sensitive settings. On MountainCar-v0, gating remained beneficial and supported strong upward progression. On Humanoid-v5, between-seed variance was large for all methods, and gating tended to be conservative in some runs.
 
-On MuJoCo locomotion tasks, where extrinsic reward was denser, both GLPE variants behaved similarly and stayed within a modest gap of the strongest intrinsic baseline in the curve-level view [6,15]. This pattern indicated that GLPE retained competitiveness even when dense task reward reduced the relative advantage of additional exploration shaping.
+On MuJoCo locomotion tasks, where extrinsic reward was denser, both GLPE variants behaved similarly and stayed within a modest gap of the strongest intrinsic baseline in the curve-level view (Burda, Edwards, Storkey, et al., 2018; Raileanu & Rocktäschel, 2020). This pattern indicated that GLPE retained competitiveness even when dense task reward reduced the relative advantage of additional exploration shaping.
 
 The curve-level perspective also clarified that ranking differences were task-dependent rather than uniform. MountainCar-v0 favored GLPE strongly, whereas BipedalWalker-v3 and MuJoCo tasks showed closer competition among several methods.
 
@@ -525,7 +525,7 @@ Figure 5.1. Evaluation learning curves for GLPE and baseline intrinsic-reward me
 
 Final-checkpoint comparisons and step-normalized AUC summarized both asymptotic quality and learning speed over fixed interaction budgets. Step-AUC values showed that GLPE achieved the highest mean value on MountainCar-v0, with GLPE equal to or near the best baseline on several other tasks but not dominant in all environments.
 
-For BipedalWalker-v3, GLPE without gating reached a competitive step-AUC of 255.2, close to the best baseline value of 257.3 from ICM [13]. For Ant-v5 and HalfCheetah-v5, GLPE values remained below the strongest baseline means, although confidence intervals overlapped in several cases [6,15]. On Humanoid-v5, all methods exhibited wide uncertainty bands, and step-AUC ranking was therefore unstable under bootstrap uncertainty.
+For BipedalWalker-v3, GLPE without gating reached a competitive step-AUC of 255.2, close to the best baseline value of 257.3 from ICM (Pathak et al., 2017). For Ant-v5 and HalfCheetah-v5, GLPE values remained below the strongest baseline means, although confidence intervals overlapped in several cases (Burda, Edwards, Storkey, et al., 2018; Raileanu & Rocktäschel, 2020). On Humanoid-v5, all methods exhibited wide uncertainty bands, and step-AUC ranking was therefore unstable under bootstrap uncertainty.
 
 These results indicated that GLPE provided strong sample-efficiency behavior in sparse-reward settings, while remaining broadly competitive in dense-reward settings where baseline intrinsic objectives were already effective.
 
@@ -542,9 +542,9 @@ Table 5.1. Step-AUC of deterministic evaluation return versus cumulative environ
 
 ### 5.3 Thresholded Reliability and Steps-to-Threshold
 
-Thresholded analysis was used to separate delayed attainment from complete non-attainment. Solved-threshold statistics showed that both GLPE variants solved MountainCar-v0 in all seeds, each at a median of 0.35M steps, while the most reliable baseline solved 9 of 10 seeds at 0.44M steps [15].
+Thresholded analysis was used to separate delayed attainment from complete non-attainment. Solved-threshold statistics showed that both GLPE variants solved MountainCar-v0 in all seeds, each at a median of 0.35M steps, while the most reliable baseline solved 9 of 10 seeds at 0.44M steps (Raileanu & Rocktäschel, 2020).
 
-At solved level, reliability differed more on tasks near the performance cutoff. On BipedalWalker-v3, GLPE solved 4 of 8 seeds and GLPE without gating solved 2 of 8, while RIAC solved 8 of 8 but at a slower median of 4.09M steps [2]. On Humanoid-v5, solved-threshold reach counts were low across methods, which was consistent with the high-variance behavior seen in learning curves.
+At solved level, reliability differed more on tasks near the performance cutoff. On BipedalWalker-v3, GLPE solved 4 of 8 seeds and GLPE without gating solved 2 of 8, while RIAC solved 8 of 8 but at a slower median of 4.09M steps (Baranes & Oudeyer, 2009). On Humanoid-v5, solved-threshold reach counts were low across methods, which was consistent with the high-variance behavior seen in learning curves.
 
 At 50 percent threshold, GLPE without gating reached the target in all seeds on four tasks and in 4 of 5 seeds on Humanoid-v5, matching the strongest baseline reach count on each environment. The gap between 50 percent and 100 percent success therefore concentrated on high-variance or near-cutoff regimes rather than on early competence acquisition.
 
@@ -594,7 +594,7 @@ Table 5.4. Final-checkpoint mean extrinsic return for GLPE and component ablatio
 
 The intrinsic term in GLPE was designed as a temporary exploration aid rather than a persistent optimization target. Training therefore applied a cosine taper to the intrinsic coefficient so that intrinsic shaping weight decreased over time.
 
-Reward decomposition diagnostics showed that GLPE and GLPE without gating reduced applied intrinsic contribution later in training, whereas several baselines retained nonzero intrinsic contribution throughout a larger fraction of training [6,13,15]. This behavior was consistent with the objective of reducing long-horizon dependence on intrinsic shaping once useful behavior had emerged.
+Reward decomposition diagnostics showed that GLPE and GLPE without gating reduced applied intrinsic contribution later in training, whereas several baselines retained nonzero intrinsic contribution throughout a larger fraction of training (Burda, Edwards, Storkey, et al., 2018; Pathak et al., 2017; Raileanu & Rocktäschel, 2020). This behavior was consistent with the objective of reducing long-horizon dependence on intrinsic shaping once useful behavior had emerged.
 
 Because evaluation used extrinsic return only, these diagnostics were interpreted as training-signal analysis rather than direct outcome metrics. Even so, the dynamics supported the intended mechanism of early exploration support followed by gradual emphasis on task reward.
 
@@ -622,7 +622,7 @@ Wall-clock AUC was computed under a common per-task time horizon equal to the mi
 
 Under this wall-clock view, GLPE without gating stayed close to the strongest baseline on BipedalWalker-v3, HalfCheetah-v5, Ant-v5, and Humanoid-v5. The gated variant usually produced lower wall-clock AUC, which was consistent with additional robust-statistics and gating computations.
 
-Per-update timing decomposition showed that environment stepping and PPO optimization dominated runtime on expensive MuJoCo tasks, while intrinsic overhead became proportionally more important on MountainCar-v0 where environment interaction was cheap [19]. A microbenchmark of gating-median recomputation showed 20,877 transitions per second for recomputation every update and 100,173 transitions per second with cache refresh every 64 updates, corresponding to a 4.83x throughput increase. Since cached medians can alter gating decisions when stale, this optimization was treated as an implementation option rather than a core benchmark condition.
+Per-update timing decomposition showed that environment stepping and PPO optimization dominated runtime on expensive MuJoCo tasks, while intrinsic overhead became proportionally more important on MountainCar-v0 where environment interaction was cheap (Schulman et al., 2017). A microbenchmark of gating-median recomputation showed 20,877 transitions per second for recomputation every update and 100,173 transitions per second with cache refresh every 64 updates, corresponding to a 4.83x throughput increase. Since cached medians can alter gating decisions when stale, this optimization was treated as an implementation option rather than a core benchmark condition.
 
 
 Figure 5.5. Wall-clock AUC of evaluation performance under a common time horizon.
@@ -635,47 +635,47 @@ Figure 5.6. Timing breakdown per PPO update.
 
 ### 5.8 Summary of Findings
 
-Results across curve-level, threshold-level, and efficiency-level analyses support four main findings. First, GLPE was strongest in sparse-reward exploration, with clear gains on MountainCar-v0 in both step-AUC and solved-threshold reliability. Second, on dense-reward locomotion tasks, GLPE variants remained competitive but did not consistently exceed the best intrinsic baseline on all metrics [6,13,15].
+Results across curve-level, threshold-level, and efficiency-level analyses support four main findings. First, GLPE was strongest in sparse-reward exploration, with clear gains on MountainCar-v0 in both step-AUC and solved-threshold reliability. Second, on dense-reward locomotion tasks, GLPE variants remained competitive but did not consistently exceed the best intrinsic baseline on all metrics (Burda, Edwards, Storkey, et al., 2018; Pathak et al., 2017; Raileanu & Rocktäschel, 2020).
 
-Third, thresholded analysis showed that many apparent gaps at solved level were concentrated in high-variance or near-cutoff settings, especially BipedalWalker-v3 and Humanoid-v5, while intermediate-threshold competence was often comparable to top baselines [2]. Fourth, ablation and diagnostic results indicated that combining impact and learning progress was generally robust across mixed task regimes, and that gating behaved selectively rather than globally.
+Third, thresholded analysis showed that many apparent gaps at solved level were concentrated in high-variance or near-cutoff settings, especially BipedalWalker-v3 and Humanoid-v5, while intermediate-threshold competence was often comparable to top baselines (Baranes & Oudeyer, 2009). Fourth, ablation and diagnostic results indicated that combining impact and learning progress was generally robust across mixed task regimes, and that gating behaved selectively rather than globally.
 
 Overall, the evidence indicates that GLPE is a practical intrinsic-shaping framework for balancing exploration guidance and policy optimization stability, with strongest benefits in sparse or exploration-sensitive environments and acceptable competitiveness elsewhere.
 
 ## 6. Conclusion and Recommendations
 
-This chapter presents the final synthesis of the study outcomes and their implications for intrinsic-reward shaping in reinforcement learning. Conclusions are drawn from the reported curve-level, threshold-level, ablation, diagnostic, and efficiency analyses under a unified PPO training protocol across five control benchmarks [19]. Recommendations are then provided for practical use, methodological refinement, and subsequent research directions that remain aligned with the established scope and limitations of the study [9].
+This chapter presents the final synthesis of the study outcomes and their implications for intrinsic-reward shaping in reinforcement learning. Conclusions are drawn from the reported curve-level, threshold-level, ablation, diagnostic, and efficiency analyses under a unified PPO training protocol across five control benchmarks (Schulman et al., 2017). Recommendations are then provided for practical use, methodological refinement, and subsequent research directions that remain aligned with the established scope and limitations of the study (Ng et al., 1999).
 
 ### 6.1 Conclusions
 
-The study showed that intrinsic-reward shaping based on combined feature-space impact and region-local learning progress can improve exploration quality while preserving practical training stability across mixed task regimes [2,15]. Under the benchmark conditions used in this work, GLPE without gating behaved as the most consistent default variant, remaining competitive with strong intrinsic baselines on both step-normalized and wall-clock views in most tested environments [6,13].
+The study showed that intrinsic-reward shaping based on combined feature-space impact and region-local learning progress can improve exploration quality while preserving practical training stability across mixed task regimes (Baranes & Oudeyer, 2009; Raileanu & Rocktäschel, 2020). Under the benchmark conditions used in this work, GLPE without gating behaved as the most consistent default variant, remaining competitive with strong intrinsic baselines on both step-normalized and wall-clock views in most tested environments (Burda, Edwards, Storkey, et al., 2018; Pathak et al., 2017).
 
 The strongest gains were observed in sparse-reward exploration, particularly on MountainCar-v0, where GLPE produced favorable threshold reliability and step-efficiency behavior relative to compared methods. On dense-reward locomotion tasks, outcomes indicated competitive but non-uniform superiority, which is consistent with the higher variance and task-dependent exploration demands of those settings.
 
-The gated GLPE variant provided targeted suppression of intrinsic shaping in regions where prediction error stayed high while local learning progress was weak, reducing exposure to potentially unproductive curiosity signals [8]. This behavior supported robustness in sparse settings but could be conservative in high-variance domains, especially when aggressive filtering delayed beneficial exploration.
+The gated GLPE variant provided targeted suppression of intrinsic shaping in regions where prediction error stayed high while local learning progress was weak, reducing exposure to potentially unproductive curiosity signals (Mavor-Parker et al., 2021). This behavior supported robustness in sparse settings but could be conservative in high-variance domains, especially when aggressive filtering delayed beneficial exploration.
 
-The cosine taper schedule for intrinsic-reward scaling supported the intended transition from exploration assistance to task-return optimization later in training. This schedule design helped maintain compatibility with PPO optimization dynamics while limiting late-stage dependence on intrinsic bonuses [19].
+The cosine taper schedule for intrinsic-reward scaling supported the intended transition from exploration assistance to task-return optimization later in training. This schedule design helped maintain compatibility with PPO optimization dynamics while limiting late-stage dependence on intrinsic bonuses (Schulman et al., 2017).
 
-The study remained bounded to vector-observation control benchmarks and an on-policy PPO backbone, and the applied intrinsic shaping was not policy-invariant in the formal reward-transformation sense [9,19]. Therefore, conclusions should be interpreted as evidence of practical effectiveness within the evaluated setup rather than universal guarantees across architectures, observation modalities, or training paradigms.
+The study remained bounded to vector-observation control benchmarks and an on-policy PPO backbone, and the applied intrinsic shaping was not policy-invariant in the formal reward-transformation sense (Ng et al., 1999; Schulman et al., 2017). Therefore, conclusions should be interpreted as evidence of practical effectiveness within the evaluated setup rather than universal guarantees across architectures, observation modalities, or training paradigms.
 
 ### 6.2 Recommendations
 
-For comparable low-dimensional continuous-control tasks trained with PPO, GLPE without gating should be considered the primary default configuration because it provided the best overall balance between consistency and performance across environments [19].
+For comparable low-dimensional continuous-control tasks trained with PPO, GLPE without gating should be considered the primary default configuration because it provided the best overall balance between consistency and performance across environments (Schulman et al., 2017).
 
-The gated variant should be prioritized when the task exhibits sparse or delayed extrinsic feedback and when instability from persistent high prediction error is expected. In such cases, region-wise suppression can improve reliability by reducing time spent in low-progress exploratory regimes [2,8].
+The gated variant should be prioritized when the task exhibits sparse or delayed extrinsic feedback and when instability from persistent high prediction error is expected. In such cases, region-wise suppression can improve reliability by reducing time spent in low-progress exploratory regimes (Baranes & Oudeyer, 2009; Mavor-Parker et al., 2021).
 
 Evaluation practice should retain multiple complementary views, including learning curves, step-normalized AUC, wall-clock AUC, and thresholded reliability at solved and reduced levels. This combined protocol avoids over-reliance on a single metric and better captures delayed attainment and variance-sensitive behavior.
 
 Reporting of computational results should continue to separate algorithmic quality from implementation overhead. Runtime decomposition and explicit disclosure of optional optimizations, such as cached gating statistics, should be preserved so that comparisons remain interpretable and reproducible.
 
-Future implementations should maintain consistency between shaping design and policy optimization settings by preserving explicit schedules for intrinsic scaling and by documenting hyperparameter choices in a task-aware manner [19].
+Future implementations should maintain consistency between shaping design and policy optimization settings by preserving explicit schedules for intrinsic scaling and by documenting hyperparameter choices in a task-aware manner (Schulman et al., 2017).
 
 ### 6.3 Future Work
 
-Future work may extend GLPE to richer observation modalities, including image-based inputs, where latent representation quality and dynamics-model calibration can affect both impact and progress estimates [6,13].
+Future work may extend GLPE to richer observation modalities, including image-based inputs, where latent representation quality and dynamics-model calibration can affect both impact and progress estimates (Burda, Edwards, Storkey, et al., 2018; Pathak et al., 2017).
 
-Additional investigation is warranted for off-policy or hybrid training regimes to determine whether the same intrinsic formulation preserves its practical advantages when replay dynamics, target networks, and update frequencies differ from PPO [19].
+Additional investigation is warranted for off-policy or hybrid training regimes to determine whether the same intrinsic formulation preserves its practical advantages when replay dynamics, target networks, and update frequencies differ from PPO (Schulman et al., 2017).
 
-Adaptive gating mechanisms should be examined to reduce conservatism in high-variance environments while retaining protection against persistent noisy-error regions. Candidate directions include robust online threshold adaptation and confidence-aware region statistics grounded in existing uncertainty-aware exploration literature [8].
+Adaptive gating mechanisms should be examined to reduce conservatism in high-variance environments while retaining protection against persistent noisy-error regions. Candidate directions include robust online threshold adaptation and confidence-aware region statistics grounded in existing uncertainty-aware exploration literature (Mavor-Parker et al., 2021).
 
 Computational refinement remains important for broader deployment. Follow-up work should evaluate efficient approximations for region statistics and update scheduling that reduce overhead without materially altering gating decisions or benchmark conclusions.
 
@@ -683,90 +683,90 @@ Broader benchmark coverage is also recommended, including more diverse sparse-re
 
 ## Bibliography
 
-[1]
+(Badia et al., 2020)
 Badia, A. P., Sprechmann, P., Vitvitskyi, A., Guo, D., Piot, B., Kapturowski, S., Tieleman, O., Arjovsky, M., Pritzel, A., Bolt, A., & Blundell, C. (2020). Never Give Up: Learning Directed Exploration Strategies. *arXiv (Cornell University)*. https://doi.org/10.48550/arxiv.2002.06038
 (Badia et al., 2020)
 
-[2]
+(Baranes & Oudeyer, 2009)
 Baranes, A., & Oudeyer, P. (2009). R-IAC: robust intrinsically motivated exploration and active learning. *IEEE Transactions on Autonomous Mental Development*, *1*(3), 155--169. https://doi.org/10.1109/tamd.2009.2037513
 (Baranes & Oudeyer, 2009)
 
-[3]
+(Barto, 2012)
 Barto, A. G. (2012). Intrinsic Motivation and Reinforcement Learning. In *Intrinsically Motivated Learning in Natural and Artificial Systems* (pp. 17--47). https://doi.org/10.1007/978-3-642-32375-1_2
 (Barto, 2012)
 
-[4]
+(Bellemare et al., 2016)
 Bellemare, M. G., Srinivasan, S., Ostrovski, G., Schaul, T., Saxton, D., & Munos, R. (2016). Unifying Count-Based exploration and intrinsic motivation. *arXiv (Cornell University)*. https://doi.org/10.48550/arxiv.1606.01868
 (Bellemare et al., 2016)
 
-[5]
+(Burda, Edwards, Pathak, et al., 2018)
 Burda, Y., Edwards, H., Pathak, D., Storkey, A., Darrell, T., & Efros, A. A. (2018). Large-Scale study of Curiosity-Driven Learning. *arXiv (Cornell University)*. https://doi.org/10.48550/arxiv.1808.04355
 (Burda, Edwards, Pathak, et al., 2018)
 
-[6]
+(Burda, Edwards, Storkey, et al., 2018)
 Burda, Y., Edwards, H., Storkey, A., & Klimov, O. (2018). Exploration by random network distillation. *arXiv (Cornell University)*. https://doi.org/10.48550/arxiv.1810.12894
 (Burda, Edwards, Storkey, et al., 2018)
 
-[7]
+(Houthooft et al., 2016)
 Houthooft, R., Chen, X., Duan, Y., Schulman, J., Filip, D. T., & Abbeel, P. (2016). VIME: Variational Information Maximizing Exploration. *arXiv (Cornell University)*. https://doi.org/10.48550/arxiv.1605.09674
 (Houthooft et al., 2016)
 
-[8]
+(Mavor-Parker et al., 2021)
 Mavor-Parker, A. N., Young, K. A., Barry, C., & Griffin, L. D. (2021). How to Stay Curious while Avoiding Noisy TVs using Aleatoric Uncertainty Estimation. *arXiv (Cornell University)*. https://doi.org/10.48550/arxiv.2102.04399
 (Mavor-Parker et al., 2021)
 
-[9]
+(Ng et al., 1999)
 Ng, A. Y., Harada, D., & Russell, S. (1999). Policy Invariance Under Reward Transformations: Theory and Application to Reward Shaping. In *Proceedings of the Sixteenth International Conference on Machine Learning* (pp. 278--287). Morgan Kaufmann Publishers Inc. https://doi.org/10.5555/645528.657613
 (Ng et al., 1999)
 
-[10]
+(Ostrovski et al., 2017)
 Ostrovski, G., Bellemare, M. G., Van Den Oord, A., & Munos, R. (2017). Count-Based Exploration with Neural Density Models. *arXiv (Cornell University)*. https://doi.org/10.48550/arxiv.1703.01310
 (Ostrovski et al., 2017)
 
-[11]
+(Oudeyer, 2007)
 Oudeyer, P. (2007). What is intrinsic motivation? A typology of computational approaches. *Frontiers in Neurorobotics*, *1*, 6. https://doi.org/10.3389/neuro.12.006.2007
 (Oudeyer, 2007)
 
-[12]
+(Oudeyer et al., 2007)
 Oudeyer, P., Kaplan, F., & Hafner, V. V. (2007). Intrinsic motivation systems for autonomous mental development. *IEEE Transactions on Evolutionary Computation*, *11*(2), 265--286. https://doi.org/10.1109/tevc.2006.890271
 (Oudeyer et al., 2007)
 
-[13]
+(Pathak et al., 2017)
 Pathak, D., Agrawal, P., Efros, A., & Darrell, T. (2017). Curiosity-driven Exploration by Self-supervised Prediction. In *arXiv*(arXiv:1705.05363). arXiv. https://arxiv.org/abs/1705.05363
 (Pathak et al., 2017)
 
-[14]
+(Pathak et al., 2019)
 Pathak, D., Gandhi, D., & Gupta, A. (2019). Self-Supervised Exploration via disagreement. *arXiv (Cornell University)*. https://doi.org/10.48550/arxiv.1906.04161
 (Pathak et al., 2019)
 
-[15]
+(Raileanu & Rocktäschel, 2020)
 Raileanu, R., & Rocktäschel, T. (2020). RIDE: Rewarding Impact-Driven Exploration for Procedurally-Generated Environments. *arXiv (Cornell University)*. https://doi.org/10.48550/arxiv.2002.12292
 (Raileanu & Rocktäschel, 2020)
 
-[16]
+(Savinov et al., 2018)
 Savinov, N., Raichuk, A., Marinier, R., Vincent, D., Pollefeys, M., Lillicrap, T., & Gelly, S. (2018). Episodic Curiosity through Reachability. *arXiv (Cornell University)*. https://doi.org/10.48550/arxiv.1810.02274
 (Savinov et al., 2018)
 
-[17]
+(Schmidhuber, 1991)
 Schmidhuber, J. (1991). A possibility for implementing curiosity and boredom in Model-Building neural controllers. In *The MIT Press eBooks* (pp. 222--228). https://doi.org/10.7551/mitpress/3115.003.0030
 (Schmidhuber, 1991)
 
-[18]
+(Schulman et al., 2015)
 Schulman, J., Moritz, P., Levine, S., Jordan, M., & Abbeel, P. (2015). High-Dimensional Continuous Control Using Generalized Advantage Estimation. *arXiv (Cornell University)*. https://doi.org/10.48550/arxiv.1506.02438
 (Schulman et al., 2015)
 
-[19]
+(Schulman et al., 2017)
 Schulman, J., Wolski, F., Dhariwal, P., Radford, A., & Klimov, O. (2017). Proximal Policy Optimization Algorithms. In *arXiv*(arXiv:1707.06347). arXiv. https://arxiv.org/abs/1707.06347
 (Schulman et al., 2017)
 
-[20]
+(Singh et al., 2005)
 Singh, S., Barto, A. G., & Chentanez, N. (2005). *Intrinsically motivated reinforcement learning*. https://doi.org/10.21236/ada440280
 (Singh et al., 2005)
 
-[21]
+(Stadie et al., 2015)
 Stadie, B. C., Levine, S., & Abbeel, P. (2015). Incentivizing exploration in reinforcement learning with deep predictive models. *arXiv (Cornell University)*. https://doi.org/10.48550/arxiv.1507.00814
 (Stadie et al., 2015)
 
-[22]
+(Tang et al., 2016)
 Tang, H., Houthooft, R., Foote, D., Stooke, A., Chen, X., Duan, Y., Schulman, J., Filip, D. T., & Abbeel, P. (2016). #Exploration: A study of Count-Based exploration for deep reinforcement learning. *arXiv (Cornell University)*, *30*, 2750--2759. https://doi.org/10.48550/arxiv.1611.04717
 (Tang et al., 2016)
