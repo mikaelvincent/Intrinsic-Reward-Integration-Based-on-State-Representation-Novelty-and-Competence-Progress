@@ -1,6 +1,6 @@
 ### 4.7 Intrinsic Reward Scheduling
 
-Intrinsic shaping strength was scheduled over training using a cosine taper in the GLPE family. Let \(p\in[0,3]\) denote training progress as fraction of total environment steps, and let \(p_{\mathrm{start}}<p_{\mathrm{end}}\) define taper interval. The schedule was
+Intrinsic shaping strength was scheduled over training using a cosine taper in the GLPE family. Let \(0 \le p \le 1\) denote training progress as the fraction of completed total environment steps, and let \(p_{\mathrm{start}}<p_{\mathrm{end}}\) define taper interval. The schedule was
 \[
 w(p)=
 \begin{cases}
