@@ -60,10 +60,10 @@ def expand_citation_token(token: str) -> list[int]:
 
 
 def rewrite_numbered_citations(text: str, citation_map: dict[int, str]) -> str:
-    pattern = re.compile(r"\[([0-9,\-\s]+)\]")
+    pattern = re.compile(r"\{\{CIT:([0-9,\-\s]+)\}\}|\[([0-9,\-\s]+)\]")
 
     def repl(match: re.Match[str]) -> str:
-        raw = match.group(1)
+        raw = match.group(1) or match.group(2)
         ids: list[int] = []
         for token in raw.split(","):
             ids.extend(expand_citation_token(token))
