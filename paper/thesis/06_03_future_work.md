@@ -6,6 +6,6 @@ Additional investigation is warranted for off-policy or hybrid training regimes 
 
 Adaptive gating mechanisms should be examined to reduce conservatism in high-variance environments while retaining protection against persistent noisy-error regions. Candidate directions include robust online threshold adaptation and confidence-aware region statistics grounded in existing uncertainty-aware exploration literature [8].
 
-Computational refinement remains important for broader deployment. Follow-up work should evaluate efficient approximations for region statistics and update scheduling that reduce overhead without materially altering gating decisions or benchmark conclusions .
+Computational refinement remains important for broader deployment. Follow-up work should evaluate efficient approximations for region statistics and update scheduling that reduce overhead without materially altering gating decisions or benchmark conclusions.
 
-Broader benchmark coverage is also recommended, including more diverse sparse-reward tasks and additional continuous-control settings, so that generalization claims can be assessed under wider dynamics and reward structures .
+Broader benchmark coverage is also recommended, including more diverse sparse-reward tasks and additional continuous-control settings, so that generalization claims can be assessed under wider dynamics and reward structures.

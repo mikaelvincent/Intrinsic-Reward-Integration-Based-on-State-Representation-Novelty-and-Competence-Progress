@@ -10,7 +10,7 @@ s_r=\frac{\mu_r^{\mathrm{short}}}{e_{\mathrm{med}}+\varepsilon}.
 \]
 Region \(r\) was marked unproductive on a visit when both \(\mathrm{LP}(r)<\tau_{\mathrm{LP}}\) and \(s_r>\tau_s\) held [8].
 
-Each region maintained binary gate state \(g_r\in\{0,1\}\) and persistence counters. Gating was activated only after at least \(R_{\min}\) regions had been visited, so that median references were sufficiently informative. With gating active, persistence and hysteresis were enforced: an active gate was turned off after \(K\) consecutive unproductive visits, while a disabled gate was re-enabled only after two consecutive visits satisfying \(\mathrm{LP}(r)>h\tau_{\mathrm{LP}}\), with \(h>1\). If gating was inactive, gates remained enabled and counters were reset .
+Each region maintained binary gate state \(g_r\in\{0,1\}\) and persistence counters. Gating was activated only after at least \(R_{\min}\) regions had been visited, so that median references were sufficiently informative. With gating active, persistence and hysteresis were enforced: an active gate was turned off after \(K\) consecutive unproductive visits, while a disabled gate was re-enabled only after two consecutive visits satisfying \(\mathrm{LP}(r)>h\tau_{\mathrm{LP}}\), with \(h>1\). If gating was inactive, gates remained enabled and counters were reset.
 
 The final intrinsic reward for GLPE used
 \[

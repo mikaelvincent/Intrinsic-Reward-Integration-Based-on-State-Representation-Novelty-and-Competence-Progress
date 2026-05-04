@@ -9,6 +9,6 @@ w(p)=
 0, & p\ge p_{\mathrm{end}}.
 \end{cases}
 \]
-The effective intrinsic coefficient became \(\eta_t=\eta\,w(p_t)\), and remained constant at \(\eta_t=\eta\) when schedule bounds were not specified .
+The effective intrinsic coefficient became \(\eta_t=\eta\,w(p_t)\), and remained constant at \(\eta_t=\eta\) when schedule bounds were not specified.
 
 This schedule treated intrinsic reward as a transient exploration aid, with stronger influence early in learning and reduced influence later when policy refinement depended more on extrinsic objective optimization. The same scheduling rule was used in GLPE and GLPE (no gate), preserving comparability between the two proposed variants [19].
