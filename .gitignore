@@ -195,3 +195,4 @@ code/temp
 PAPER_CONTENT_PLAN.md
 
 paper/build
+!paper/thesis/build/
