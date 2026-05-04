@@ -1,6 +1,6 @@
 ### 4.14.2 Software Development Tools
 
-Software development and experimentation were implemented through a Python-based research stack with explicit separation of training, evaluation, benchmarking, visualization, and testing modules in the codebase. The selected tools supported the PPO-centered pipeline, intrinsic reward modules, and benchmark environments described in prior sections [19].
+Software development and experimentation were implemented through a Python-based research stack with explicit separation of training, evaluation, benchmarking, visualization, and testing modules in the codebase. The selected tools supported the PPO-centered pipeline, intrinsic reward modules, and benchmark environments described in prior sections {{CIT:19}}.
 
 | Tool or Library | Role in the Study | Evidence in Repository |
 |---|---|---|
