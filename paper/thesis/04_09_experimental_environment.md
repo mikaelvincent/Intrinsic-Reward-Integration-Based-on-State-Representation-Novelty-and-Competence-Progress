@@ -1,6 +1,6 @@
 ### 4.9 Experimental Environment
 
-Experiments were conducted on five Gymnasium benchmark tasks spanning sparse-reward and dense-reward control settings: MountainCar-v0, BipedalWalker-v3, Ant-v5, HalfCheetah-v5, and Humanoid-v5 ,. The protocol used default environment rewards and termination conditions, with no domain randomization and no additional frame skipping.
+Experiments were conducted on five Gymnasium benchmark tasks spanning sparse-reward and dense-reward control settings: MountainCar-v0, BipedalWalker-v3, Ant-v5, HalfCheetah-v5, and Humanoid-v5. The protocol used default environment rewards and termination conditions, with no domain randomization and no additional frame skipping.
 
 Training used vectorized environments with \(B\) parallel instances and rollout length \(T\), configured so that nominal batch size per PPO update was
 \[
