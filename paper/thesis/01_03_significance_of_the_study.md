@@ -1,9 +1,9 @@
 ### 1.3 Significance of the Study
 
-For reinforcement learning research, the study provided an empirically grounded formulation of intrinsic shaping that links representation change to localized model improvement, extending prior learning-progress ideas to a modern on-policy deep RL setting {{CIT:7,13,18,19}}.
+For reinforcement learning research, the study provided an empirical formulation of intrinsic shaping that linked representation change with localized model improvement, extending learning progress oriented exploration to a modern on policy deep RL setting {{CIT:12,17}}.
 
-For method developers, the GLPE family offered a practical design that can be integrated with existing PPO-based training systems without requiring privileged environment state, while retaining interpretable components for diagnostic analysis {{CIT:13,18}}. The gated and non-gated variants also provided a controlled comparison for understanding when suppression mechanisms are beneficial and when simpler shaping is sufficient.
+For method developers, the GLPE framework offered a practical design that integrates with PPO based pipelines without requiring privileged environment state, while preserving interpretable components for analysis of exploration behavior.
 
-For benchmark-driven evaluation practice, the study emphasized that step-based efficiency alone is not a complete indicator of utility. By including wall-clock summaries, per-component timing analysis, and thresholded reliability, the work supported more comprehensive assessment of exploration methods intended for real training pipelines {{CIT:18}}.
+For evaluation practice, the study demonstrated the importance of combining step based metrics with wall clock analysis and reliability thresholds, which supported a more complete assessment of exploration methods in realistic training workflows.
 
-For undergraduate-level computer science inquiry, the study contributed a reproducible and technically coherent case of how theoretical concepts in curiosity and reward shaping can be operationalized, tested, and critically analyzed across heterogeneous control tasks {{CIT:9,11,17,18}}.
+For undergraduate computer science research, the study presented a reproducible case of translating intrinsic motivation theory into an implemented algorithm, controlled experiments, and critical comparative analysis.
