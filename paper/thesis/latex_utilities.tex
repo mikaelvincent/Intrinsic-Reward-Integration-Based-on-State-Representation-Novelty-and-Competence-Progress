@@ -28,3 +28,33 @@
   \fi
 }
 \makeatother
+\makeatletter
+\def\@makechapterhead#1{%
+  \vspace*{50\p@}%
+  {\parindent \z@ \centering \normalfont
+    \ifnum \c@secnumdepth >\m@ne
+      \huge\bfseries \@chapapp\space \thechapter
+      \par\nobreak
+      \vskip 20\p@
+    \fi
+    \Huge\bfseries #1\par\nobreak
+    \vskip 40\p@
+  }}
+\def\@makeschapterhead#1{%
+  \vspace*{50\p@}%
+  {\parindent \z@ \centering \normalfont
+    \Huge\bfseries #1\par\nobreak
+    \vskip 40\p@
+  }}
+\renewenvironment{abstract}{%
+  \titlepage
+  \null\vfil
+  \@beginparpenalty\@lowpenalty
+  \begin{center}%
+    \normalfont\Huge\bfseries \abstractname
+    \@endparpenalty\@M
+  \end{center}%
+}{%
+  \par\vfil\null\endtitlepage
+}
+\makeatother
