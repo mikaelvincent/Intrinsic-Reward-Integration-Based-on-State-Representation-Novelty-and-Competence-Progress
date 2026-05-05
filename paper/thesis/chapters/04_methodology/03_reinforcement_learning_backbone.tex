@@ -80,9 +80,9 @@ If an intrinsic module already produced normalized outputs, the normalized intri
 If an intrinsic module produced unnormalized outputs, a running RMS normalizer was applied before scaling.
 The resulting training reward was
 \begin{equation}
-    r_t=r_t^{\mathrm{ext}}+\eta_t\,\mathrm{clip}\!\left(\bar{r}_t^{\mathrm{int}},-r_{\max},r_{\max}\right),
+    r_t=r_t^{\mathrm{ext}}+\eta_t\,\mathrm{clip}\!\left(r_{t,\mathrm{norm}}^{\mathrm{int}},-r_{\max},r_{\max}\right),
 \end{equation}
-where $\bar{r}_t^{\mathrm{int}}$ denotes the intrinsic signal after the method-appropriate normalization step.
+where $r_{t,\mathrm{norm}}^{\mathrm{int}}$ denotes the intrinsic signal after the method-appropriate normalization step.
 
 Intrinsic rewards were set to zero on environment-terminal transitions.
 For time-limit truncations, bootstrapping was used when a final observation was available.
