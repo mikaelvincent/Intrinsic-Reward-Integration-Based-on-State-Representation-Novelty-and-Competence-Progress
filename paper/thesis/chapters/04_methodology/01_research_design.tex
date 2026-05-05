@@ -1,1 +1,28 @@
 \section{Research Design}
+\label{sec:methodology_research_design}
+
+This study used a quantitative experimental research design to evaluate intrinsic-reward methods for reinforcement learning.
+The experiment compared a proposed intrinsic-reward family, Gated Learning-Progress Exploration (GLPE), against standard and intrinsic-motivation baselines under a fixed Proximal Policy Optimization (PPO) training backbone.
+The independent variable was the exploration method used during training.
+The dependent variables were extrinsic episodic return, sample efficiency, threshold-reaching reliability, and wall-clock efficiency.
+All reported performance measurements were based on environment reward only; intrinsic reward was used only as a training signal.
+
+The design consisted of three stages.
+First, the intrinsic reward was specified as a transition-level signal that combines feature-space impact with region-local learning progress.
+Second, all methods were trained on the same benchmark environments using matched PPO hyperparameters, environment-step budgets, and random seeds within each environment.
+Third, saved checkpoints were evaluated offline with deterministic action selection to separate policy evaluation from training-time stochasticity.
+
+The study followed a controlled comparison protocol.
+For a fixed environment, the PPO architecture, value architecture, optimizer settings, discount factor, generalized advantage estimation parameter, and evaluation procedure were held constant across methods.
+The intrinsic-reward coefficient and clipping range were also held constant across intrinsic methods within the same environment.
+This control was necessary so that observed differences could be attributed primarily to the exploration signal rather than to changes in the underlying policy optimizer.
+
+The proposed method was evaluated in two principal forms.
+The gated form, GLPE, suppresses intrinsic rewards in latent regions that exhibit high prediction error but low learning progress.
+The ungated form, GLPE (no gate), uses the same base intrinsic score without region suppression.
+Additional ablations removed either the feature-space impact component or the learning-progress component, allowing the contribution of each term to be isolated.
+A computational diagnostic variant was also used to measure the cost of repeatedly computing robust global medians for the gate.
+
+The methodology emphasized reproducibility through fixed training budgets, explicit seed sets, deterministic execution where supported, offline checkpoint evaluation, and aggregation across independent runs.
+Because reinforcement-learning outcomes can vary substantially across seeds, no single training trajectory was treated as sufficient evidence.
+Instead, conclusions were based on curves and summary statistics aggregated over all completed seeds for each method--environment pair.

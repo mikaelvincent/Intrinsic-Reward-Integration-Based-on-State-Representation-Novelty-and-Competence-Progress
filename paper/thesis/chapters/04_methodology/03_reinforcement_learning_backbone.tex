@@ -1,7 +1,91 @@
 \section{Reinforcement Learning Backbone}
+\label{sec:methodology_reinforcement_learning_backbone}
 
 \subsection{PPO Training Procedure}
+\label{subsec:methodology_ppo_training_procedure}
+
+All methods used Proximal Policy Optimization as the policy-learning algorithm \cite{schulman-2017}.
+For each update, the current policy collected an on-policy batch of $N=B\times T$ transitions from $B$ vectorized environment instances over rollout horizon $T$.
+The total reward was formed by adding the scaled and clipped intrinsic reward when an intrinsic method was active.
+Generalized advantage estimation was then computed using the total reward \cite{schulman-2015}.
+
+For a transition at time $t$, the temporal-difference residual used by GAE is
+\begin{equation}
+    \delta_t
+    = r_t + \gamma V_\nu(o_{t+1}) - V_\nu(o_t),
+\end{equation}
+with standard terminal handling and timeout bootstrapping when a valid final observation is available.
+The advantage estimate is
+\begin{equation}
+    \hat{A}_t
+    = \sum_{l=0}^{\infty}(\gamma\lambda)^l\delta_{t+l},
+\end{equation}
+where $\gamma$ is the discount factor and $\lambda$ is the GAE parameter.
+Advantages are normalized within each PPO update batch.
+
+The clipped PPO policy objective is
+\begin{equation}
+    \mathcal{L}_{\pi}(\theta)
+    = -\mathbb{E}_t\left[
+        \min\!\left(
+            \rho_t(\theta)\hat{A}_t,
+            \mathrm{clip}(\rho_t(\theta),1-\epsilon,1+\epsilon)\hat{A}_t
+        \right)
+    \right],
+\end{equation}
+where
+\begin{equation}
+    \rho_t(\theta)
+    = \frac{\pi_\theta(a_t\mid o_t)}{\pi_{\theta_{\mathrm{old}}}(a_t\mid o_t)}.
+\end{equation}
+The value function is trained with a squared-error loss against the GAE value target, with optional value clipping in the MuJoCo tasks.
+Policy and value optimizers use Adam.
+Gradient norms are clipped to 1.0, and PPO epochs stop early within an update if the approximate KL divergence exceeds the environment-specific threshold.
+
+\begin{table}[!hbp]
+\centering
+\small
+\begin{fitwidthtabular}{lrrrrrrrr}
+\hline
+Environment & LR & Epochs & Minibatches & Clip & $\lambda$ & Entropy & Value clip & KL stop \\
+\hline
+\textsc{MountainCar-v0}   & $3.0{\times}10^{-4}$ & 10 & 16 & 0.20 & 0.95 & 0.00 & 0.00 & 0.06 \\
+\textsc{BipedalWalker-v3} & $5.0{\times}10^{-4}$ &  5 & 16 & 0.25 & 0.95 & 0.00 & 0.00 & 0.06 \\
+\textsc{Ant-v5}           & $1.5{\times}10^{-4}$ & 15 & 64 & 0.20 & 0.95 & 0.00 & 0.20 & 0.04 \\
+\textsc{HalfCheetah-v5}   & $3.0{\times}10^{-4}$ & 10 & 32 & 0.20 & 0.95 & 0.01 & 0.20 & 0.03 \\
+\textsc{Humanoid-v5}      & $2.0{\times}10^{-4}$ &  5 & 32 & 0.20 & 0.97 & 0.01 & 0.20 & 0.03 \\
+\hline
+\end{fitwidthtabular}
+\caption{PPO hyperparameters used for all methods within each environment. The discount factor was $\gamma=0.99$ and the value-loss coefficient was 0.5 in all environments.}
+\label{tab:methodology_ppo_hparams}
+\end{table}
 
 \subsection{Policy and Value Networks}
+\label{subsec:methodology_policy_and_value_networks}
+
+The policy and value function were represented by separate multilayer perceptrons.
+Each network used two hidden layers of width 256 with ReLU activations.
+For discrete-action environments, the policy produced categorical logits.
+For continuous-action environments, the policy produced a diagonal Gaussian distribution with a learned log standard deviation vector.
+When action bounds were finite, actions were mapped to the valid interval by a tanh squashing transformation followed by affine rescaling to the environment bounds.
+
+The value network produced a scalar estimate $V_\nu(o_t)$.
+The policy and value networks did not share parameters.
+Vector observations were normalized using a running mean and variance estimated online from collected rollouts, and the normalized observations were used consistently by the policy, value function, and intrinsic modules.
 
 \subsection{Reward Handling}
+\label{subsec:methodology_reward_handling}
+
+For intrinsic-reward methods, raw intrinsic values were transformed before being added to the environment reward.
+If an intrinsic module already produced normalized outputs, the normalized intrinsic reward was directly clipped and scaled.
+If an intrinsic module produced unnormalized outputs, a running RMS normalizer was applied before scaling.
+The resulting training reward was
+\begin{equation}
+    r_t=r_t^{\mathrm{ext}}+\eta_t\,\mathrm{clip}\!\left(\bar{r}_t^{\mathrm{int}},-r_{\max},r_{\max}\right),
+\end{equation}
+where $\bar{r}_t^{\mathrm{int}}$ denotes the intrinsic signal after the method-appropriate normalization step.
+
+Intrinsic rewards were set to zero on environment-terminal transitions.
+For time-limit truncations, bootstrapping was used when a final observation was available.
+If a time-limit truncation did not provide a valid final observation, the transition was treated conservatively for bootstrapping and intrinsic reward was suppressed for that transition.
+This handling prevents invalid next observations from entering either intrinsic-reward computation or value-target estimation.

@@ -1,9 +1,58 @@
 \section{Ablation Methodology}
+\label{sec:methodology_ablation_methodology}
 
 \subsection{Impact-Only Variant}
+\label{subsec:methodology_impact_only_variant}
+
+The impact-only ablation removed the learning-progress component from the GLPE base score by setting
+\begin{equation}
+    \alpha_{\mathrm{LP}}=0,
+    \qquad
+    \alpha_{\mathrm{impact}}>0.
+\end{equation}
+The resulting intrinsic reward was proportional to normalized feature-space impact, with the same latent encoder, forward and inverse dynamics module, reward scaling, clipping, PPO backbone, and evaluation procedure used by GLPE.
+This ablation tested whether encouraging large representation changes was sufficient without explicitly measuring model improvement.
 
 \subsection{Learning-Progress-Only Variant}
+\label{subsec:methodology_learning_progress_only_variant}
+
+The learning-progress-only ablation removed the feature-space impact component by setting
+\begin{equation}
+    \alpha_{\mathrm{impact}}=0,
+    \qquad
+    \alpha_{\mathrm{LP}}>0.
+\end{equation}
+The reward was then based only on normalized region-local learning progress.
+This ablation tested whether local reductions in forward-model error were sufficient without separately rewarding the magnitude of latent transition change.
+The online partition, EMA updates, and component normalization procedure were otherwise unchanged.
 
 \subsection{Gating Analysis}
+\label{subsec:methodology_gating_analysis}
+
+The gating analysis compared GLPE against GLPE (no gate) under matched hyperparameters.
+Both variants used the same impact term, learning-progress term, component normalization, latent-space partition, and intrinsic coefficient schedule.
+The only difference was whether the binary region gate was active.
+This comparison isolated the effect of suppressing high-error low-progress regions.
+
+Gate behavior was analyzed using the fraction of visited regions whose gates were disabled:
+\begin{equation}
+    \mathrm{GateRate}
+    = \frac{\left|\{r\in\mathcal{R}:g_r=0\}\right|}{|\mathcal{R}|}.
+\end{equation}
+The gate-rate metric was examined together with learning curves and intrinsic-reward statistics.
+A high gate rate indicates that many visited regions were classified as unproductive under the current thresholds, whereas a low gate rate indicates that most regions continued to contribute intrinsic reward.
 
 \subsection{Computational Analysis}
+\label{subsec:methodology_computational_analysis}
+
+The computational analysis measured the overhead introduced by intrinsic-reward methods relative to vanilla PPO.
+Per-iteration timing was decomposed into rollout interaction, policy inference, intrinsic computation, intrinsic-module update, advantage computation, and PPO optimization.
+This decomposition allowed the analysis to distinguish overhead caused by predictive auxiliary models from overhead caused specifically by GLPE's region statistics and gating operations.
+
+For the gated method, an additional diagnostic compared gate median computation with a cached-median variant.
+The standard gate recomputed robust global medians from current region statistics whenever they were needed.
+The cached variant reused the most recently computed medians for a fixed number of region-statistic updates before refreshing them.
+This diagnostic did not change the definition of the main GLPE method; it quantified whether robust threshold computation was a significant runtime cost.
+
+The wall-clock analysis used both direct timing breakdowns and wall-clock AUC.
+Direct timing identified where time was spent during training, while wall-clock AUC measured the combined effect of learning speed and computational overhead on achieved return per unit time.

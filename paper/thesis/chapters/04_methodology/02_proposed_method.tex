@@ -1,21 +1,205 @@
 \section{Proposed Method}
+\label{sec:methodology_proposed_method}
 
 \subsection{Method Overview}
+\label{subsec:method_overview}
+
+The proposed method constructs an intrinsic reward from two quantities computed in a learned latent space.
+The first quantity is feature-space impact, which measures how much the latent representation changes between consecutive observations.
+The second quantity is region-local learning progress, which measures whether a forward dynamics model is improving in the latent region currently visited by the agent.
+The two quantities are normalized separately and combined into a base intrinsic score.
+The gated variant multiplies this base score by a region-specific binary gate that suppresses regions that remain difficult to predict while showing little improvement.
+
+For a transition $(o_t,a_t,o_{t+1})$, the augmented reward used for policy optimization is
+\begin{equation}
+    r_t
+    = r_t^{\mathrm{ext}}
+    + \eta_t\,\mathrm{clip}\!\left(r_t^{\mathrm{int}},-r_{\max},r_{\max}\right),
+    \label{eq:methodology_augmented_reward}
+\end{equation}
+where $r_t^{\mathrm{ext}}$ is the environment reward, $r_t^{\mathrm{int}}$ is the intrinsic reward, $\eta_t$ is the intrinsic-reward coefficient, and $r_{\max}$ is the intrinsic clipping bound.
+Environment-terminal transitions receive zero intrinsic reward so that the auxiliary objective does not assign artificial value to termination itself.
+
+Within each PPO iteration, intrinsic rewards are computed from the on-policy rollout before advantage estimation.
+The same rollout is then used to update the latent dynamics module.
+Thus, the intrinsic reward and the auxiliary predictive model are updated on the same stream of experience, while the policy is optimized using the total reward in Equation~\ref{eq:methodology_augmented_reward}.
 
 \subsection{Latent Dynamics Module}
+\label{subsec:methodology_latent_dynamics_module}
+
+Let $\phi_\omega$ denote an encoder that maps an observation to a latent vector,
+\begin{equation}
+    z_t = \phi_\omega(o_t), \qquad z_t \in \mathbb{R}^{d}.
+\end{equation}
+For the vector-observation benchmarks used in this study, the encoder is a two-layer multilayer perceptron with 256 hidden units per layer and ReLU activations.
+The latent dimension is fixed at $d=128$ for all methods that require a learned dynamics representation.
+
+The module contains a forward dynamics model $f_\psi$ and an inverse dynamics model $g_\xi$.
+The forward model predicts the next latent vector from the current latent vector and the action:
+\begin{equation}
+    \hat{z}_{t+1}=f_\psi(z_t,a_t).
+\end{equation}
+The per-transition forward prediction error is
+\begin{equation}
+    e_t
+    = \frac{1}{d}\left\lVert f_\psi(z_t,a_t)-z_{t+1}\right\rVert_2^2.
+    \label{eq:methodology_forward_error}
+\end{equation}
+The inverse model predicts the action from consecutive latent vectors.
+For discrete actions, the inverse objective is categorical cross-entropy.
+For continuous actions, the inverse model parameterizes a diagonal Gaussian likelihood with clamped log standard deviations.
+
+The auxiliary dynamics loss is
+\begin{equation}
+    \mathcal{L}_{\mathrm{dyn}}
+    = \beta_{\mathrm{fwd}}\mathcal{L}_{\mathrm{fwd}}
+    + \beta_{\mathrm{inv}}\mathcal{L}_{\mathrm{inv}},
+\end{equation}
+where the forward and inverse losses are weighted equally in the experiments.
+The dynamics module is optimized with Adam at learning rate $3\times 10^{-4}$, and its gradient norm is clipped to 5.0.
 
 \subsection{Online Latent-Space Partitioning}
+\label{subsec:methodology_online_partitioning}
+
+Learning progress is estimated locally by maintaining an online binary partition of the latent space.
+Each leaf of the partition tree corresponds to a region $r$.
+A latent vector $z_t$ is assigned to a region by routing it from the root to a leaf according to stored split dimensions and thresholds.
+
+Each splittable leaf stores assigned latent points until its capacity $C$ is reached.
+If the leaf depth is below $D_{\max}$, the leaf is split along the coordinate with the largest empirical variance among the stored points.
+The split threshold is the median value on that coordinate, provided that the median produces a non-degenerate partition.
+One child retains the original region identifier and accumulated statistics; the other child receives a new identifier whose statistics are initialized on first visit.
+This procedure concentrates additional resolution in frequently visited parts of latent space while bounding the maximum tree depth.
 
 \subsection{Learning-Progress Estimation}
+\label{subsec:methodology_learning_progress_estimation}
+
+For each region $r$, two exponential moving averages of the forward prediction error are maintained: a long-horizon estimate $\mu_r^{\mathrm{long}}$ and a short-horizon estimate $\mu_r^{\mathrm{short}}$.
+When a transition is assigned to region $r$, the updates are
+\begin{align}
+    \mu_r^{\mathrm{long}}
+    &\leftarrow
+    \beta_{\mathrm{long}}\mu_r^{\mathrm{long}}
+    +(1-\beta_{\mathrm{long}})e_t, \\
+    \mu_r^{\mathrm{short}}
+    &\leftarrow
+    \beta_{\mathrm{short}}\mu_r^{\mathrm{short}}
+    +(1-\beta_{\mathrm{short}})e_t.
+\end{align}
+The first visit to a region initializes both averages to the current prediction error.
+The experiments use $\beta_{\mathrm{long}}>\beta_{\mathrm{short}}$, making the long-horizon average slower to change than the short-horizon average.
+
+The learning-progress value for region $r$ is
+\begin{equation}
+    \mathrm{LP}(r)
+    = \max\!\left(0,\mu_r^{\mathrm{long}}-\mu_r^{\mathrm{short}}\right).
+\end{equation}
+For transition $t$, the learning-progress component is $\mathrm{LP}_t=\mathrm{LP}(\rho_t)$, where $\rho_t$ is the region assigned to $z_t$.
+The positive part is used so that only reductions in recent prediction error are rewarded.
 
 \subsection{Feature-Space Impact Estimation}
+\label{subsec:methodology_feature_space_impact_estimation}
+
+The feature-space impact component is the Euclidean distance between consecutive latent vectors:
+\begin{equation}
+    I_t = \left\lVert z_{t+1}-z_t\right\rVert_2.
+\end{equation}
+This component rewards transitions that produce substantial change in the learned representation.
+It is action-conditioned indirectly because the next latent vector depends on the action selected by the policy and the environment transition.
 
 \subsection{Component-Wise Scale Stabilization}
+\label{subsec:methodology_scale_stabilization}
+
+The raw values of $I_t$ and $\mathrm{LP}_t$ can differ in scale across environments and across training phases.
+To stabilize their contribution, each component is normalized by an independent running root-mean-square estimate.
+For a scalar component $x_t$, the second-moment accumulator is updated as
+\begin{equation}
+    v_x \leftarrow \beta_{\mathrm{rms}}v_x+(1-\beta_{\mathrm{rms}})x_t^2,
+\end{equation}
+with $\beta_{\mathrm{rms}}=0.99$ and numerical constant $\varepsilon=10^{-8}$.
+The normalized value is
+\begin{equation}
+    \widetilde{x}_t=\frac{x_t}{\sqrt{v_x+\varepsilon}}.
+\end{equation}
+The method applies this normalization separately to impact and learning progress, producing $\widetilde{I}_t$ and $\widetilde{\mathrm{LP}}_t$.
 
 \subsection{Base Intrinsic Reward}
+\label{subsec:methodology_base_intrinsic_reward}
+
+The shared base intrinsic score is
+\begin{equation}
+    u_t
+    = \alpha_{\mathrm{impact}}\widetilde{I}_t
+    + \alpha_{\mathrm{LP}}\widetilde{\mathrm{LP}}_t,
+    \label{eq:methodology_base_intrinsic}
+\end{equation}
+where $\alpha_{\mathrm{impact}}\ge 0$ and $\alpha_{\mathrm{LP}}\ge 0$ are component weights.
+The experiments fix $\alpha_{\mathrm{impact}}=1.0$ and tune $\alpha_{\mathrm{LP}}$ by environment.
+Because the two components are normalized independently, the weights express the intended component tradeoff rather than compensating for arbitrary units.
 
 \subsection{Ungated Variant}
+\label{subsec:methodology_ungated_variant}
+
+The ungated variant, denoted GLPE (no gate), directly uses the base score:
+\begin{equation}
+    r_t^{\mathrm{int}} = u_t.
+\end{equation}
+This variant retains the local learning-progress statistics and feature-space impact term but does not suppress any region after the score has been computed.
+It therefore serves as both a competitive method and an ablation of the gating mechanism.
 
 \subsection{Gated Variant}
+\label{subsec:methodology_gated_variant}
+
+The gated variant assigns each visited region a binary gate $g_r\in\{0,1\}$.
+Its intrinsic reward is
+\begin{equation}
+    r_t^{\mathrm{int}}=g_{\rho_t}u_t.
+\end{equation}
+A gate value of one preserves the base intrinsic reward, whereas a gate value of zero suppresses it for the assigned region.
+
+The gate is determined from robust global references across visited regions.
+Let $\mathcal{R}$ be the set of regions with at least one assigned transition.
+The method computes
+\begin{align}
+    \mathrm{LP}_{\mathrm{med}}
+    &= \mathrm{median}_{r\in\mathcal{R}}\,\mathrm{LP}(r), \\
+    e_{\mathrm{med}}
+    &= \mathrm{median}_{r\in\mathcal{R}}\,\mu_r^{\mathrm{short}}.
+\end{align}
+The learning-progress threshold is
+\begin{equation}
+    \tau_{\mathrm{LP}}=\kappa\,\mathrm{LP}_{\mathrm{med}},
+\end{equation}
+while the normalized error score for region $r$ is
+\begin{equation}
+    s_r=\frac{\mu_r^{\mathrm{short}}}{e_{\mathrm{med}}+\varepsilon}.
+\end{equation}
+A region is classified as unproductive on a visit when
+\begin{equation}
+    \mathrm{LP}(r)<\tau_{\mathrm{LP}}
+    \quad\text{and}\quad
+    s_r>\tau_s.
+\end{equation}
+
+Gating is activated only after at least $R_{\min}$ regions have statistics.
+Before this condition is met, all gates remain enabled.
+When gating is active, a region with $g_r=1$ is disabled after $K$ consecutive unproductive visits.
+A disabled region is re-enabled only after it satisfies $\mathrm{LP}(r)>h\tau_{\mathrm{LP}}$ for two consecutive visits, where $h>1$ is a hysteresis multiplier.
+This persistence and hysteresis reduce rapid gate switching caused by noisy learning-progress estimates.
 
 \subsection{Intrinsic Reward Scheduling}
+\label{subsec:methodology_intrinsic_reward_scheduling}
+
+The GLPE family uses a cosine taper on the intrinsic coefficient.
+Let $p\in[0,1]$ denote progress as a fraction of the total environment-step budget.
+For taper start and end fractions $p_{\mathrm{start}}<p_{\mathrm{end}}$, the schedule is
+\begin{equation}
+    w(p)=
+    \begin{cases}
+        1, & p\le p_{\mathrm{start}},\\
+        \frac{1}{2}\left(1+\cos\!\left(\pi\frac{p-p_{\mathrm{start}}}{p_{\mathrm{end}}-p_{\mathrm{start}}}\right)\right), & p_{\mathrm{start}}<p<p_{\mathrm{end}},\\
+        0, & p\ge p_{\mathrm{end}}.
+    \end{cases}
+\end{equation}
+The effective coefficient is $\eta_t=\eta w(p_t)$.
+The schedule gives intrinsic exploration full strength early in training, gradually reduces the auxiliary pressure, and removes it near the end of training so that final policies are optimized primarily under environment reward.
