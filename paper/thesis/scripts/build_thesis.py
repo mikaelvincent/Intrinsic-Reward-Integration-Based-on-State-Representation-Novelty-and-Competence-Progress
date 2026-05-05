@@ -11,6 +11,8 @@ from pathlib import Path
 STAGED_ROOT_ITEMS: tuple[str, ...] = (
     "main.tex",
     "latex_utilities.tex",
+    "sections",
+    "chapters",
     "references",
 )
 
