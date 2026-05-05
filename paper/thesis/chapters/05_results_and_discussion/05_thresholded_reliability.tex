@@ -2,7 +2,7 @@
 \label{sec:results_thresholded_reliability}
 
 Average return can hide failures when only some seeds succeed.
-Thresholded reliability therefore measures how many seeds reach a target return and how quickly successful seeds reach it.
+Thresholded reliability, defined in Section~\ref{subsec:methodology_reliability_metrics}, therefore measures how many seeds reach a target return and how quickly successful seeds reach it.
 For a return threshold $G_{\mathrm{thr}}$, the first reaching step is estimated by linear interpolation between the two adjacent evaluation checkpoints that bracket $G_{\mathrm{thr}}$.
 If a seed never reaches the threshold by the final checkpoint, it is counted as unsuccessful and is excluded from the median reaching-step calculation.
 

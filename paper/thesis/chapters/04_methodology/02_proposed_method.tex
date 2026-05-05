@@ -5,12 +5,12 @@
 \label{subsec:method_overview}
 
 The proposed method constructs an intrinsic reward from two quantities computed in a learned latent space.
-The first quantity is feature-space impact, which measures how much the latent representation changes between consecutive observations.
-The second quantity is region-local learning progress, which measures whether a forward dynamics model is improving in the latent region currently visited by the agent.
+The first quantity is feature-space impact, formalized in Section~\ref{sec:feature_space_impact}, which measures how much the latent representation changes between consecutive observations.
+The second quantity is region-local learning progress, formalized in Section~\ref{sec:region_local_learning_progress}, which measures whether a forward dynamics model is improving in the latent region currently visited by the agent.
 The two quantities are normalized separately and combined into a base intrinsic score.
-The gated variant multiplies this base score by a region-specific binary gate that suppresses regions that remain difficult to predict while showing little improvement.
+The gated variant multiplies this base score by the region-specific binary gate introduced in Section~\ref{sec:gated_learning_progress_exploration}, suppressing regions that remain difficult to predict while showing little improvement.
 
-For a transition $(o_t,a_t,o_{t+1})$, the augmented reward used for policy optimization is
+Consistent with the reward-augmentation framework in Section~\ref{sec:reward_augmentation}, the augmented reward used for policy optimization on a transition $(o_t,a_t,o_{t+1})$ is
 \begin{equation}
     r_t
     = r_t^{\mathrm{ext}}

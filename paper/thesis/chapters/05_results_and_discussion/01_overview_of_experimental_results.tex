@@ -2,13 +2,13 @@
 \label{sec:results_overview}
 
 This chapter presents the empirical results of the proposed Gated Learning-Progress Exploration (GLPE) method and its ungated variant against PPO and intrinsic-reward baselines.
-All results are reported using deterministic offline evaluation checkpoints and are measured with extrinsic environment return only.
+All results are reported using the deterministic offline evaluation protocol defined in Section~\ref{subsec:methodology_offline_checkpoint_evaluation} and are measured with extrinsic environment return only.
 Intrinsic rewards therefore affect the optimization trajectory during training but are not included in the reported evaluation return.
 
-The evaluation covers five environments: \textsc{MountainCar-v0}, \textsc{BipedalWalker-v3}, \textsc{Ant-v5}, \textsc{HalfCheetah-v5}, and \textsc{Humanoid-v5}.
+The evaluation covers the five environments listed in Table~\ref{tab:methodology_env_suite}: \textsc{MountainCar-v0}, \textsc{BipedalWalker-v3}, \textsc{Ant-v5}, \textsc{HalfCheetah-v5}, and \textsc{Humanoid-v5}.
 The set includes sparse-reward exploration, continuous-control locomotion, dense reward shaping, and high-variance dynamics.
 The principal comparison is between GLPE, GLPE without gating, PPO without intrinsic reward, and the ICM, RND, RIDE, and RIAC intrinsic-reward baselines.
-The analysis also includes component ablations that retain only feature-space impact or only learning progress.
+The analysis also includes the component ablations defined in Section~\ref{sec:methodology_ablation_methodology}, which retain only feature-space impact or only learning progress.
 
 The main empirical finding is that GLPE is most advantageous in sparse-reward exploration, while the ungated variant is generally more competitive in dense-reward and high-variance settings.
 On \textsc{MountainCar-v0}, GLPE reaches the solved threshold in all seeds and achieves the strongest final return among the compared methods.

@@ -1,7 +1,7 @@
 \section{Gating Behavior}
 \label{sec:results_gating_behavior}
 
-The gate is designed to suppress intrinsic reward only in latent regions with persistently high prediction error and low learning progress.
+As defined in Section~\ref{subsec:methodology_gated_variant}, the gate is designed to suppress intrinsic reward only in latent regions with persistently high prediction error and low learning progress.
 It is therefore a local mechanism rather than a global decay schedule.
 Figure~\ref{fig:results_gate_map} visualizes the final-checkpoint trajectories of the gated method, with time steps colored according to whether intrinsic shaping is active.
 
