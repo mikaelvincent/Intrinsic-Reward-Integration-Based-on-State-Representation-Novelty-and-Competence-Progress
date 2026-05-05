@@ -29,13 +29,13 @@ For each method--environment pair, mean learning curves were obtained by averagi
 
 Sample efficiency was measured by the relationship between evaluation return and cumulative environment steps.
 In addition to plotting learning curves, the study used step-AUC as a scalar summary.
-Let $\bar{G}(s_i)$ denote the mean evaluation return at checkpoint step $s_i$.
-For an environment-step budget $S$, step-AUC was computed by trapezoidal integration and normalized by the budget:
+Let $\bar{G}(s_i)$ denote the mean evaluation return at checkpoint step $s_i$, with checkpoints indexed as $s_0,\ldots,s_K$.
+For an environment-step budget $S=s_K-s_0$, step-AUC was computed by trapezoidal integration and normalized by the budget:
 \begin{equation}
     \mathrm{AUC}_{\mathrm{step}}
-    = \frac{1}{S}\sum_{i=1}^{m-1}
-    \frac{\bar{G}(s_i)+\bar{G}(s_{i+1})}{2}
-    (s_{i+1}-s_i).
+    = \frac{1}{S}\sum_{i=1}^{K}
+    \frac{\bar{G}(s_i)+\bar{G}(s_{i-1})}{2}
+    (s_i-s_{i-1}).
 \end{equation}
 Higher step-AUC indicates either faster early learning, higher sustained return, or both.
 
@@ -45,11 +45,13 @@ Higher step-AUC indicates either faster early learning, higher sustained return,
 Reliability was evaluated using threshold-reaching statistics across seeds.
 For each environment, a solved threshold $\theta$ was specified as follows:
 \begin{equation}
-\begin{array}{ll}
-\textsc{MountainCar-v0}: -110, & \textsc{BipedalWalker-v3}: 300,\\
-\textsc{Ant-v5}: 5{,}000, & \textsc{HalfCheetah-v5}: 6{,}000,\\
-\textsc{Humanoid-v5}: 3{,}000. &
-\end{array}
+\begin{aligned}
+    \text{\textsc{MountainCar-v0}:} &\ -110, &
+    \text{\textsc{BipedalWalker-v3}:} &\ 300,\\
+    \text{\textsc{Ant-v5}:} &\ 5{,}000, &
+    \text{\textsc{HalfCheetah-v5}:} &\ 6{,}000,\\
+    \text{\textsc{Humanoid-v5}:} &\ 3{,}000.
+\end{aligned}
 \end{equation}
 For each seed, the first checkpoint crossing a threshold was identified.
 When the threshold was crossed between two checkpoints, the crossing step was estimated by linear interpolation between the adjacent checkpoint returns.

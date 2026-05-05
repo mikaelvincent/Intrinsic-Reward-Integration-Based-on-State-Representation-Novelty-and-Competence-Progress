@@ -2,11 +2,11 @@
 \label{sec:results_step_auc}
 
 Step-AUC measures average evaluation return over the full training budget.
-For a method with mean evaluation return $\bar{R}(s_i)$ at checkpoint step $s_i$, the normalized step-AUC is computed as
+For a method with mean evaluation return $\bar{G}(s_i)$ at checkpoint step $s_i$, the normalized step-AUC is computed as
 \begin{equation}
     \mathrm{AUC}_{\mathrm{step}}
     = \frac{1}{s_K-s_0}\sum_{i=1}^{K}
-      \frac{\bar{R}(s_i)+\bar{R}(s_{i-1})}{2}(s_i-s_{i-1}),
+      \frac{\bar{G}(s_i)+\bar{G}(s_{i-1})}{2}(s_i-s_{i-1}),
     \label{eq:results_step_auc}
 \end{equation}
 where $s_0=0$ and $s_K$ is the final evaluation step.

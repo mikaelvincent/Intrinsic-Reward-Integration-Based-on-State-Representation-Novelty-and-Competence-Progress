@@ -9,10 +9,11 @@ The forward predictor
 receives the current latent representation and action, then predicts the next latent representation.
 The inverse predictor
 \begin{equation}
-    g_\xi:\mathbb{R}^{d}\times\mathbb{R}^{d}\rightarrow\Delta(\mathcal{A})
+    g_\xi:\mathbb{R}^{d}\times\mathbb{R}^{d}\rightarrow\mathcal{D}(\mathcal{A})
 \end{equation}
-receives consecutive latent representations and predicts the action that caused the transition.
-For discrete action spaces, $\Delta(\mathcal{A})$ is a categorical distribution over actions.
+receives consecutive latent representations and predicts a distribution over the action that caused the transition.
+Here $\mathcal{D}(\mathcal{A})$ denotes an action-distribution family.
+For discrete action spaces, this family is a categorical distribution over actions.
 For continuous action spaces, the inverse model is represented as a diagonal Gaussian likelihood over real-valued actions.
 
 The per-transition forward loss is the mean-squared prediction error in feature space,

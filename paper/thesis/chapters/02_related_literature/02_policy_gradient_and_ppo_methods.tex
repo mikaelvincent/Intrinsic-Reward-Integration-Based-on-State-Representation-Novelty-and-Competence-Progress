@@ -27,7 +27,7 @@ This mechanism is widely used in on-policy deep reinforcement learning because i
 Proximal Policy Optimization (PPO) is a policy-gradient method designed to constrain each policy update so that optimization remains stable under minibatch stochastic gradient descent \cite{schulman-2017}.
 PPO uses the probability ratio
 \begin{equation}
-    r_t(\theta)=\frac{\pi_\theta(a_t\mid s_t)}{\pi_{\theta_{\mathrm{old}}}(a_t\mid s_t)}
+    \varrho_t(\theta)=\frac{\pi_\theta(a_t\mid s_t)}{\pi_{\theta_{\mathrm{old}}}(a_t\mid s_t)}
 \end{equation}
 between the new policy and the behavior policy that collected the data.
 The clipped surrogate objective is
@@ -35,8 +35,8 @@ The clipped surrogate objective is
     L^{\mathrm{CLIP}}(\theta)=
     \mathbb{E}_t\left[
     \min\left(
-    r_t(\theta)\hat{A}_t,
-    \mathrm{clip}(r_t(\theta),1-\epsilon,1+\epsilon)\hat{A}_t
+    \varrho_t(\theta)\hat{A}_t,
+    \mathrm{clip}(\varrho_t(\theta),1-\epsilon,1+\epsilon)\hat{A}_t
     \right)
     \right],
 \end{equation}
