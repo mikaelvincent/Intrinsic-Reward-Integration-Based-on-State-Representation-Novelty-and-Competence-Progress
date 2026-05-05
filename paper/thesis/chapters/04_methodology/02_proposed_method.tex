@@ -23,6 +23,38 @@ Environment-terminal transitions receive zero intrinsic reward so that the auxil
 Within each PPO iteration, intrinsic rewards are computed from the on-policy rollout before advantage estimation.
 The same rollout is then used to update the latent dynamics module.
 Thus, the intrinsic reward and the auxiliary predictive model are updated on the same stream of experience, while the policy is optimized using the total reward in Equation~\ref{eq:methodology_augmented_reward}.
+Algorithm~\ref{alg:methodology_glpe_reward} summarizes this procedure at the level used by the training loop.
+
+\begin{algorithm}[!hbp]
+\caption{High-level intrinsic-reward computation for the GLPE family within one PPO update.}
+\label{alg:methodology_glpe_reward}
+\small
+\begin{algorithmic}[1]
+\STATE \textbf{Input:} on-policy transitions $\{(o_t,a_t,o_{t+1})\}_{t=1}^{N}$; terminal indicators; encoder $\phi_\omega$; forward model $f_\psi$; inverse model $g_\xi$; region assignment function $\rho$; region EMAs $\mu_r^{\mathrm{short}},\mu_r^{\mathrm{long}}$; RMS accumulators; optional gate states $g_r$
+\STATE \textbf{Output:} intrinsic rewards $\{r_t^{\mathrm{int}}\}_{t=1}^{N}$; updated region statistics; updated RMS statistics; updated gate states; updated dynamics parameters
+\FOR{$t=1$ to $N$}
+    \STATE $z_t \gets \phi_\omega(o_t)$ and $z_{t+1} \gets \phi_\omega(o_{t+1})$
+    \STATE $e_t \gets d^{-1}\lVert f_\psi(z_t,a_t)-z_{t+1}\rVert_2^2$
+    \STATE Assign $z_t$ to region $r \gets \rho(z_t)$, inserting the point and splitting a leaf when the partition criterion is met
+    \STATE Update $\mu_r^{\mathrm{short}}$ and $\mu_r^{\mathrm{long}}$ using $e_t$
+    \STATE $\mathrm{LP}_t \gets \max(0,\mu_r^{\mathrm{long}}-\mu_r^{\mathrm{short}})$
+    \STATE $I_t \gets \lVert z_{t+1}-z_t\rVert_2$
+    \STATE Update component RMS accumulators and compute $\widetilde{I}_t,\widetilde{\mathrm{LP}}_t$
+    \STATE $u_t \gets \alpha_{\mathrm{impact}}\widetilde{I}_t+\alpha_{\mathrm{LP}}\widetilde{\mathrm{LP}}_t$
+    \IF{gating is enabled}
+        \STATE Compute robust references $\mathrm{LP}_{\mathrm{med}}$ and $e_{\mathrm{med}}$ across visited regions
+        \STATE Update $g_r$ using the low-progress, high-error persistence rule with hysteresis
+        \STATE $r_t^{\mathrm{int}} \gets g_r u_t$
+    \ELSE
+        \STATE $r_t^{\mathrm{int}} \gets u_t$
+    \ENDIF
+    \IF{transition $t$ is environment-terminal}
+        \STATE $r_t^{\mathrm{int}} \gets 0$
+    \ENDIF
+\ENDFOR
+\STATE Update $(\omega,\psi,\xi)$ using the forward and inverse dynamics losses on the same rollout
+\end{algorithmic}
+\end{algorithm}
 
 \subsection{Latent Dynamics Module}
 \label{subsec:methodology_latent_dynamics_module}
