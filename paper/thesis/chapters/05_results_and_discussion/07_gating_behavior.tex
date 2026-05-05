@@ -26,9 +26,9 @@ This makes the gate adaptive, but it also means that noisy early experience can 
 \subsection{Effect in Sparse-Reward Settings}
 \label{subsec:results_gate_sparse_reward}
 
-In \textsc{MountainCar-v0}, the gated method improves reliability without sacrificing final performance.
+In \textsc{MountainCar-v0}, the gated method achieves complete solved-threshold reliability and the strongest final performance.
 Both GLPE and GLPE without gating solve all seeds, but GLPE obtains the stronger step-AUC and the best final mean return among all compared methods.
-This suggests that gating can remove distracting intrinsic reward while preserving exploration of controllable state changes needed to reach the goal.
+This suggests that gating can remove distracting intrinsic reward while preserving the exploration of controllable state changes needed to reach the goal.
 
 The sparse-reward result is aligned with the gate's purpose.
 When extrinsic reward is uninformative for much of training, the agent is vulnerable to intrinsic-reward loops.

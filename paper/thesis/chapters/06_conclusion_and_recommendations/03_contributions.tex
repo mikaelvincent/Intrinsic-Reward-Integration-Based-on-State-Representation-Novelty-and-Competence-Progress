@@ -14,7 +14,7 @@ The use of short- and long-horizon exponential moving averages provides a compac
 The third contribution is a region-wise gating mechanism for suppressing unproductive intrinsic reward.
 The gate compares each region's learning progress and recent prediction error against robust references computed over visited regions, and it suppresses the base intrinsic score when a region remains high-error and low-progress for a sufficient duration.
 This mechanism operationalizes the distinction between learnable difficulty and unproductive unpredictability.
-The empirical results show that this guardrail can improve sparse-reward reliability while also revealing the conditions under which it may become overly conservative.
+The empirical results show that this guardrail can support strong sparse-reward performance while also revealing the conditions under which it may become overly conservative.
 
 The fourth contribution is a PPO-compatible integration of the proposed intrinsic reward with explicit reward-scale controls.
 The method uses component-wise normalization, intrinsic clipping, terminal-transition suppression, and a cosine taper for the intrinsic coefficient.
