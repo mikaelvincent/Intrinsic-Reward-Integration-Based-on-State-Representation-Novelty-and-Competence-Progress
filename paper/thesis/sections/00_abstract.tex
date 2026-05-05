@@ -6,11 +6,11 @@ The proposed method, \emph{Gated Learning-Progress Exploration} (GLPE), combines
 The intrinsic reward is computed from normalized impact and learning-progress components and is optionally filtered by a region-specific gate that suppresses rewards in areas with persistently high prediction error but low learning progress.
 An ungated variant is also evaluated to isolate the effect of the base intrinsic score from the gate.
 
-The method is implemented with a Proximal Policy Optimization backbone and evaluated on five Gymnasium control benchmarks: \textsc{MountainCar-v0}, \textsc{BipedalWalker-v3}, \textsc{Ant-v5}, \textsc{HalfCheetah-v5}, and \textsc{Humanoid-v5}.
+The method is implemented with a Proximal Policy Optimization backbone and evaluated on five Gymnasium control benchmarks: MountainCar-v0, BipedalWalker-v3, Ant-v5, HalfCheetah-v5, and Humanoid-v5.
 The experimental design compares GLPE and GLPE without gating against PPO, ICM, RND, RIDE, and RIAC under shared policy architectures, training budgets, and evaluation procedures.
 Performance is assessed using deterministic offline checkpoint evaluation, step-normalized area under the learning curve, final-checkpoint return, threshold-reaching reliability, ablation studies, intrinsic-reward diagnostics, and wall-clock efficiency.
 Across the benchmark suite, GLPE without gating is a consistent default that remains competitive with the strongest baseline methods under both sample-efficiency and wall-clock views.
-The gated variant is most useful in sparse-reward settings such as \textsc{MountainCar-v0}, where it achieves complete solved-threshold reliability while producing the strongest final return and step-AUC, but it can be conservative in dense-reward or high-variance tasks.
+The gated variant is most useful in sparse-reward settings such as MountainCar-v0, where it achieves complete solved-threshold reliability while producing the strongest final return and step-AUC, but it can be conservative in dense-reward or high-variance tasks.
 Ablation results show that impact and learning progress contribute differently across environments, supporting their combined use as a robust exploration signal.
 The study contributes a formal formulation of GLPE, an empirical comparison against established intrinsic-motivation baselines, and an analysis of the tradeoff between targeted exploration control and computational overhead.
 \end{abstract}
