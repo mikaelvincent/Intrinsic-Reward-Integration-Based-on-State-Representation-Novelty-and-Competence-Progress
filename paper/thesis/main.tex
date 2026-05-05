@@ -1,6 +1,14 @@
 \documentclass[12pt,oneside]{report}
 
-\usepackage[letterpaper,margin=1in]{geometry}
+\usepackage[paperwidth=8.5in,paperheight=11in,left=1.5in,top=1in,bottom=1in,right=1in]{geometry}
+\usepackage{iftex}
+\ifPDFTeX
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\else
+\usepackage{fontspec}
+\setmainfont{Arial}
+\fi
 \usepackage{amsmath}
 \makeatletter
 \@ifundefined{Bbbk}{}{\let\thesis@Bbbk\Bbbk\let\Bbbk\relax}
