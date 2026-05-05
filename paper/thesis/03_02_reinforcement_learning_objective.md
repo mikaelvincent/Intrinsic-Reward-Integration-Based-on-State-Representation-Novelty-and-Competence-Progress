@@ -1,9 +1,9 @@
 ### 3.2 Reinforcement Learning Objective
 
-In policy-gradient reinforcement learning, parameters are updated to maximize expected return under the current policy distribution. The study used an augmented per-transition reward,
+Policy parameters were optimized under an augmented reward signal:
 \[
-r_t = r_t^{\mathrm{ext}} + \eta_t\,\mathrm{clip}(r_t^{\mathrm{int}},-r_{\max},r_{\max}),
+r_t = r_t^{\mathrm{ext}} + \eta_t\,\mathrm{clip}(r_t^{\mathrm{int}},-r_{\max},r_{\max}).
 \]
-where \(r_t^{\mathrm{int}}\) denotes intrinsic reward, \(\eta_t\) controls intrinsic strength, and \(r_{\max}\) bounds intrinsic magnitude. This formulation is consistent with reward shaping practices that preserve task-directed optimization while improving exploration behavior {{CIT:9}}.
+Here, \(r_t^{\mathrm{int}}\) denotes intrinsic reward, \(\eta_t\ge 0\) controls intrinsic contribution, and \(r_{\max}>0\) limits shaping magnitude. This construction preserved task reward as the primary objective while permitting bounded exploratory shaping {{CIT:9}}.
 
-For GLPE-family methods, intrinsic weight was optionally annealed by a cosine schedule over training progress, so intrinsic guidance was emphasized in earlier phases and reduced later when exploitation became more important. Intrinsic rewards were set to zero on environment-terminal transitions to avoid dependence on termination artifacts {{CIT:19}}.
+For GLPE-family methods, \(r_t^{\mathrm{int}}\) was set to zero on environment-terminal transitions. Intrinsic weight \(\eta_t\) was either fixed or scheduled over training progress, depending on configuration.

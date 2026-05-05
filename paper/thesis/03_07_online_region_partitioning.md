@@ -1,9 +1,16 @@
 ### 3.7 Online Region Partitioning
 
-Learning progress was localized through an online partition of latent space. The partition was represented by a binary tree whose leaves defined adaptive regions. As embeddings accumulated in a leaf, splitting was triggered by capacity and depth criteria, and split rules were selected from coordinate variance with median thresholding to avoid degenerate partitions {{CIT:2,19}}.
+Learning progress was localized through an online binary partition of latent space. Each embedding \(z_t\) was routed to a leaf region \(\rho_t\). A leaf was split when capacity and depth conditions were satisfied, using the highest-variance coordinate and a median threshold to produce non-degenerate child regions {{CIT:2}}.
 
-Each region maintained short-horizon and long-horizon exponential moving averages of prediction error. Region-local progress was defined as the positive part of the long-minus-short difference,
+For each region \(r\), short-horizon and long-horizon exponential moving averages of forward error were maintained:
 \[
-\mathrm{LP}(r)=\max(0,\mu_r^{\mathrm{long}}-\mu_r^{\mathrm{short}}),
+\mu_r^{\mathrm{long}}\leftarrow \beta_{\mathrm{long}}\mu_r^{\mathrm{long}}+(1-\beta_{\mathrm{long}})e_t,
 \]
-which became large when local predictive performance was improving. This mechanism adapted exploration pressure to nonstationary learning dynamics in different parts of feature space {{CIT:2,19}}.
+\[
+\mu_r^{\mathrm{short}}\leftarrow \beta_{\mathrm{short}}\mu_r^{\mathrm{short}}+(1-\beta_{\mathrm{short}})e_t.
+\]
+Region-local learning progress was defined as
+\[
+\mathrm{LP}(r)=\max\left(0,\mu_r^{\mathrm{long}}-\mu_r^{\mathrm{short}}\right).
+\]
+This quantity increased when recent local prediction error decreased relative to the slower baseline.

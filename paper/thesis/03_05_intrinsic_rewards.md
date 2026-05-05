@@ -1,7 +1,9 @@
 ### 3.5 Intrinsic Rewards
 
-Intrinsic rewards were used to complement sparse or delayed extrinsic feedback by assigning additional utility to exploratory transitions. Prior approaches include prediction-error curiosity, random-network disagreement, impact-driven exploration, and region-based competence progress {{CIT:2,6,13,15}}.
+Intrinsic rewards were introduced to supplement delayed or sparse extrinsic feedback by providing additional training signal for exploration. The implemented design combined feature-space impact and region-local learning progress, which were normalized with running root-mean-square statistics before weighted aggregation.
 
-The study adopted a composite intrinsic structure built from two components: feature-space impact and region-local learning progress. Impact measured representation change across successive observations, while learning progress captured recent reduction in local forward-model error relative to a slower baseline. Component scales were normalized online with running RMS statistics before weighted combination, which reduced sensitivity to task-dependent magnitude differences. The resulting intrinsic signal was then clipped and scaled before addition to extrinsic reward {{CIT:2,15,19}}.
-
-Two variants were considered. GLPE (no gate) used the composite score directly. GLPE applied an additional region-specific binary gate that suppressed intrinsically attractive but persistently unproductive regions according to robust global thresholds and hysteretic reactivation conditions {{CIT:2,19}}.
+Let \(I_t=\lVert z_{t+1}-z_t\rVert_2\) denote impact in latent space and let \(\mathrm{LP}_t\) denote local learning progress from region-level prediction-error dynamics. With normalized components \(\widetilde{I}_t\) and \(\widetilde{\mathrm{LP}}_t\), the shared base intrinsic score was
+\[
+u_t = \alpha_{\mathrm{impact}}\widetilde{I}_t + \alpha_{\mathrm{LP}}\widetilde{\mathrm{LP}}_t,
+\]
+where \(\alpha_{\mathrm{impact}},\alpha_{\mathrm{LP}}\ge 0\). GLPE (no gate) set \(r_t^{\mathrm{int}}=u_t\). GLPE applied a region-specific binary gate so that \(r_t^{\mathrm{int}}=g_{\rho_t}u_t\), suppressing regions with persistently high local error and low learning progress {{CIT:2,15}}.

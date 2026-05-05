@@ -1,5 +1,5 @@
 ### 3.8 Evaluation Metrics
 
-Evaluation focused on extrinsic task performance and computational efficiency. Primary performance curves used undiscounted episodic return evaluated from offline checkpoints under deterministic action selection. Aggregation across multiple seeds provided mean trends and dispersion summaries per method and environment {{CIT:19}}.
+Evaluation emphasized extrinsic task performance and efficiency under fixed training budgets. Primary curves reported undiscounted episodic return over environment interaction, aggregated across random seeds per method.
 
-Two scalar curve summaries were used. Step-AUC integrated return against environment steps and normalized by step budget, which reflected sample efficiency. Wall-clock AUC integrated return against cumulative training time under a common time budget, defined as the minimum final runtime among compared methods in the same environment. This common-budget rule avoided extrapolation beyond measured runtime and enabled fair efficiency comparison {{CIT:19}}.
+Two scalar summaries were used. Step-AUC integrated return with respect to environment steps and normalized by the step budget, representing sample efficiency. Time-AUC integrated return with respect to cumulative wall-clock training time under a common time budget per environment, allowing direct comparison of learning efficiency when computational costs differed across methods.
