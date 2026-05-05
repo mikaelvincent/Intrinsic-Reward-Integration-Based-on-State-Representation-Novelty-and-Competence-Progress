@@ -1,1 +1,28 @@
 \section{Problem Formulation}
+\label{sec:theoretical_problem_formulation}
+
+The study is formulated within an episodic reinforcement-learning setting.
+An environment is represented as a Markov decision process with observation space $\mathcal{O}$, action space $\mathcal{A}$, transition distribution $P(o_{t+1}\mid o_t,a_t)$, extrinsic reward function $r^{\mathrm{ext}}(o_t,a_t,o_{t+1})$, discount factor $\gamma\in[0,1)$, and finite episode horizon $H$.
+At each time step $t$, the agent receives an observation $o_t\in\mathcal{O}$, samples an action $a_t\sim\pi_\theta(\cdot\mid o_t)$ from a stochastic policy, receives an extrinsic reward $r_t^{\mathrm{ext}}$, and transitions to $o_{t+1}$.
+The notation uses observations rather than privileged environment states because the exploration mechanism is defined only from information available to the agent.
+
+The primary task objective is the maximization of expected discounted extrinsic return,
+\begin{equation}
+    J_{\mathrm{ext}}(\theta)
+    = \mathbb{E}_{\tau\sim\pi_\theta}
+    \left[\sum_{t=0}^{H-1}\gamma^t r_t^{\mathrm{ext}}\right],
+\end{equation}
+where $\tau=(o_0,a_0,r_0^{\mathrm{ext}},o_1,\ldots)$ denotes a trajectory induced by the policy and environment.
+This objective defines the performance criterion of the task.
+Intrinsic rewards are introduced only as an auxiliary training signal for exploration and do not replace extrinsic return as the quantity used to evaluate learned behavior.
+
+Sparse-reward and delayed-reward tasks make direct optimization of $J_{\mathrm{ext}}$ difficult because many early trajectories contain little information about useful behavior.
+The theoretical role of intrinsic motivation is to modify the training signal so that the policy visits informative parts of the observation--action space before extrinsic reward becomes frequent.
+The resulting optimization process is therefore governed by a shaped reward during training, while the success of the learned policy is judged by the original environment reward.
+This distinction is important because arbitrary reward shaping does not generally preserve optimal policies, unlike restricted potential-based shaping forms \cite{ng-1999}.
+
+The central problem addressed by the framework is to define an intrinsic reward $r_t^{\mathrm{int}}$ that rewards productive exploration rather than persistent surprise.
+A productive transition is characterized by two properties.
+First, it should produce a meaningful change in a learned feature representation, indicating that the action affected the agent's represented state.
+Second, it should occur in a region where the predictive model is improving, indicating reducible uncertainty rather than irreducible noise.
+The following sections formalize these properties through latent dynamics, feature-space impact, region-local learning progress, and a gate that suppresses intrinsically rewarding but unproductive regions.

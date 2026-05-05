@@ -1,1 +1,35 @@
 \section{Latent Representation Learning}
+\label{sec:latent_representation_learning}
+
+The intrinsic reward is computed in a learned latent space rather than directly in the observation space.
+Let
+\begin{equation}
+    \phi_\omega:\mathcal{O}\rightarrow\mathbb{R}^{d}
+\end{equation}
+be an encoder with parameters $\omega$, and define the latent representation of an observation as
+\begin{equation}
+    z_t=\phi_\omega(o_t).
+\end{equation}
+The dimension $d$ is fixed during training.
+The representation $z_t$ serves as the common space in which transition impact, prediction error, and local learning progress are measured.
+
+Using a latent representation has two theoretical advantages.
+First, it allows the exploration signal to operate on compact features rather than on raw observations, which may include irrelevant or high-variance components.
+Second, it allows the representation to be shaped by predictive and inverse-dynamics objectives, so that the measured changes are more closely related to action-dependent structure.
+This follows the motivation of self-supervised curiosity methods, where learned features help focus prediction error on aspects of the environment that are affected by the agent's behavior \cite{pathak-2017}.
+
+The encoder is trained jointly with auxiliary dynamics models using transitions collected from the current policy.
+For a batch of transitions $\mathcal{B}$, the representation-learning objective is induced by the dynamics loss
+\begin{equation}
+    \min_{\omega,\psi,\xi}\;
+    \frac{1}{|\mathcal{B}|}\sum_{(o_t,a_t,o_{t+1})\in\mathcal{B}}
+    \mathcal{L}_{\mathrm{dyn}}(t),
+\end{equation}
+where $\psi$ parameterizes the forward model and $\xi$ parameterizes the inverse model.
+Because the batch distribution depends on $\pi_\theta$, the latent space changes as the policy discovers new regions of the environment.
+The exploration signal is therefore nonstationary by construction.
+
+The framework does not assume that $z_t$ is a sufficient statistic for the full environment state.
+Instead, it assumes that $z_t$ is sufficiently informative for the auxiliary quantities used by the intrinsic reward.
+In particular, the feature difference $z_{t+1}-z_t$ should reflect meaningful transition impact, and the forward prediction error in feature space should reflect how well the local latent dynamics are being learned.
+These assumptions are weaker than full state reconstruction and are suitable for reinforcement-learning settings where only behaviorally relevant predictive structure is needed for exploration.

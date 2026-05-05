@@ -1,1 +1,61 @@
 \section{Region-Local Learning Progress}
+\label{sec:region_local_learning_progress}
+
+Learning progress measures improvement rather than surprise.
+The framework estimates learning progress locally because different parts of the latent space may become predictable at different rates.
+Let $\mathcal{P}_t$ denote the current partition of the latent space into regions, and let
+\begin{equation}
+    \rho_t=\rho(z_t)\in\mathcal{P}_t
+\end{equation}
+be the region assigned to $z_t$.
+The partition is an online binary space partition over $\mathbb{R}^{d}$ whose leaves define the current regions.
+As more points are observed, frequently visited leaves may be split so that local statistics can become more specific.
+This principle follows the learning-progress motivation of competence-based exploration and R-IAC, where regions are valued according to improvement rather than absolute error \cite{schmidhuber-1991,baranes-2009}.
+
+For each region $r$, two exponential moving averages of the forward prediction error are maintained: a long-horizon average $\mu_r^{\mathrm{long}}$ and a short-horizon average $\mu_r^{\mathrm{short}}$.
+When a transition assigned to region $r$ has prediction error $e_t$, the averages are updated as
+\begin{align}
+    \mu_r^{\mathrm{long}}
+    &\leftarrow
+    \beta_{\mathrm{long}}\mu_r^{\mathrm{long}}
+    +(1-\beta_{\mathrm{long}})e_t, \\
+    \mu_r^{\mathrm{short}}
+    &\leftarrow
+    \beta_{\mathrm{short}}\mu_r^{\mathrm{short}}
+    +(1-\beta_{\mathrm{short}})e_t,
+\end{align}
+where $0<\beta_{\mathrm{short}}<\beta_{\mathrm{long}}<1$.
+The short-horizon average responds more quickly to recent prediction errors, while the long-horizon average provides a slower baseline.
+On the first visit to a region, both averages are initialized to the current prediction error.
+
+The learning progress of a region is defined as the positive decrease from the long-horizon error estimate to the short-horizon error estimate:
+\begin{equation}
+    \mathrm{LP}(r)
+    = \max\!\left(0,\mu_r^{\mathrm{long}}-\mu_r^{\mathrm{short}}\right).
+    \label{eq:region_learning_progress}
+\end{equation}
+For a transition at time $t$, the local learning-progress component is
+\begin{equation}
+    \mathrm{LP}_t=\mathrm{LP}(\rho_t).
+\end{equation}
+The value is high when recent prediction error in the region has fallen below its longer-term baseline, which indicates that the dynamics model is improving in that part of latent space.
+
+This definition addresses a limitation of prediction-error curiosity.
+A region with persistently high error but no reduction has low learning progress, whereas a region with moderate error that is decreasing can have high learning progress.
+The signal therefore favors reducible uncertainty, not merely large error.
+However, learning progress alone may reward improvement on transitions that have little behavioral effect.
+For this reason, it is combined with feature-space impact.
+
+As with impact, the scale of learning progress is normalized by a running second-moment estimate.
+Let
+\begin{equation}
+    v_{\mathrm{LP}} \leftarrow
+    \beta_{\mathrm{rms}}v_{\mathrm{LP}}
+    +(1-\beta_{\mathrm{rms}})\mathrm{LP}_t^2.
+\end{equation}
+The normalized learning-progress component is
+\begin{equation}
+    \widetilde{\mathrm{LP}}_t
+    =\frac{\mathrm{LP}_t}{\sqrt{v_{\mathrm{LP}}+\varepsilon}}.
+\end{equation}
+Independent normalization of $I_t$ and $\mathrm{LP}_t$ prevents one component from dominating solely because of scale differences.
