@@ -1,1 +1,38 @@
 \section{Learning-Progress Exploration}
+\label{sec:learning_progress_exploration}
+
+Learning-progress exploration rewards improvement in the agent's predictive or control model rather than rewarding novelty or prediction error directly.
+The idea appears in early work on curiosity and model-building controllers, where an agent is motivated by changes in its ability to predict the consequences of its actions \cite{schmidhuber-1991}.
+Under this view, experience is valuable when it reduces uncertainty or error.
+A region that is already predictable is no longer interesting, while a region that remains unpredictable despite repeated experience is also less useful.
+The most valuable region is one where the agent is actively improving.
+
+A simple learning-progress signal can be expressed as a positive decrease in prediction error,
+\begin{equation}
+    \mathrm{LP}_t = \max(0,\bar{e}_{\mathrm{past}}-\bar{e}_{\mathrm{recent}}),
+\end{equation}
+where $\bar{e}_{\mathrm{past}}$ is a longer-term estimate of model error and $\bar{e}_{\mathrm{recent}}$ is a recent estimate.
+When recent error is lower than the longer-term baseline, the model appears to be improving.
+This formulation differs from prediction-error curiosity because a region with high but nondecreasing error receives little or no reward.
+It also differs from novelty because a frequently visited region can remain interesting if the agent is still learning from it.
+
+Oudeyer and Kaplan describe intrinsic motivation systems that use competence progress and learning progress to guide autonomous development \cite{oudeyer-2007A,oudeyer-2007B}.
+Such systems divide the agent's experience into regions or tasks and allocate exploration toward areas where progress is greatest.
+This creates an automatic curriculum: the agent first focuses on regions that are learnable under its current competence, then shifts attention as those regions become mastered.
+The curriculum property is especially relevant to reinforcement learning because complex behavior often requires learning intermediate skills before final task rewards become reachable.
+
+R-IAC applies this principle through adaptive partitioning and region-specific progress estimates \cite{baranes-2009}.
+The environment or goal space is partitioned into regions, and learning progress is computed locally from changes in prediction error.
+Regions with higher progress are sampled more often, while regions with low progress become less attractive.
+The locality of the estimate is important because different parts of an environment may have different dynamics.
+A global error estimate could hide improvement in one region behind stagnation in another.
+
+Learning-progress methods directly address a major limitation of prediction-error curiosity, but they introduce practical challenges.
+First, progress estimates are nonstationary because the model and policy change during training.
+Second, progress must be computed over a suitable region structure; overly coarse regions mix unrelated dynamics, while overly fine regions lack enough data for stable estimates.
+Third, the magnitude of progress depends on the scale of the prediction error and may require normalization.
+Fourth, learning progress alone does not necessarily measure whether a transition produces meaningful behavioral change.
+A model can improve on small or repetitive transitions that have limited value for exploration.
+
+These challenges motivate learning-progress designs that operate in learned latent spaces, estimate progress locally, and combine progress with transition impact.
+Such designs retain the main advantage of learning progress---distinguishing learnable uncertainty from unproductive surprise---while making the signal more compatible with deep reinforcement learning.

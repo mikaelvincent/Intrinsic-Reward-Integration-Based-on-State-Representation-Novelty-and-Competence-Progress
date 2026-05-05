@@ -1,1 +1,29 @@
 \section{Research Gap}
+\label{sec:research_gap}
+
+The reviewed literature establishes several important principles for exploration in reinforcement learning.
+Novelty-based methods encourage state-space coverage and can guide agents toward sparse rewards, but they do not directly measure whether the agent is learning from the visited states.
+Prediction-error curiosity provides a neural and representation-based form of surprise, but it can reward stochastic or unlearnable regions.
+Impact-driven exploration encourages controllable change, but impact alone does not determine whether the resulting experience improves the agent's model or policy.
+Learning-progress methods address the difference between surprise and improvement, but they require stable local estimates and an appropriate region structure in high-dimensional or continuous spaces.
+
+A remaining gap is the need for an intrinsic-reward formulation that combines these complementary strengths while reducing their individual failure modes.
+In particular, an exploration signal for deep reinforcement learning should satisfy four requirements.
+First, it should operate in a learned representation so that it can be used with continuous observations and neural policies.
+Second, it should value transitions that produce meaningful feature-space change, since exploration should involve behaviorally consequential action.
+Third, it should estimate learning progress locally, because different parts of the environment may become predictable at different rates.
+Fourth, it should suppress intrinsic reward in regions where prediction error remains high but learning progress remains low.
+
+Existing methods address parts of this set of requirements but not the full combination.
+ICM and RND provide scalable prediction-error curiosity, but their intrinsic rewards are primarily driven by error magnitude \cite{pathak-2017,burda-2018B}.
+RIDE introduces a feature-space impact signal and count-based modulation, but it does not directly use local model-improvement estimates as the main criterion for productive exploration \cite{raileanu-2020}.
+R-IAC uses region-local learning progress, but adapting this idea to deep reinforcement learning requires learned latent representations, stable scale handling, and integration with modern policy-gradient training \cite{baranes-2009}.
+The noisy-TV literature further shows that high-error regions require explicit treatment when curiosity signals are used for policy optimization \cite{mavor-parker-2021}.
+
+This study addresses the gap by evaluating an intrinsic-reward family based on feature-space impact and region-local learning progress.
+The base reward combines the magnitude of latent transition change with an estimate of local model improvement.
+The gated variant further disables intrinsic shaping in regions that satisfy a high-error low-progress criterion, thereby treating unproductive curiosity as a local property rather than only as a global scheduling problem.
+This design follows the literature's motivation for curiosity, impact, and progress, while focusing on their interaction within a PPO-based deep reinforcement-learning setting.
+
+The research gap is therefore not the absence of intrinsic motivation methods, but the need for a selective intrinsic reward that distinguishes useful exploration from persistent surprise.
+The combination of impact, local progress, and gating clarifies how intrinsic rewards can be made more reliable under sparse rewards, noisy dynamics, and continuous-control learning.

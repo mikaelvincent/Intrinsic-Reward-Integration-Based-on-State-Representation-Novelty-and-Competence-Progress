@@ -1,1 +1,41 @@
 \section{Intrinsic Motivation in Reinforcement Learning}
+\label{sec:intrinsic_motivation_in_reinforcement_learning}
+
+Intrinsic motivation refers to internally generated objectives that encourage an agent to explore, learn, or acquire competence even when external reward is absent or insufficient.
+In reinforcement learning, intrinsic motivation is usually implemented by augmenting the environment reward with an auxiliary reward computed from the agent's observations, actions, learned models, or memory \cite{singh-2004,barto-2012,oudeyer-2007A,oudeyer-2007B}.
+The augmented reward has the general form
+\begin{equation}
+    r_t = r_t^{\mathrm{ext}} + \eta_t r_t^{\mathrm{int}},
+\end{equation}
+where $r_t^{\mathrm{ext}}$ is the task reward, $r_t^{\mathrm{int}}$ is the intrinsic reward, and $\eta_t$ controls the strength of intrinsic shaping.
+The intrinsic term is not normally part of the original task definition; it is introduced to improve learning dynamics.
+
+A central motivation for intrinsic reward is the sparse-reward problem.
+When successful behavior requires a long sequence of actions, random exploration may rarely discover reward, leaving policy-gradient estimates uninformative.
+An intrinsic reward can provide intermediate learning signals by rewarding experience that appears novel, surprising, controllable, or productive.
+The agent may then collect a more diverse set of trajectories and eventually encounter externally rewarding states.
+This role is especially important in environments where externally successful behavior is difficult to discover but easy to reinforce once discovered.
+
+Intrinsic-motivation methods can be grouped by the proxy they use for exploration value.
+Novelty-based methods reward states or features that have been visited rarely.
+Information-gain methods reward transitions that reduce uncertainty in a learned model \cite{houthooft-2016}.
+Prediction-error methods reward transitions that a predictive model currently explains poorly \cite{stadie-2015,pathak-2017}.
+Learning-progress methods reward reductions in prediction error over time rather than the error itself \cite{schmidhuber-1991,oudeyer-2007A,baranes-2009}.
+Impact-driven methods reward actions that produce meaningful change in a learned representation \cite{raileanu-2020}.
+These categories are not mutually exclusive; a single method may combine several signals.
+
+The theoretical status of intrinsic reward differs from policy-invariant reward shaping.
+Potential-based shaping has conditions under which the optimal policy is preserved, but general intrinsic-reward augmentation does not satisfy these conditions \cite{ng-1999}.
+An intrinsic reward may therefore change the effective optimization objective and produce behavior that is not optimal for the original task if the auxiliary signal remains influential after exploration is no longer needed.
+For this reason, empirical studies of intrinsic motivation typically report extrinsic evaluation return rather than the total shaped reward used during training.
+
+A useful intrinsic reward should satisfy several practical requirements.
+First, it should produce a meaningful signal before external rewards are common.
+Second, it should scale across environments without requiring extensive task-specific tuning.
+Third, it should not reward unlearnable randomness indefinitely.
+Fourth, it should be compatible with the policy optimizer and observation representation used by the agent.
+These requirements are difficult to satisfy simultaneously because signals that are strong enough to guide early exploration may also be strong enough to misdirect the policy later in training.
+
+The literature therefore motivates a move from simple surprise toward more selective measures of exploration value.
+A transition is not necessarily useful because it is rare or poorly predicted; it is useful when it helps the agent acquire predictive or control-relevant competence.
+The following sections review the major families of intrinsic rewards that inform this distinction.

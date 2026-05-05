@@ -1,1 +1,39 @@
 \section{Prediction-Error Curiosity}
+\label{sec:prediction_error_curiosity}
+
+Prediction-error curiosity rewards transitions that are difficult for a learned model to predict.
+The general assumption is that high prediction error indicates novelty, surprise, or incomplete understanding of the environment.
+If a model predicts the next representation $\hat{z}_{t+1}=f_\psi(z_t,a_t)$ from the current representation $z_t$ and action $a_t$, an intrinsic reward can be defined as
+\begin{equation}
+    r_t^{\mathrm{int}} = \left\lVert f_\psi(z_t,a_t)-z_{t+1}\right\rVert_2^2.
+\end{equation}
+Early deep predictive approaches used this idea to encourage agents to seek transitions that improve their understanding of environment dynamics \cite{stadie-2015}.
+
+The Intrinsic Curiosity Module (ICM) is a representative feature-space prediction-error method \cite{pathak-2017}.
+ICM learns an encoder $\phi_\omega$ that maps observations to features $z_t=\phi_\omega(o_t)$, a forward model that predicts $z_{t+1}$ from $(z_t,a_t)$, and an inverse model that predicts $a_t$ from $(z_t,z_{t+1})$.
+The inverse model encourages the representation to retain information about controllable aspects of the transition, reducing sensitivity to observation details that do not depend on the agent's action.
+The curiosity reward is then based on forward prediction error in this learned feature space rather than raw observation space.
+
+Random Network Distillation (RND) provides another influential form of prediction-error curiosity \cite{burda-2018B}.
+RND uses a fixed random target network $h$ and a trainable predictor $\hat{h}_\psi$.
+The intrinsic reward is the prediction error
+\begin{equation}
+    r_t^{\mathrm{int}} = \left\lVert \hat{h}_\psi(o_t)-h(o_t)\right\rVert_2^2.
+\end{equation}
+Because the target network is fixed, prediction error tends to be high for unfamiliar observations and decreases as the predictor trains on visited states.
+Large-scale studies of curiosity-driven learning have shown that such prediction-error signals can support exploration across a range of environments \cite{burda-2018A}.
+
+Prediction-error curiosity is powerful because it does not require explicit state counting and can be implemented with neural networks.
+It can discover sparse rewards by making unfamiliar observations attractive, and it can be combined with standard policy-gradient methods through reward augmentation.
+However, its main weakness is that prediction error conflates learnable novelty with irreducible uncertainty.
+A transition may remain difficult to predict because it is stochastic, partially observed, chaotic, or unrelated to the agent's controllable behavior.
+In such cases, prediction error can remain high even after extensive experience.
+
+This weakness is closely related to the noisy-TV problem.
+If an agent can repeatedly trigger observations that are unpredictable but behaviorally unproductive, a prediction-error bonus may reward this behavior indefinitely.
+Feature learning and inverse dynamics can reduce the problem by emphasizing controllable factors, but they do not eliminate all sources of unlearnable error.
+RND can also be affected by observation streams that maintain high predictor error for reasons unrelated to task progress.
+
+Prediction-error methods therefore motivate the use of temporal improvement as a refinement of curiosity.
+High error alone answers the question of what the model currently fails to predict; it does not answer whether additional data are making the model better.
+Learning-progress methods address this distinction by rewarding reductions in error rather than the absolute error value.
