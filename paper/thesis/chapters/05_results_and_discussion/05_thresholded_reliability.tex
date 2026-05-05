@@ -1,7 +1,107 @@
 \section{Thresholded Reliability}
+\label{sec:results_thresholded_reliability}
+
+Average return can hide failures when only some seeds succeed.
+Thresholded reliability therefore measures how many seeds reach a target return and how quickly successful seeds reach it.
+For a threshold $\theta$, the first reaching step is estimated by linear interpolation between the two adjacent evaluation checkpoints that bracket $\theta$.
+If a seed never reaches the threshold by the final checkpoint, it is counted as unsuccessful and is excluded from the median reaching-step calculation.
+
+Figure~\ref{fig:results_steps_to_threshold_baselines} summarizes threshold-reaching behavior at 25\%, 50\%, and 100\% of the task-specific solved threshold.
+For positive solved thresholds, the intermediate threshold is a direct fraction of the solved value.
+For \textsc{MountainCar-v0}, where higher returns are less negative, the intermediate thresholds are mapped monotonically from the minimum-return side so that 25\% and 50\% represent progressively stronger partial performance.
+
+\begin{figure}[!hbp]
+\centering
+\includegraphics[width=\glpefigwidth,height=\glpefigheight,keepaspectratio]{chapters/05_results_and_discussion/figures/steps-to-beat-baselines.png}
+\caption{Steps to reach fixed return thresholds. Bars show the median number of environment steps among successful seeds. Error bars show standard deviation across successful seeds. Bar opacity and the numeric labels indicate the fraction and count of seeds that reached each threshold. Lower bars with higher opacity indicate faster and more reliable learning.}
+\label{fig:results_steps_to_threshold_baselines}
+\end{figure}
 
 \subsection{25 Percent Threshold Results}
+\label{subsec:results_25_percent_threshold}
+
+The 25\% threshold measures early acquisition of nontrivial behavior.
+Table~\ref{tab:results_threshold_25} reports the number of successful seeds and the median number of environment steps, in millions, among those successful seeds.
+
+\begin{table}[!hbp]
+\centering
+\small
+\begin{fitwidthtabular}{lccc}
+\hline
+Environment & GLPE & GLPE (no gate) & Most reliable baseline \\
+\hline
+\textsc{MountainCar-v0} & $10/10;\;0.10\,\mathrm{M}$ & $10/10;\;0.10\,\mathrm{M}$ & RIDE: $9/10;\;0.11\,\mathrm{M}$ \\
+\textsc{BipedalWalker-v3} & $8/8;\;0.33\,\mathrm{M}$ & $8/8;\;0.33\,\mathrm{M}$ & ICM: $8/8;\;0.30\,\mathrm{M}$ \\
+\textsc{Ant-v5} & $8/8;\;2.01\,\mathrm{M}$ & $8/8;\;2.01\,\mathrm{M}$ & PPO: $8/8;\;1.82\,\mathrm{M}$ \\
+\textsc{HalfCheetah-v5} & $8/8;\;0.79\,\mathrm{M}$ & $8/8;\;0.79\,\mathrm{M}$ & PPO: $8/8;\;0.46\,\mathrm{M}$ \\
+\textsc{Humanoid-v5} & $3/5;\;7.47\,\mathrm{M}$ & $4/5;\;5.64\,\mathrm{M}$ & RIAC: $5/5;\;6.67\,\mathrm{M}$ \\
+\hline
+\end{fitwidthtabular}
+\caption{Reliability and median reaching steps at 25\% of the solved threshold. Each entry reports successful seeds over total seeds and median steps to first reach the target.}
+\label{tab:results_threshold_25}
+\end{table}
+
+At this low threshold, most environments are solved by most methods in the sense of reaching partial competence.
+GLPE and GLPE without gating reach the threshold in all seeds for four of the five environments.
+The exception is \textsc{Humanoid-v5}, where GLPE reaches the threshold in three of five seeds and GLPE without gating reaches it in four of five.
+This early-threshold view shows that GLPE does not prevent basic learning in the dense tasks, even when it is not the fastest method.
 
 \subsection{50 Percent Threshold Results}
+\label{subsec:results_50_percent_threshold}
+
+The 50\% threshold is a stricter measure of competent intermediate performance.
+Table~\ref{tab:results_threshold_50} shows that GLPE without gating reaches this threshold in every seed on four tasks and in four of five seeds on \textsc{Humanoid-v5}.
+
+\begin{table}[!hbp]
+\centering
+\small
+\begin{fitwidthtabular}{lccc}
+\hline
+Environment & GLPE & GLPE (no gate) & Most reliable baseline \\
+\hline
+\textsc{MountainCar-v0} & $10/10;\;0.12\,\mathrm{M}$ & $10/10;\;0.11\,\mathrm{M}$ & RIDE: $9/10;\;0.13\,\mathrm{M}$ \\
+\textsc{BipedalWalker-v3} & $8/8;\;0.44\,\mathrm{M}$ & $8/8;\;0.41\,\mathrm{M}$ & ICM: $8/8;\;0.41\,\mathrm{M}$ \\
+\textsc{Ant-v5} & $8/8;\;4.61\,\mathrm{M}$ & $8/8;\;4.61\,\mathrm{M}$ & RND: $8/8;\;4.18\,\mathrm{M}$ \\
+\textsc{HalfCheetah-v5} & $8/8;\;2.01\,\mathrm{M}$ & $8/8;\;2.01\,\mathrm{M}$ & PPO: $8/8;\;1.28\,\mathrm{M}$ \\
+\textsc{Humanoid-v5} & $2/5;\;14.51\,\mathrm{M}$ & $4/5;\;11.47\,\mathrm{M}$ & ICM: $4/5;\;10.32\,\mathrm{M}$ \\
+\hline
+\end{fitwidthtabular}
+\caption{Reliability and median reaching steps at 50\% of the solved threshold. Each entry reports successful seeds over total seeds and median steps to first reach the target.}
+\label{tab:results_threshold_50}
+\end{table}
+
+The 50\% results show that GLPE is reliable on the simpler sparse-reward task and on the lower-dimensional continuous-control tasks.
+The main degradation occurs in \textsc{Humanoid-v5}, where high-dimensional dynamics and substantial variance make the gate less reliable.
+The ungated variant matches the best baseline reach count in \textsc{Humanoid-v5}, although ICM reaches the threshold earlier among successful seeds.
 
 \subsection{Solved-Threshold Results}
+\label{subsec:results_solved_threshold}
+
+The solved threshold measures whether a method reaches the conventional task-level target by the end of training.
+Table~\ref{tab:results_threshold_solved} reports the solved-threshold reliability.
+
+\begin{table}[!hbp]
+\centering
+\small
+\begin{fitwidthtabular}{lccc}
+\hline
+Environment & GLPE & GLPE (no gate) & Most reliable baseline \\
+\hline
+\textsc{MountainCar-v0} & $10/10;\;0.35\,\mathrm{M}$ & $10/10;\;0.35\,\mathrm{M}$ & RIDE: $9/10;\;0.44\,\mathrm{M}$ \\
+\textsc{BipedalWalker-v3} & $4/8;\;3.10\,\mathrm{M}$ & $2/8;\;3.04\,\mathrm{M}$ & RIAC: $8/8;\;4.09\,\mathrm{M}$ \\
+\textsc{Ant-v5} & $7/8;\;10.39\,\mathrm{M}$ & $7/8;\;10.39\,\mathrm{M}$ & RIAC: $8/8;\;10.22\,\mathrm{M}$ \\
+\textsc{HalfCheetah-v5} & $8/8;\;9.68\,\mathrm{M}$ & $8/8;\;9.42\,\mathrm{M}$ & RIDE: $8/8;\;9.03\,\mathrm{M}$ \\
+\textsc{Humanoid-v5} & $1/5;\;6.73\,\mathrm{M}$ & $2/5;\;18.23\,\mathrm{M}$ & ICM: $2/5;\;13.93\,\mathrm{M}$ \\
+\hline
+\end{fitwidthtabular}
+\caption{Reliability and median reaching steps at the solved threshold. Each entry reports successful seeds over total seeds and median steps to first reach the target.}
+\label{tab:results_threshold_solved}
+\end{table}
+
+The solved-threshold results reveal where partial competence does not translate into full task completion.
+GLPE solves all \textsc{MountainCar-v0} seeds and all \textsc{HalfCheetah-v5} seeds, and it solves seven of eight \textsc{Ant-v5} seeds.
+However, it solves only half of the \textsc{BipedalWalker-v3} seeds and one of five \textsc{Humanoid-v5} seeds.
+In \textsc{BipedalWalker-v3}, many runs approach the solved threshold but remain just below it, making the solved count sensitive to the fixed cutoff.
+In \textsc{Humanoid-v5}, the gap is more substantive because the learned policies vary widely across seeds.
+
+\FloatBarrier

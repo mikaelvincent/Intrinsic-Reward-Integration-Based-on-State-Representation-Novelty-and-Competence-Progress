@@ -1,7 +1,73 @@
 \section{Wall-Clock Efficiency}
+\label{sec:results_wall_clock_efficiency}
+
+Sample efficiency does not fully describe practical cost.
+Intrinsic-reward methods add auxiliary computation for encoders, prediction models, statistics, and reward construction.
+A method can therefore improve return per environment step while reducing return per unit of wall-clock time.
+This section analyzes wall-clock AUC and runtime breakdowns to measure this tradeoff.
 
 \subsection{Wall-Clock AUC}
+\label{subsec:results_wall_clock_auc}
+
+Wall-clock AUC measures evaluation return as a function of elapsed training time rather than environment steps.
+For each environment, curves are truncated to a common time horizon equal to the minimum final runtime among the compared methods, avoiding extrapolation beyond measured training time.
+Figure~\ref{fig:results_eval_auc_time} reports the resulting wall-clock AUC.
+
+\begin{figure}[!hbp]
+\centering
+\includegraphics[width=\glpefigwidth,height=\glpefigheight,keepaspectratio]{chapters/05_results_and_discussion/figures/eval-auc-time-all-methods.png}
+\caption{Wall-clock AUC of deterministic evaluation return. Each task uses a common runtime horizon so that slower methods are not credited for unobserved future performance. Higher values indicate better return accumulated per unit of training time.}
+\label{fig:results_eval_auc_time}
+\end{figure}
+
+The wall-clock view preserves the main qualitative finding from the step-based analysis but makes overhead more visible.
+GLPE without gating remains close to the strongest baseline in several environments because it uses the same base intrinsic score without the extra cost of gate thresholding.
+The gated method is less favorable under wall-clock AUC when the performance gain from suppression does not compensate for the additional computation.
+This is particularly relevant in dense-control settings, where the extrinsic reward already provides a strong learning signal.
 
 \subsection{Runtime Breakdown}
+\label{subsec:results_runtime_breakdown}
+
+Figure~\ref{fig:results_timing_breakdown} decomposes training time per PPO update into environment interaction, policy optimization, intrinsic computation, and related components.
+The stacked bars show that the relative cost of intrinsic reward depends strongly on the environment.
+
+\begin{figure}[!hbp]
+\centering
+\includegraphics[width=\glpefigwidth,height=\glpefigheight,keepaspectratio]{chapters/05_results_and_discussion/figures/timing-breakdown.png}
+\caption{Runtime breakdown per PPO update. Each stack reports component-wise median time from the final quarter of training updates, averaged across runs. Black error bars show 95\% confidence intervals for total update time across runs.}
+\label{fig:results_timing_breakdown}
+\end{figure}
+
+In computationally expensive locomotion environments, environment stepping and PPO optimization account for much of the total runtime.
+Intrinsic overhead is therefore a smaller fraction of the full update cost.
+In inexpensive environments such as \textsc{MountainCar-v0}, the environment itself is cheap to simulate, so auxiliary computation becomes more visible in wall-clock comparisons.
+This distinction explains why a method can appear sample-efficient on a lightweight environment while still imposing a substantial runtime penalty.
 
 \subsection{Computational Tradeoffs}
+\label{subsec:results_computational_tradeoffs}
+
+The most distinctive additional cost in gated GLPE is the computation of robust global medians used to decide whether a local region should be suppressed.
+A microbenchmark of the gate-median computation shows the cost of recomputing these medians every update relative to using cached medians.
+Table~\ref{tab:results_gate_median_benchmark} reports the measured throughput.
+
+\begin{table}[!hbp]
+\centering
+\small
+\begin{fitwidthtabular}{lcc}
+\hline
+Configuration & Throughput & Relative speed \\
+\hline
+Recompute every update & $20{,}877$ transitions/s & $1.00\times$ \\
+Cache for $64$ updates & $100{,}173$ transitions/s & $4.83\times$ \\
+\hline
+\end{fitwidthtabular}
+\caption{Gate-median microbenchmark. Throughput is the median across nine trials for the same workload. Caching medians improves throughput but can make gate decisions depend on slightly stale global references.}
+\label{tab:results_gate_median_benchmark}
+\end{table}
+
+The benchmark shows that the gate can be made substantially faster by caching global median references.
+However, cached medians change the exact timing of gate decisions because thresholds are no longer recomputed at every update.
+For this reason, caching is best interpreted as an engineering optimization rather than as part of the core algorithmic comparison.
+The main tradeoff is between responsiveness and runtime: frequent median recomputation gives the gate current statistics, while caching improves throughput at the cost of stale thresholds.
+
+\FloatBarrier

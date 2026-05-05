@@ -1,1 +1,31 @@
 \section{Discussion of Findings}
+\label{sec:results_discussion_of_findings}
+
+The experiments show that GLPE is most effective when the agent must discover useful behavior before extrinsic rewards provide sufficient guidance.
+This conclusion is supported by \textsc{MountainCar-v0}, where GLPE achieves the best final return, strongest step-AUC, and complete solved-threshold reliability.
+The result is consistent with the design of the intrinsic reward: feature-space impact encourages behaviorally meaningful transitions, while region-local learning progress favors transitions whose dynamics are becoming more predictable.
+
+The results also show that gating is not universally beneficial.
+The gate improves the sparse-reward result but can reduce performance in dense-reward or high-variance environments.
+This is most visible in \textsc{Humanoid-v5}, where gated GLPE has lower final performance and lower threshold reliability than the ungated variant.
+A plausible explanation is that high-dimensional locomotion produces noisy local progress estimates, causing the gate to suppress regions that are difficult but still useful for learning.
+Thus, the empirical role of the gate is best described as a selective guardrail against unproductive curiosity, not as a general-purpose performance booster.
+
+The ablation results indicate that the two reward components contribute differently across tasks.
+Impact-only exploration is competitive in \textsc{Ant-v5}, learning-progress-only exploration is strong in \textsc{BipedalWalker-v3}, and the full combination is necessary for the strongest \textsc{MountainCar-v0} result.
+This pattern suggests that the fixed component weights used in the experiments are a reasonable general setting but are unlikely to be optimal for every environment.
+An adaptive weighting mechanism could potentially improve robustness by increasing the importance of learning progress in sparse-reward settings and increasing the importance of impact in dense-control settings.
+
+The threshold analyses reveal that partial competence and solved performance should be distinguished.
+GLPE and GLPE without gating reach 25\% and 50\% thresholds reliably in most environments, but full solved-threshold reliability is more difficult in \textsc{BipedalWalker-v3} and \textsc{Humanoid-v5}.
+This distinction is important because mean learning curves can make methods appear similar even when their probability of reaching a practical target differs across seeds.
+Reliability metrics therefore provide information that is not captured by mean return alone.
+
+Wall-clock results show that computational overhead must be considered when evaluating intrinsic-reward methods.
+The gated method adds region statistics and robust threshold computations, and these costs matter most when environment simulation is inexpensive.
+The ungated variant often provides a better runtime-performance balance because it retains the combined impact--learning-progress reward without the additional gate computation.
+For practical use, the choice between gated and ungated GLPE should therefore depend on whether the expected benefit of suppressing unproductive regions is likely to exceed the added runtime cost.
+
+Overall, the findings support the central premise of this study: learning progress can be combined with feature-space impact to produce an intrinsic reward that is useful for exploration, particularly in sparse-reward settings.
+At the same time, the results identify limitations in high-dimensional and dense-reward environments, where the gate may become conservative and where standard baselines remain competitive.
+The method should therefore be viewed as a contribution to targeted intrinsic motivation rather than as a universally dominant reinforcement-learning algorithm.

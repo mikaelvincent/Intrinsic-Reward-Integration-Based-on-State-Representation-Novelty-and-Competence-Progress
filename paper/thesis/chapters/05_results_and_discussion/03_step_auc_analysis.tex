@@ -1,1 +1,44 @@
 \section{Step-AUC Analysis}
+\label{sec:results_step_auc}
+
+Step-AUC measures average evaluation return over the full training budget.
+For a method with mean evaluation return $\bar{R}(s_i)$ at checkpoint step $s_i$, the normalized step-AUC is computed as
+\begin{equation}
+    \mathrm{AUC}_{\mathrm{step}}
+    = \frac{1}{s_K-s_0}\sum_{i=1}^{K}
+      \frac{\bar{R}(s_i)+\bar{R}(s_{i-1})}{2}(s_i-s_{i-1}),
+    \label{eq:results_step_auc}
+\end{equation}
+where $s_0=0$ and $s_K$ is the final evaluation step.
+This metric rewards methods that learn early and maintain high return, rather than methods that improve only at the final checkpoint.
+
+Table~\ref{tab:results_step_auc_glpe_vs_baselines} reports step-AUC for GLPE, GLPE without gating, and the strongest baseline per environment.
+The best baseline is selected independently for each environment from PPO, ICM, RND, RIDE, and RIAC.
+
+\begin{table}[!hbp]
+\centering
+\small
+\begin{fitwidthtabular}{lccc}
+\hline
+Environment & GLPE & GLPE (no gate) & Best baseline \\
+\hline
+\textsc{MountainCar-v0} & $-107.0\;[-114.8,-101.8]$ & $-111.3\;[-128.7,-101.4]$ & RIDE: $-113.7\;[-134.2,-101.9]$ \\
+\textsc{BipedalWalker-v3} & $249.0\;[223.9,270.7]$ & $255.2\;[230.0,275.6]$ & ICM: $257.3\;[229.4,278.3]$ \\
+\textsc{Ant-v5} & $3{,}402\;[3{,}067,3{,}708]$ & $3{,}402\;[3{,}067,3{,}707]$ & RND: $3{,}565\;[3{,}202,3{,}876]$ \\
+\textsc{HalfCheetah-v5} & $5{,}005\;[4{,}708,5{,}316]$ & $4{,}998\;[4{,}700,5{,}296]$ & RIDE: $5{,}208\;[5{,}019,5{,}410]$ \\
+\textsc{Humanoid-v5} & $1{,}583\;[551,3{,}360]$ & $1{,}665\;[769,2{,}921]$ & ICM: $1{,}781\;[829,2{,}797]$ \\
+\hline
+\end{fitwidthtabular}
+\caption{Step-AUC of deterministic evaluation return versus environment steps. Values are normalized by the corresponding environment step budget. Brackets show approximate 95\% bootstrap uncertainty intervals obtained from the checkpoint confidence bands. Higher values are better.}
+\label{tab:results_step_auc_glpe_vs_baselines}
+\end{table}
+
+GLPE has the highest step-AUC on \textsc{MountainCar-v0}, which is consistent with its rapid and reliable discovery of the sparse-reward solution.
+On \textsc{BipedalWalker-v3}, GLPE without gating is close to ICM, differing by about $2.1$ return points in mean step-AUC.
+On \textsc{Ant-v5} and \textsc{HalfCheetah-v5}, the strongest baselines have a moderate advantage, but the GLPE variants remain within the same broad performance range.
+On \textsc{Humanoid-v5}, ICM has the highest mean step-AUC, but the confidence intervals for GLPE, GLPE without gating, and ICM overlap substantially.
+
+The step-AUC results indicate that GLPE is not merely a final-checkpoint effect in the sparse-reward task.
+Its advantage on \textsc{MountainCar-v0} is accumulated throughout training.
+In contrast, the smaller gaps in the locomotion environments show that the proposed intrinsic reward improves neither all training phases nor all task families uniformly.
+This supports evaluating GLPE as a targeted exploration method rather than as a replacement for all intrinsic-reward approaches.

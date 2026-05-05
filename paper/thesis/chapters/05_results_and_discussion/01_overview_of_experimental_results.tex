@@ -1,1 +1,21 @@
 \section{Overview of Experimental Results}
+\label{sec:results_overview}
+
+This chapter presents the empirical results of the proposed Gated Learning-Progress Exploration (GLPE) method and its ungated variant against PPO and intrinsic-reward baselines.
+All results are reported using deterministic offline evaluation checkpoints and are measured with extrinsic environment return only.
+Intrinsic rewards therefore affect the optimization trajectory during training but are not included in the reported evaluation return.
+
+The evaluation covers five environments: \textsc{MountainCar-v0}, \textsc{BipedalWalker-v3}, \textsc{Ant-v5}, \textsc{HalfCheetah-v5}, and \textsc{Humanoid-v5}.
+The set includes sparse-reward exploration, continuous-control locomotion, dense reward shaping, and high-variance dynamics.
+The principal comparison is between GLPE, GLPE without gating, PPO without intrinsic reward, and the ICM, RND, RIDE, and RIAC intrinsic-reward baselines.
+The analysis also includes component ablations that retain only feature-space impact or only learning progress.
+
+The main empirical finding is that GLPE is most advantageous in sparse-reward exploration, while the ungated variant is generally more competitive in dense-reward and high-variance settings.
+On \textsc{MountainCar-v0}, GLPE reaches the solved threshold in all seeds and achieves the strongest final return among the compared methods.
+On \textsc{BipedalWalker-v3}, \textsc{Ant-v5}, and \textsc{HalfCheetah-v5}, the GLPE family remains competitive, but the strongest baseline depends on the environment and metric.
+On \textsc{Humanoid-v5}, all methods exhibit wide between-seed variation, and the confidence intervals are too broad for a stable ranking based only on mean return.
+
+The results support three interpretations.
+First, combining feature-space impact with learning progress is useful when a task requires directed exploration before extrinsic rewards become informative.
+Second, the gate functions as a conservative guardrail rather than a general performance enhancer; it can suppress unproductive intrinsic reward but may also reduce useful exploration when the task already provides dense feedback.
+Third, intrinsic-reward methods must be evaluated jointly by return, sample efficiency, reliability, and wall-clock cost because a method that improves one dimension may be weaker on another.

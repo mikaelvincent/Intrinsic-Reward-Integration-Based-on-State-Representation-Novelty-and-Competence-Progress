@@ -1,7 +1,50 @@
 \section{Gating Behavior}
+\label{sec:results_gating_behavior}
+
+The gate is designed to suppress intrinsic reward only in latent regions with persistently high prediction error and low learning progress.
+It is therefore a local mechanism rather than a global decay schedule.
+Figure~\ref{fig:results_gate_map} visualizes the final-checkpoint trajectories of the gated method, with time steps colored according to whether intrinsic shaping is active.
+
+\begin{figure}[!hbp]
+\centering
+\includegraphics[width=\glpefigwidth,height=\glpefigheight,keepaspectratio]{chapters/05_results_and_discussion/figures/glpe-gate-map.png}
+\caption{State-space view of GLPE gate decisions at final checkpoints. For \textsc{MountainCar-v0}, points show raw position and velocity. For the other environments, z-scored observations are projected onto the first two principal components. Gate-on points receive the base intrinsic reward, while gate-off points have the intrinsic reward suppressed.}
+\label{fig:results_gate_map}
+\end{figure}
 
 \subsection{Gate Activation Patterns}
+\label{subsec:results_gate_activation_patterns}
+
+The gate-off points occupy limited regions of the visited state distribution.
+This pattern is consistent with the intended design: the gate should not eliminate intrinsic motivation everywhere, but should selectively remove it where the region statistics indicate low progress despite high error.
+The visualization shows that gate suppression is spatially structured, which suggests that the online latent partition identifies localized regions rather than applying a uniform penalty to all transitions.
+
+Because the gate uses medians across visited regions, the activation pattern depends on the distribution of the agent's own experience.
+A region is evaluated relative to other regions currently known to the agent, not relative to an externally fixed difficulty scale.
+This makes the gate adaptive, but it also means that noisy early experience can influence later suppression decisions if a region receives enough visits to satisfy the persistence rule.
 
 \subsection{Effect in Sparse-Reward Settings}
+\label{subsec:results_gate_sparse_reward}
+
+In \textsc{MountainCar-v0}, the gated method improves reliability without sacrificing final performance.
+Both GLPE and GLPE without gating solve all seeds, but GLPE obtains the stronger step-AUC and the best final mean return among all compared methods.
+This suggests that gating can remove distracting intrinsic reward while preserving exploration of controllable state changes needed to reach the goal.
+
+The sparse-reward result is aligned with the gate's purpose.
+When extrinsic reward is uninformative for much of training, the agent is vulnerable to intrinsic-reward loops.
+A local suppression rule can prevent the policy from overvaluing regions that remain difficult to predict but do not yield learning progress.
+The outcome in \textsc{MountainCar-v0} shows that this mechanism can improve the usefulness of intrinsic reward in a low-feedback environment.
 
 \subsection{Effect in Dense-Reward and High-Variance Settings}
+\label{subsec:results_gate_dense_high_variance}
+
+The gate is less beneficial in dense-reward and high-variance tasks.
+On \textsc{BipedalWalker-v3}, GLPE without gating has a higher final mean than gated GLPE.
+On \textsc{Humanoid-v5}, the difference is larger: GLPE without gating reaches a final mean close to ICM, while gated GLPE has a lower mean and lower 50\% threshold reliability.
+These results indicate that suppressing intrinsic reward can be harmful when the progress statistics are noisy or when difficult regions still contain useful behavior.
+
+In \textsc{Ant-v5} and \textsc{HalfCheetah-v5}, the gated and ungated variants are similar in aggregate learning curves.
+This suggests that the gate may have limited influence when dense extrinsic rewards dominate the optimization signal.
+Overall, the empirical evidence supports using gating as a targeted safeguard for unproductive curiosity, not as a default improvement for every continuous-control task.
+
+\FloatBarrier
