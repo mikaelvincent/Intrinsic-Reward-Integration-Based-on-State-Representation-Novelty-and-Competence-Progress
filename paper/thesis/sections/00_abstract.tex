@@ -1,2 +1,16 @@
 \begin{abstract}
+Sparse, delayed, or deceptive rewards remain a persistent challenge in deep reinforcement learning because a policy may receive little task-relevant feedback before useful behavior is discovered.
+Intrinsic motivation addresses this limitation by augmenting the environment reward with auxiliary signals that encourage exploration, but common novelty- and prediction-error-based objectives can reward transitions that are surprising without being learnable or useful.
+This study investigates an intrinsic-reward method for reducing such unproductive curiosity while preserving the exploratory benefits of reward augmentation.
+The proposed method, \emph{Gated Learning-Progress Exploration} (GLPE), combines two complementary transition-level signals: feature-space impact, measured by the change between consecutive latent observations, and region-local learning progress, measured by the decrease in forward-dynamics prediction error within an online partition of the learned latent space.
+The intrinsic reward is computed from normalized impact and learning-progress components and is optionally filtered by a region-specific gate that suppresses rewards in areas with persistently high prediction error but low learning progress.
+An ungated variant is also evaluated to isolate the effect of the base intrinsic score from the gate.
+
+The method is implemented with a Proximal Policy Optimization backbone and evaluated on five Gymnasium control benchmarks: \textsc{MountainCar-v0}, \textsc{BipedalWalker-v3}, \textsc{Ant-v5}, \textsc{HalfCheetah-v5}, and \textsc{Humanoid-v5}.
+The experimental design compares GLPE and GLPE without gating against PPO, ICM, RND, RIDE, and RIAC under shared policy architectures, training budgets, and evaluation procedures.
+Performance is assessed using deterministic offline checkpoint evaluation, step-normalized area under the learning curve, final-checkpoint return, threshold-reaching reliability, ablation studies, intrinsic-reward diagnostics, and wall-clock efficiency.
+Across the benchmark suite, GLPE without gating is a consistent default that remains competitive with the strongest baseline methods under both sample-efficiency and wall-clock views.
+The gated variant is most useful in sparse-reward settings such as \textsc{MountainCar-v0}, where suppressing high-error, low-progress regions improves reliability, but it can be conservative in dense-reward or high-variance tasks.
+Ablation results show that impact and learning progress contribute differently across environments, supporting their combined use as a robust exploration signal.
+The study contributes a formal formulation of GLPE, an empirical comparison against established intrinsic-motivation baselines, and an analysis of the tradeoff between targeted exploration control and computational overhead.
 \end{abstract}
