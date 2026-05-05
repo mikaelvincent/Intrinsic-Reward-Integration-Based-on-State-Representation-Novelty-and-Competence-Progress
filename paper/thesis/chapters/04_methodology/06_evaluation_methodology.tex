@@ -43,7 +43,7 @@ Higher step-AUC indicates either faster early learning, higher sustained return,
 \label{subsec:methodology_reliability_metrics}
 
 Reliability was evaluated using threshold-reaching statistics across seeds.
-For each environment, a solved threshold $\theta$ was specified as follows:
+For each environment, a solved-return threshold $G_{\mathrm{solve}}$ was specified as follows:
 \begin{equation}
 \begin{aligned}
     \text{\textsc{MountainCar-v0}:} &\ -110, &
@@ -57,10 +57,10 @@ For each seed, the first checkpoint crossing a threshold was identified.
 When the threshold was crossed between two checkpoints, the crossing step was estimated by linear interpolation between the adjacent checkpoint returns.
 
 The study reported reach counts and median steps-to-threshold at 25\%, 50\%, and 100\% of the solved threshold.
-For positive solved thresholds, the fractional threshold was $q\theta$ for $q\in\{0.25,0.50,1.00\}$.
+For positive solved thresholds, the fractional threshold was $qG_{\mathrm{solve}}$ for $q\in\{0.25,0.50,1.00\}$.
 For \textsc{MountainCar-v0}, whose solved threshold is negative and whose poor-return regime is near $-200$, the monotonic fractional thresholds were computed as
 \begin{equation}
-    \theta_q = \theta(2-q).
+    G_q = G_{\mathrm{solve}}(2-q).
 \end{equation}
 This gives thresholds that become easier as $q$ decreases while preserving the direction that higher return is better.
 Medians were computed over successful seeds only, and the reach count was reported alongside each median to avoid hiding failures.

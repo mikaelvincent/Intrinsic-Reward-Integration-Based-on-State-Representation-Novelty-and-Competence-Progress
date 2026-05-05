@@ -4,7 +4,7 @@
 Novelty-based exploration encourages the agent to visit states or features that have been encountered infrequently.
 In tabular settings, a simple exploration bonus can be defined from a visitation count $N(s)$, for example
 \begin{equation}
-    r_t^{\mathrm{int}} = \frac{\beta}{\sqrt{N(s_t)}} ,
+    r_t^{\mathrm{int}} = \frac{\beta}{\sqrt{N(s_t)}},
 \end{equation}
 where $\beta>0$ controls the magnitude of the bonus.
 The reward is large when a state is new and decreases as the state is revisited.

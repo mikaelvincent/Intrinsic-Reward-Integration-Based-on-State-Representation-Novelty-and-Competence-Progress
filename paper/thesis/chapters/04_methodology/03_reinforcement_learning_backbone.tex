@@ -27,13 +27,12 @@ The clipped PPO policy objective is
 \begin{equation}
     \mathcal{L}_{\pi}(\theta)
     = -\mathbb{E}_t\left[
-        \min\!\left(
-            \varrho_t(\theta)\hat{A}_t,
+        \min\!\Bigl(\varrho_t(\theta)\hat{A}_t,
             \mathrm{clip}(\varrho_t(\theta),1-\epsilon,1+\epsilon)\hat{A}_t
-        \right)
+        \Bigr)
     \right],
 \end{equation}
-where
+where $\epsilon$ is the PPO clipping range and the probability ratio is
 \begin{equation}
     \varrho_t(\theta)
     = \frac{\pi_\theta(a_t\mid o_t)}{\pi_{\theta_{\mathrm{old}}}(a_t\mid o_t)}.

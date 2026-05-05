@@ -34,10 +34,9 @@ The clipped surrogate objective is
 \begin{equation}
     L^{\mathrm{CLIP}}(\theta)=
     \mathbb{E}_t\left[
-    \min\left(
-    \varrho_t(\theta)\hat{A}_t,
+    \min\!\Bigl(\varrho_t(\theta)\hat{A}_t,
     \mathrm{clip}(\varrho_t(\theta),1-\epsilon,1+\epsilon)\hat{A}_t
-    \right)
+    \Bigr)
     \right],
 \end{equation}
 where $\epsilon$ limits the incentive to move the new policy too far from the old policy.

@@ -2,7 +2,7 @@
 \label{sec:reinforcement_learning_foundations}
 
 Reinforcement learning provides a mathematical framework for learning behavior through interaction with an environment.
-The standard formulation is an episodic Markov decision process (MDP), defined by an observation or state space $\mathcal{S}$, an action space $\mathcal{A}$, a transition distribution $P(s_{t+1}\mid s_t,a_t)$, a reward function $r(s_t,a_t,s_{t+1})$, a discount factor $\gamma\in[0,1)$, and an episode horizon.
+The standard formulation is an episodic Markov decision process (MDP), defined by an observation or state space $\mathcal{S}$, an action space $\mathcal{A}$, a transition distribution $P(s_{t+1}\mid s_t,a_t)$, a reward function $r(s_t,a_t,s_{t+1})$, a discount factor $\gamma\in[0,1)$, and an episode horizon $T$.
 At each time step $t$, the agent observes $s_t$, samples or selects an action $a_t$, receives reward $r_t$, and transitions to $s_{t+1}$.
 The goal is to learn a policy $\pi_\theta(a\mid s)$, parameterized by $\theta$, that maximizes expected discounted return,
 \begin{equation}
