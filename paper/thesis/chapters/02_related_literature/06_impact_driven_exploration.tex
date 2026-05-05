@@ -10,7 +10,7 @@ A simple feature-space impact measure is
 where $\phi$ maps observations into a representation space.
 Large values indicate that the transition changed the representation substantially.
 
-Rewarding Impact-Driven Exploration (RIDE) uses this principle to encourage agents to take actions that lead to significant feature-space changes \cite{raileanu-2020}.
+Rewarding Impact-Driven Exploration (RIDE) uses this principle to encourage agents to take actions that lead to significant feature-space changes \parencite{raileanu-2020}.
 RIDE combines a learned representation with an impact reward and an episodic state-count correction.
 The count correction reduces the reward for repeatedly producing the same transition pattern, while the impact term encourages behavior that changes the agent's represented state.
 This differs from pure novelty because the reward is tied to transition magnitude rather than only to whether a state has been visited rarely.

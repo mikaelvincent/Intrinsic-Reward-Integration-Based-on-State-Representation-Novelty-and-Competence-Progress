@@ -16,7 +16,7 @@ The representation $z_t$ serves as the common space in which transition impact, 
 Using a latent representation has two theoretical advantages.
 First, it allows the exploration signal to operate on compact features rather than on raw observations, which may include irrelevant or high-variance components.
 Second, it allows the representation to be shaped by predictive and inverse-dynamics objectives, so that the measured changes are more closely related to action-dependent structure.
-This follows the motivation of self-supervised curiosity methods, where learned features help focus prediction error on aspects of the environment that are affected by the agent's behavior \cite{pathak-2017}.
+This follows the motivation of self-supervised curiosity methods, where learned features help focus prediction error on aspects of the environment that are affected by the agent's behavior \parencite{pathak-2017}.
 
 The encoder is trained jointly with auxiliary dynamics models using transitions collected from the current policy.
 For a batch of transitions $\mathcal{B}$, the representation-learning objective is induced by the dynamics loss

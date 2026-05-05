@@ -19,7 +19,7 @@ Intrinsic rewards are introduced only as an auxiliary training signal for explor
 Sparse-reward and delayed-reward tasks make direct optimization of $J_{\mathrm{ext}}$ difficult because many early trajectories contain little information about useful behavior.
 The theoretical role of intrinsic motivation is to modify the training signal so that the policy visits informative parts of the observation--action space before extrinsic reward becomes frequent.
 The resulting optimization process is therefore governed by a shaped reward during training, while the success of the learned policy is judged by the original environment reward.
-This distinction is important because arbitrary reward shaping does not generally preserve optimal policies, unlike restricted potential-based shaping forms \cite{ng-1999}.
+This distinction is important because arbitrary reward shaping does not generally preserve optimal policies, unlike restricted potential-based shaping forms \parencite{ng-1999}.
 
 The central problem addressed by the framework is to define an intrinsic reward $r_t^{\mathrm{int}}$ that rewards productive exploration rather than persistent surprise.
 A productive transition is characterized by two properties.

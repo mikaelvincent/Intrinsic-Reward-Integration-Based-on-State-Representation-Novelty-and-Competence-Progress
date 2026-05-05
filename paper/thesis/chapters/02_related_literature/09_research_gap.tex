@@ -15,10 +15,10 @@ Third, it should estimate learning progress locally, because different parts of 
 Fourth, it should suppress intrinsic reward in regions where prediction error remains high but learning progress remains low.
 
 Existing methods address parts of this set of requirements but not the full combination.
-ICM and RND provide scalable prediction-error curiosity, but their intrinsic rewards are primarily driven by error magnitude \cite{pathak-2017,burda-2018B}.
-RIDE introduces a feature-space impact signal and count-based modulation, but it does not directly use local model-improvement estimates as the main criterion for productive exploration \cite{raileanu-2020}.
-R-IAC uses region-local learning progress, but adapting this idea to deep reinforcement learning requires learned latent representations, stable scale handling, and integration with modern policy-gradient training \cite{baranes-2009}.
-The noisy-TV literature further shows that high-error regions require explicit treatment when curiosity signals are used for policy optimization \cite{mavor-parker-2021}.
+ICM and RND provide scalable prediction-error curiosity, but their intrinsic rewards are primarily driven by error magnitude \parencite{pathak-2017,burda-2018B}.
+RIDE introduces a feature-space impact signal and count-based modulation, but it does not directly use local model-improvement estimates as the main criterion for productive exploration \parencite{raileanu-2020}.
+R-IAC uses region-local learning progress, but adapting this idea to deep reinforcement learning requires learned latent representations, stable scale handling, and integration with modern policy-gradient training \parencite{baranes-2009}.
+The noisy-TV literature further shows that high-error regions require explicit treatment when curiosity signals are used for policy optimization \parencite{mavor-parker-2021}.
 
 This study addresses the gap by evaluating an intrinsic-reward family based on feature-space impact and region-local learning progress.
 The base reward combines the magnitude of latent transition change with an estimate of local model improvement.

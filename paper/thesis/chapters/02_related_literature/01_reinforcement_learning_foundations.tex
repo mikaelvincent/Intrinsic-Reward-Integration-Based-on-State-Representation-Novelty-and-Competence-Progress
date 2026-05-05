@@ -30,7 +30,7 @@ A neural policy may repeatedly visit a narrow subset of the state space if initi
 Sparse-reward environments make the problem more severe because most early transitions may have identical or nearly identical external rewards.
 
 Reward design is therefore a central issue in reinforcement learning.
-Potential-based reward shaping can preserve optimal policies when it follows a restricted form, but arbitrary shaping terms may change the task objective \,\cite{ng-1999}.
+Potential-based reward shaping can preserve optimal policies when it follows a restricted form, but arbitrary shaping terms may change the task objective  \parencite{ng-1999}.
 Intrinsic-motivation methods intentionally add such auxiliary shaping signals to improve exploration, especially when the original reward does not provide enough feedback during early training.
 These methods should therefore be evaluated not only by whether they increase the reward used for optimization, but also by whether they improve the extrinsic return of the learned policy.
 

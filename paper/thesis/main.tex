@@ -11,8 +11,9 @@
 \usepackage{algorithmic}
 \usepackage{booktabs}
 \usepackage{graphicx}
+\usepackage[style=apa,backend=biber,natbib=true,sortcites=true]{biblatex}
+\addbibresource{references/references.bib}
 \usepackage{hyperref}
-\usepackage{natbib}
 \usepackage{placeins}
 \usepackage{url}
 
@@ -33,7 +34,6 @@
 \input{chapters/06_conclusion_and_recommendations/chapter}
 
 \clearpage
-\bibliographystyle{plainnat}
-\bibliography{references/references}
+\printbibliography
 
 \end{document}

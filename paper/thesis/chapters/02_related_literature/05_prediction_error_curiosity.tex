@@ -7,21 +7,21 @@ If a model predicts the next representation $\hat{z}_{t+1}=f_\psi(z_t,a_t)$ from
 \begin{equation}
     r_t^{\mathrm{int}} = \left\lVert f_\psi(z_t,a_t)-z_{t+1}\right\rVert_2^2.
 \end{equation}
-Early deep predictive approaches used this idea to encourage agents to seek transitions that improve their understanding of environment dynamics \cite{stadie-2015}.
+Early deep predictive approaches used this idea to encourage agents to seek transitions that improve their understanding of environment dynamics \parencite{stadie-2015}.
 
-The Intrinsic Curiosity Module (ICM) is a representative feature-space prediction-error method \cite{pathak-2017}.
+The Intrinsic Curiosity Module (ICM) is a representative feature-space prediction-error method \parencite{pathak-2017}.
 ICM learns an encoder $\phi_\omega$ that maps observations to features $z_t=\phi_\omega(o_t)$, a forward model that predicts $z_{t+1}$ from $(z_t,a_t)$, and an inverse model that predicts $a_t$ from $(z_t,z_{t+1})$.
 The inverse model encourages the representation to retain information about controllable aspects of the transition, reducing sensitivity to observation details that do not depend on the agent's action.
 The curiosity reward is then based on forward prediction error in this learned feature space rather than raw observation space.
 
-Random Network Distillation (RND) provides another influential form of prediction-error curiosity \cite{burda-2018B}.
+Random Network Distillation (RND) provides another influential form of prediction-error curiosity \parencite{burda-2018B}.
 RND uses a fixed random target network $h$ and a trainable predictor $\hat{h}_\psi$.
 The intrinsic reward is the prediction error
 \begin{equation}
     r_t^{\mathrm{int}} = \left\lVert \hat{h}_\psi(o_t)-h(o_t)\right\rVert_2^2.
 \end{equation}
 Because the target network is fixed, prediction error tends to be high for unfamiliar observations and decreases as the predictor trains on visited states.
-Large-scale studies of curiosity-driven learning have shown that such prediction-error signals can support exploration across a range of environments \cite{burda-2018A}.
+Large-scale studies of curiosity-driven learning have shown that such prediction-error signals can support exploration across a range of environments \parencite{burda-2018A}.
 
 Prediction-error curiosity is powerful because it does not require explicit state counting and can be implemented with neural networks.
 It can discover sparse rewards by making unfamiliar observations attractive, and it can be combined with standard policy-gradient methods through reward augmentation.

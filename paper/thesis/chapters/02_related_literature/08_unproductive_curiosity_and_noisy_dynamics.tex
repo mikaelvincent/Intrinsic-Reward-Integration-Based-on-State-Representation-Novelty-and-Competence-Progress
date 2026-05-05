@@ -2,7 +2,7 @@
 \label{sec:unproductive_curiosity_and_noisy_dynamics}
 
 Unproductive curiosity occurs when an intrinsic reward repeatedly attracts the agent toward experience that is surprising or novel but does not improve task performance or predictive competence.
-The most common example is the noisy-TV scenario, in which an agent can generate unpredictable observations that produce high curiosity reward without yielding useful control knowledge \cite{mavor-parker-2021}.
+The most common example is the noisy-TV scenario, in which an agent can generate unpredictable observations that produce high curiosity reward without yielding useful control knowledge \parencite{mavor-parker-2021}.
 The problem illustrates a general limitation of intrinsic rewards based on novelty or prediction error: high uncertainty is not always reducible uncertainty.
 
 Noisy dynamics can arise for several reasons.
@@ -17,9 +17,9 @@ In continuous spaces, small but behaviorally insignificant differences can appea
 Episodic novelty mechanisms reduce immediate repetition, but they do not fully determine whether experience contributes to long-term competence.
 
 Several design strategies can reduce unproductive curiosity.
-One strategy is to learn representations that focus on controllable aspects of the environment, as in inverse-dynamics-based curiosity \cite{pathak-2017}.
-Another is to estimate uncertainty types and avoid rewarding aleatoric uncertainty, which corresponds to irreducible randomness \cite{mavor-parker-2021}.
-A third strategy is to use learning progress so that only error reduction, rather than error itself, produces reward \cite{schmidhuber-1991,baranes-2009}.
+One strategy is to learn representations that focus on controllable aspects of the environment, as in inverse-dynamics-based curiosity \parencite{pathak-2017}.
+Another is to estimate uncertainty types and avoid rewarding aleatoric uncertainty, which corresponds to irreducible randomness \parencite{mavor-parker-2021}.
+A third strategy is to use learning progress so that only error reduction, rather than error itself, produces reward \parencite{schmidhuber-1991,baranes-2009}.
 A fourth strategy is to combine multiple signals, such as novelty and impact, so that a single failure mode does not dominate exploration.
 
 Reward scheduling is also relevant.

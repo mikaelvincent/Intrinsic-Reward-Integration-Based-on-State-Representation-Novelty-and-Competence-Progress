@@ -12,14 +12,14 @@ This mechanism promotes broad coverage of the state space and can help an agent 
 
 Direct state counting is not feasible in high-dimensional or continuous observation spaces because exact revisits are rare.
 Count-based exploration has therefore been extended through density models, hashing, and learned abstractions.
-Pseudo-count methods estimate how much a density model's probability for an observation changes after training on that observation, thereby generalizing count-based bonuses beyond discrete tables \cite{bellemare-2016}.
-Hash-based approaches discretize learned or hand-designed features so that approximate counts can be maintained efficiently in deep reinforcement learning \cite{tang-2016}.
-Neural density models similarly estimate novelty by assigning low probability to unfamiliar observations \cite{ostrovski-2017}.
+Pseudo-count methods estimate how much a density model's probability for an observation changes after training on that observation, thereby generalizing count-based bonuses beyond discrete tables \parencite{bellemare-2016}.
+Hash-based approaches discretize learned or hand-designed features so that approximate counts can be maintained efficiently in deep reinforcement learning \parencite{tang-2016}.
+Neural density models similarly estimate novelty by assigning low probability to unfamiliar observations \parencite{ostrovski-2017}.
 
 Novelty can also be estimated episodically rather than across the entire training history.
-Episodic curiosity mechanisms compare the current observation with observations already encountered in the same episode and reward states that are not easily reachable from recent memory \cite{savinov-2018}.
-Directed exploration methods can combine episodic and lifelong novelty signals so that agents continue seeking unfamiliar states while also avoiding repeated short-term behavior loops \cite{badia-2020}.
-Related self-supervised exploration methods have also used model disagreement as a signal for unfamiliar or informative transitions \cite{pathak-2019}.
+Episodic curiosity mechanisms compare the current observation with observations already encountered in the same episode and reward states that are not easily reachable from recent memory \parencite{savinov-2018}.
+Directed exploration methods can combine episodic and lifelong novelty signals so that agents continue seeking unfamiliar states while also avoiding repeated short-term behavior loops \parencite{badia-2020}.
+Related self-supervised exploration methods have also used model disagreement as a signal for unfamiliar or informative transitions \parencite{pathak-2019}.
 These methods recognize that exploration has multiple time scales: an agent should avoid immediate repetition within an episode, but it should also learn a long-term representation of what parts of the environment remain unfamiliar.
 
 Novelty-based methods are attractive because they are conceptually simple and do not require the environment reward to be informative.

@@ -4,10 +4,10 @@
 \subsection{PPO Training Procedure}
 \label{subsec:methodology_ppo_training_procedure}
 
-All methods used Proximal Policy Optimization as the policy-learning algorithm \cite{schulman-2017}.
+All methods used Proximal Policy Optimization as the policy-learning algorithm \parencite{schulman-2017}.
 For each update, the current policy collected an on-policy batch of $N=B\times T$ transitions from $B$ vectorized environment instances over rollout horizon $T$.
 The total reward was formed by adding the scaled and clipped intrinsic reward when an intrinsic method was active.
-Generalized advantage estimation was then computed using the total reward \cite{schulman-2015}.
+Generalized advantage estimation was then computed using the total reward \parencite{schulman-2015}.
 
 For a transition at time $t$, the temporal-difference residual used by GAE is
 \begin{equation}

@@ -11,7 +11,7 @@ The policy-gradient estimator uses sampled trajectories to increase the log-prob
 In practice, $A^{\pi_\theta}$ is replaced by an empirical estimate computed from rewards and a learned value function.
 This direct optimization is well suited to continuous action spaces because the policy can represent a probability distribution over real-valued actions.
 
-Generalized Advantage Estimation (GAE) improves the bias--variance tradeoff of advantage computation by combining temporal-difference residuals over multiple horizons \cite{schulman-2015}.
+Generalized Advantage Estimation (GAE) improves the bias--variance tradeoff of advantage computation by combining temporal-difference residuals over multiple horizons \parencite{schulman-2015}.
 Let
 \begin{equation}
     \delta_t = r_t + \gamma V_\varphi(s_{t+1}) - V_\varphi(s_t)
@@ -24,7 +24,7 @@ GAE forms the advantage estimate
 where $\lambda\in[0,1]$ controls the interpolation between low-variance one-step estimates and higher-variance Monte Carlo returns.
 This mechanism is widely used in on-policy deep reinforcement learning because it stabilizes learning while allowing delayed rewards to influence earlier actions.
 
-Proximal Policy Optimization (PPO) is a policy-gradient method designed to constrain each policy update so that optimization remains stable under minibatch stochastic gradient descent \cite{schulman-2017}.
+Proximal Policy Optimization (PPO) is a policy-gradient method designed to constrain each policy update so that optimization remains stable under minibatch stochastic gradient descent \parencite{schulman-2017}.
 PPO uses the probability ratio
 \begin{equation}
     \varrho_t(\theta)=\frac{\pi_\theta(a_t\mid s_t)}{\pi_{\theta_{\mathrm{old}}}(a_t\mid s_t)}

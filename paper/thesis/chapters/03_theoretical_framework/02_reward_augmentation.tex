@@ -21,7 +21,7 @@ The augmented training objective can be written as
     \right],
 \end{equation}
 where $\bar{r}_t^{\mathrm{int}}=\mathrm{clip}(r_t^{\mathrm{int}},-r_{\max},r_{\max})$.
-Policy-gradient updates such as PPO optimize this augmented objective through advantage estimates computed from $r_t$ \cite{schulman-2017}.
+Policy-gradient updates such as PPO optimize this augmented objective through advantage estimates computed from $r_t$ \parencite{schulman-2017}.
 Consequently, the intrinsic term affects the data distribution collected by the policy, the value targets used by the critic, and the direction of policy improvement.
 
 The coefficient $\eta_t$ may be constant or scheduled over the course of training.
