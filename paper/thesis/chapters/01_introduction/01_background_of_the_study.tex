@@ -1,1 +1,43 @@
 \section{Background of the Study}
+\label{sec:background_of_the_study}
+
+Reinforcement learning studies how an agent can learn a policy for sequential decision-making through interaction with an environment.
+At each time step, an agent observes the current state or observation, selects an action, receives a scalar reward, and transitions to a subsequent observation.
+The objective is to learn a policy that maximizes expected discounted return.
+In an episodic Markov decision process, this objective can be written as
+\begin{equation}
+    J(\theta)=\mathbb{E}_{\pi_\theta}\left[\sum_{t=0}^{T-1}\gamma^t r_t\right],
+\end{equation}
+where $\pi_\theta$ is a parameterized policy, $\gamma \in [0,1)$ is a discount factor, $r_t$ is the reward at time $t$, and $T$ is the episode horizon.
+Deep reinforcement learning extends this formulation by using neural networks to represent policies, value functions, and auxiliary predictive models, thereby enabling reinforcement learning in high-dimensional and continuous-control settings \cite{barto-2012}.
+
+A persistent difficulty in reinforcement learning is exploration.
+When environment rewards are dense and well aligned with the task, reward feedback can guide policy improvement throughout training.
+However, many environments provide rewards that are sparse, delayed, or weakly informative during early interaction.
+In such settings, an agent may fail to encounter successful trajectories often enough to estimate useful gradients, even when the policy optimization algorithm is otherwise stable.
+This problem is especially important in control tasks where meaningful behaviors require extended action sequences before any large external reward is obtained.
+
+Intrinsic motivation addresses this issue by augmenting the environment reward with an internally generated reward that encourages informative behavior even when external feedback is limited \cite{singh-2004,barto-2012,oudeyer-2007A,oudeyer-2007B}.
+The augmented reward is commonly expressed as
+\begin{equation}
+    r_t = r_t^{\mathrm{ext}} + \eta_t r_t^{\mathrm{int}},
+\end{equation}
+where $r_t^{\mathrm{ext}}$ is the extrinsic reward supplied by the environment, $r_t^{\mathrm{int}}$ is an intrinsic reward computed from the agent's experience, and $\eta_t$ controls the relative influence of intrinsic shaping.
+Intrinsic rewards can encourage novelty, information gain, prediction improvement, or controllable change.
+Representative approaches include count-based exploration bonuses \cite{bellemare-2016,tang-2016,ostrovski-2017}, information-gain objectives \cite{houthooft-2016}, prediction-error curiosity \cite{stadie-2015,pathak-2017}, Random Network Distillation \cite{burda-2018B,burda-2018A}, episodic curiosity \cite{savinov-2018}, directed exploration schemes \cite{badia-2020}, and impact-driven exploration \cite{raileanu-2020}.
+
+Although intrinsic rewards can improve sample efficiency, they can also introduce misleading optimization pressure.
+Unlike potential-based reward shaping, general intrinsic-reward augmentation is not guaranteed to preserve the optimal policy of the original task \cite{ng-1999}.
+Prediction-error and novelty bonuses may remain high in regions that are stochastic, difficult to model, or unrelated to task progress.
+This failure mode is often described as unproductive curiosity, and the noisy-TV example illustrates how an agent may repeatedly visit unpredictable but unhelpful states \cite{mavor-parker-2021}.
+Consequently, exploration bonuses should not only encourage the agent to seek unfamiliar or surprising transitions; they should also distinguish between experience that supports learning and experience that remains persistently unlearnable.
+
+Learning-progress exploration provides a useful perspective for this distinction.
+Instead of rewarding prediction error directly, a learning-progress signal rewards reductions in prediction error over time, thereby emphasizing regions where the agent's predictive model is improving \cite{schmidhuber-1991,oudeyer-2007A,baranes-2009}.
+A transition is valuable under this view when it belongs to a part of the environment that is neither already mastered nor effectively random.
+However, practical use of learning progress in deep reinforcement learning requires mechanisms for estimating progress locally in a learned representation, stabilizing intrinsic-reward scale, and preventing high-error low-progress regions from dominating policy optimization.
+
+This study investigates Gated Learning-Progress Exploration (GLPE), an intrinsic-reward method designed around these requirements.
+The method combines two complementary quantities: feature-space impact, which measures the magnitude of representation change between consecutive observations, and region-local learning progress, which measures improvement in a forward dynamics model within an online partition of latent space.
+The gated variant further suppresses intrinsic reward in regions where prediction error remains high while learning progress remains low.
+The resulting approach is evaluated as an exploration mechanism for Proximal Policy Optimization (PPO) across discrete and continuous-control benchmarks, with comparisons against established intrinsic-reward baselines such as ICM, RND, RIDE, and RIAC \cite{schulman-2017,pathak-2017,burda-2018B,raileanu-2020,baranes-2009}.
