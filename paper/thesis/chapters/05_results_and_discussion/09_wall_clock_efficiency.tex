@@ -13,7 +13,7 @@ Wall-clock AUC measures evaluation return as a function of elapsed training time
 For each environment, curves are truncated to a common time horizon equal to the minimum final runtime among the compared methods, avoiding extrapolation beyond measured training time.
 Figure~\ref{fig:results_eval_auc_time} reports the resulting wall-clock AUC.
 
-\begin{figure}[!hbp]
+\begin{figure}[!htbp]
 \centering
 \includegraphics[width=\glpefigwidth,height=\glpefigheight,keepaspectratio]{chapters/05_results_and_discussion/figures/eval-auc-time-all-methods.png}
 \caption{Wall-clock AUC of deterministic evaluation return. Each task uses a common runtime horizon so that slower methods are not credited for unobserved future performance. Higher values indicate better return accumulated per unit of training time.}
@@ -31,7 +31,7 @@ This is particularly relevant in dense-control settings, where the extrinsic rew
 Figure~\ref{fig:results_timing_breakdown} decomposes training time per PPO update into environment interaction, policy optimization, intrinsic computation, and related components.
 The stacked bars show that the relative cost of intrinsic reward depends strongly on the environment.
 
-\begin{figure}[!hbp]
+\begin{figure}[!htbp]
 \centering
 \includegraphics[width=\glpefigwidth,height=\glpefigheight,keepaspectratio]{chapters/05_results_and_discussion/figures/timing-breakdown.png}
 \caption{Runtime breakdown per PPO update. Each stack reports component-wise median time from the final quarter of training updates, averaged across runs. Black error bars show 95\% confidence intervals for total update time across runs.}
@@ -50,7 +50,7 @@ The most distinctive additional cost in gated GLPE is the computation of robust 
 A microbenchmark of the gate-median computation shows the cost of recomputing these medians every update relative to using cached medians.
 Table~\ref{tab:results_gate_median_benchmark} reports the measured throughput.
 
-\begin{table}[!hbp]
+\begin{table}[!htbp]
 \centering
 \small
 \begin{fitwidthtabular}{lcc}

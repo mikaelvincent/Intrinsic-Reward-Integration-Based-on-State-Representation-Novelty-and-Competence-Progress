@@ -10,7 +10,7 @@ Figure~\ref{fig:results_steps_to_threshold_baselines} summarizes threshold-reach
 For positive solved thresholds, the intermediate threshold is a direct fraction of the solved value.
 For \textsc{MountainCar-v0}, where higher returns are less negative, the intermediate thresholds are mapped monotonically from the minimum-return side so that 25\% and 50\% represent progressively stronger partial performance.
 
-\begin{figure}[!hbp]
+\begin{figure}[!htbp]
 \centering
 \includegraphics[width=\glpefigwidth,height=\glpefigheight,keepaspectratio]{chapters/05_results_and_discussion/figures/steps-to-beat-baselines.png}
 \caption{Steps to reach fixed return thresholds. Bars show the median number of environment steps among successful seeds. Error bars show standard deviation across successful seeds. Bar opacity and the numeric labels indicate the fraction and count of seeds that reached each threshold. Lower bars with higher opacity indicate faster and more reliable learning.}
@@ -23,7 +23,7 @@ For \textsc{MountainCar-v0}, where higher returns are less negative, the interme
 The 25\% threshold measures early acquisition of nontrivial behavior.
 Table~\ref{tab:results_threshold_25} reports the number of successful seeds and the median number of environment steps, in millions, among those successful seeds.
 
-\begin{table}[!hbp]
+\begin{table}[!htbp]
 \centering
 \small
 \begin{fitwidthtabular}{lccc}
@@ -52,7 +52,7 @@ This early-threshold view shows that GLPE does not prevent basic learning in the
 The 50\% threshold is a stricter measure of competent intermediate performance.
 Table~\ref{tab:results_threshold_50} shows that GLPE without gating reaches this threshold in every seed on four tasks and in four of five seeds on \textsc{Humanoid-v5}.
 
-\begin{table}[!hbp]
+\begin{table}[!htbp]
 \centering
 \small
 \begin{fitwidthtabular}{lccc}
@@ -80,7 +80,7 @@ The ungated variant matches the best baseline reach count in \textsc{Humanoid-v5
 The solved threshold measures whether a method reaches the conventional task-level target by the end of training.
 Table~\ref{tab:results_threshold_solved} reports the solved-threshold reliability.
 
-\begin{table}[!hbp]
+\begin{table}[!htbp]
 \centering
 \small
 \begin{fitwidthtabular}{lccc}

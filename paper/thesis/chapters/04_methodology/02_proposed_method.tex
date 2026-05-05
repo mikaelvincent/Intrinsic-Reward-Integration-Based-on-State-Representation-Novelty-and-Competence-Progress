@@ -25,7 +25,7 @@ The same rollout is then used to update the latent dynamics module.
 Thus, the intrinsic reward and the auxiliary predictive model are updated on the same stream of experience, while the policy is optimized using the total reward in Equation~\ref{eq:methodology_augmented_reward}.
 Algorithm~\ref{alg:methodology_glpe_reward} summarizes this procedure at the level used by the training loop.
 
-\begin{algorithm}[!hbp]
+\begin{algorithm}[!htbp]
 \caption{High-level intrinsic-reward computation for the GLPE family within one PPO update.}
 \label{alg:methodology_glpe_reward}
 \small

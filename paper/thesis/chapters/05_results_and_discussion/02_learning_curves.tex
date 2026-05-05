@@ -5,7 +5,7 @@ Figure~\ref{fig:results_eval_curves_baselines} shows the deterministic evaluatio
 Each curve reports mean extrinsic return over evaluation checkpoints, while the plotted seed markers indicate the spread of independently trained policies.
 The curves are the primary evidence for learning dynamics because they show whether a method improves early, plateaus below a target, collapses after initial progress, or continues improving throughout the training budget.
 
-\begin{figure}[!hbp]
+\begin{figure}[!htbp]
 \centering
 \includegraphics[width=\glpefigwidth,height=\glpefigheight,keepaspectratio]{chapters/05_results_and_discussion/figures/eval-curves-baselines-curves.png}
 \caption{Evaluation learning curves for GLPE and baseline methods. Each panel plots mean extrinsic return against environment steps. Markers denote per-seed checkpoint means from deterministic offline evaluation. Horizontal dashed lines indicate the task-specific solved thresholds used in the threshold analyses.}

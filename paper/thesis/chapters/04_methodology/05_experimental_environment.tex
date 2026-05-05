@@ -15,7 +15,7 @@ No domain randomization was applied.
 No additional frame skipping was introduced beyond the environment configuration.
 Training used synchronous vectorized environments, with the number of parallel instances selected to obtain a nominal PPO batch size of $N=16{,}384$ transitions per update.
 
-\begin{table}[!hbp]
+\begin{table}[!htbp]
 \centering
 \small
 \begin{fitwidthtabular}{lrrrrr}
@@ -44,7 +44,7 @@ The GLPE hyperparameters used for each environment are shown in Table~\ref{tab:m
 The same intrinsic scaling coefficient $\eta$ and intrinsic clipping range $r_{\max}$ were used by all intrinsic methods within a given environment.
 This kept the reward-scale comparison consistent across ICM, RND, RIDE, RIAC, GLPE, and GLPE (no gate).
 
-\begin{table}[!hbp]
+\begin{table}[!htbp]
 \centering
 \small
 \begin{fitwidthtabular}{lrrrrrrrrrrrrr}

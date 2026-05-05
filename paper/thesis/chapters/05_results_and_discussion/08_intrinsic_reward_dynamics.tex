@@ -5,7 +5,7 @@ The intrinsic reward is intended to shape exploration during training rather tha
 For this reason, the evaluation protocol in Section~\ref{sec:methodology_evaluation_methodology} reports only extrinsic return, while the training diagnostics examine how much intrinsic reward is added to the PPO update.
 Figure~\ref{fig:results_reward_decomposition} decomposes rollout rewards into extrinsic and intrinsic components.
 
-\begin{figure}[!hbp]
+\begin{figure}[!htbp]
 \centering
 \includegraphics[width=\glpefigwidth,height=\glpefigheight,keepaspectratio]{chapters/05_results_and_discussion/figures/train-reward-decomp-baselines.png}
 \caption{Training-time rollout reward decomposition. Solid lines show mean extrinsic reward per environment step collected during PPO rollouts. Dashed lines show the intrinsic shaping component after scaling and clipping. Evaluation metrics reported in Sections~\ref{sec:results_learning_curves}--\ref{sec:results_wall_clock_efficiency} use extrinsic return only.}
