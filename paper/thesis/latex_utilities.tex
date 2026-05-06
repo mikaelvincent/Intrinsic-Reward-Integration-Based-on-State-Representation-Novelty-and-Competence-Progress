@@ -27,6 +27,12 @@
     \Gin@nat@height
   \fi
 }
+\renewcommand{\ps@plain}{%
+  \renewcommand{\@oddhead}{}%
+  \renewcommand{\@evenhead}{}%
+  \renewcommand{\@oddfoot}{\hfil\thepage}%
+  \renewcommand{\@evenfoot}{\hfil\thepage}%
+}
 \makeatother
 \makeatletter
 \def\@makechapterhead#1{%
@@ -47,13 +53,13 @@
     \vskip 40\p@
   }}
 \renewenvironment{abstract}{%
-  \titlepage
+  \thispagestyle{plain}%
   \@beginparpenalty\@lowpenalty
   \begin{center}%
     \normalfont\Huge\bfseries \abstractname
     \@endparpenalty\@M
   \end{center}%
 }{%
-  \par\endtitlepage
+  \par\clearpage
 }
 \makeatother
