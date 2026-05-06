@@ -1,3 +1,5 @@
+\RequirePackage{xcolor}
+
 \newsavebox{\fitwidthtabularbox}
 \newenvironment{fitwidthtabular}[1]{%
   \begin{lrbox}{\fitwidthtabularbox}%
@@ -27,11 +29,12 @@
     \Gin@nat@height
   \fi
 }
+\newcommand{\thesispageformat}{\footnotesize\textcolor[gray]{0.45}{\thepage}}
 \renewcommand{\ps@plain}{%
   \renewcommand{\@oddhead}{}%
   \renewcommand{\@evenhead}{}%
-  \renewcommand{\@oddfoot}{\hfil\thepage}%
-  \renewcommand{\@evenfoot}{\hfil\thepage}%
+  \renewcommand{\@oddfoot}{\hfil\thesispageformat\hfil}%
+  \renewcommand{\@evenfoot}{\hfil\thesispageformat\hfil}%
 }
 \makeatother
 \makeatletter
