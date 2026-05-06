@@ -33,9 +33,13 @@
 \setcounter{page}{2}
 
 \onehalfspacing
+\phantomsection
+\addcontentsline{toc}{chapter}{Abstract}
 \input{sections/00_abstract}
 
 \renewcommand{\contentsname}{Table of Contents}
+\phantomsection
+\addcontentsline{toc}{chapter}{Table of Contents}
 \tableofcontents
 \clearpage
 
@@ -48,6 +52,8 @@
 \input{chapters/06_conclusion_and_recommendations/chapter}
 
 \clearpage
+\phantomsection
+\addcontentsline{toc}{chapter}{Bibliography}
 \printbibliography
 
 \end{document}
