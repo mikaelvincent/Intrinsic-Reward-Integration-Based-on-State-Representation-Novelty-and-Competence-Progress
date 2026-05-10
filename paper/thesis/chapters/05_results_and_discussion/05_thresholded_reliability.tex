@@ -13,7 +13,7 @@ For \textsc{MountainCar-v0}, where higher returns are less negative, the interme
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=\glpefigwidth,height=\glpefigheight,keepaspectratio]{chapters/05_results_and_discussion/figures/steps-to-beat-baselines.png}
-\caption{Steps to reach fixed return thresholds. Bars show the median number of environment steps among successful seeds. Error bars show standard deviation across successful seeds. Bar opacity and the numeric labels indicate the fraction and count of seeds that reached each threshold. Lower bars with higher opacity indicate faster and more reliable learning.}
+\caption[Threshold reaching steps]{Steps to reach fixed return thresholds. Bars show the median number of environment steps among successful seeds. Error bars show standard deviation across successful seeds. Bar opacity and the numeric labels indicate the fraction and count of seeds that reached each threshold. Lower bars with higher opacity indicate faster and more reliable learning.}
 \label{fig:results_steps_to_threshold_baselines}
 \end{figure}
 
@@ -37,7 +37,7 @@ Environment & GLPE & GLPE (no gate) & Most reliable baseline \\
 \textsc{Humanoid-v5} & $3/5;\;7.47\,\mathrm{M}$ & $4/5;\;5.64\,\mathrm{M}$ & RIAC: $5/5;\;6.67\,\mathrm{M}$ \\
 \hline
 \end{fitwidthtabular}
-\caption{Reliability and median reaching steps at 25\% of the solved threshold. Each entry reports successful seeds over total seeds and median steps to first reach the target.}
+\caption[25 percent threshold reliability]{Reliability and median reaching steps at 25\% of the solved threshold. Each entry reports successful seeds over total seeds and median steps to first reach the target.}
 \label{tab:results_threshold_25}
 \end{table}
 
@@ -66,7 +66,7 @@ Environment & GLPE & GLPE (no gate) & Most reliable baseline \\
 \textsc{Humanoid-v5} & $2/5;\;14.51\,\mathrm{M}$ & $4/5;\;11.47\,\mathrm{M}$ & ICM: $4/5;\;10.32\,\mathrm{M}$ \\
 \hline
 \end{fitwidthtabular}
-\caption{Reliability and median reaching steps at 50\% of the solved threshold. Each entry reports successful seeds over total seeds and median steps to first reach the target.}
+\caption[50 percent threshold reliability]{Reliability and median reaching steps at 50\% of the solved threshold. Each entry reports successful seeds over total seeds and median steps to first reach the target.}
 \label{tab:results_threshold_50}
 \end{table}
 
@@ -94,7 +94,7 @@ Environment & GLPE & GLPE (no gate) & Most reliable baseline \\
 \textsc{Humanoid-v5} & $1/5;\;6.73\,\mathrm{M}$ & $2/5;\;18.23\,\mathrm{M}$ & ICM: $2/5;\;13.93\,\mathrm{M}$ \\
 \hline
 \end{fitwidthtabular}
-\caption{Reliability and median reaching steps at the solved threshold. Each entry reports successful seeds over total seeds and median steps to first reach the target.}
+\caption[Solved-threshold reliability]{Reliability and median reaching steps at the solved threshold. Each entry reports successful seeds over total seeds and median steps to first reach the target.}
 \label{tab:results_threshold_solved}
 \end{table}
 

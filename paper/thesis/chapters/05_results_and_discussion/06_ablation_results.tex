@@ -9,7 +9,7 @@ Figure~\ref{fig:results_ablation_curves} shows the learning curves for the ablat
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=\glpefigwidth,height=\glpefigheight,keepaspectratio]{chapters/05_results_and_discussion/figures/eval-curves-ablations-curves.png}
-\caption{Evaluation learning curves for GLPE component ablations. The impact-only variant removes the learning-progress term, and the learning-progress-only variant removes the impact term. Curves report deterministic extrinsic evaluation return.}
+\caption[GLPE ablation learning curves]{Evaluation learning curves for GLPE component ablations. The impact-only variant removes the learning-progress term, and the learning-progress-only variant removes the impact term. Curves report deterministic extrinsic evaluation return.}
 \label{fig:results_ablation_curves}
 \end{figure}
 
@@ -27,7 +27,7 @@ Environment & GLPE & Impact-only & Learning-progress-only \\
 \textsc{Ant-v5} & $4{,}961\;[4{,}421,5{,}359]$ & $5{,}233\;[4{,}544,5{,}663]$ & $4{,}599\;[3{,}617,5{,}401]$ \\
 \hline
 \end{fitwidthtabular}
-\caption{Final-checkpoint extrinsic return for GLPE and component ablations on representative environments. Brackets show 95\% bootstrap confidence intervals over seeds. Higher values are better.}
+\caption[GLPE component ablation returns]{Final-checkpoint extrinsic return for GLPE and component ablations on representative environments. Brackets show 95\% bootstrap confidence intervals over seeds. Higher values are better.}
 \label{tab:results_ablation_final_returns}
 \end{table}
 

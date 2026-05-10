@@ -16,7 +16,7 @@ Figure~\ref{fig:results_eval_auc_time} reports the resulting wall-clock AUC.
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=\glpefigwidth,height=\glpefigheight,keepaspectratio]{chapters/05_results_and_discussion/figures/eval-auc-time-all-methods.png}
-\caption{Wall-clock AUC of deterministic evaluation return. Each task uses a common runtime horizon so that slower methods are not credited for unobserved future performance. Higher values indicate better return accumulated per unit of training time.}
+\caption[Wall-clock evaluation AUC]{Wall-clock AUC of deterministic evaluation return. Each task uses a common runtime horizon so that slower methods are not credited for unobserved future performance. Higher values indicate better return accumulated per unit of training time.}
 \label{fig:results_eval_auc_time}
 \end{figure}
 
@@ -34,7 +34,7 @@ The stacked bars show that the relative cost of intrinsic reward depends strongl
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=\glpefigwidth,height=\glpefigheight,keepaspectratio]{chapters/05_results_and_discussion/figures/timing-breakdown.png}
-\caption{Runtime breakdown per PPO update. Each stack reports component-wise median time from the final quarter of training updates, averaged across runs. Black error bars show 95\% confidence intervals for total update time across runs.}
+\caption[Runtime breakdown per PPO update]{Runtime breakdown per PPO update. Each stack reports component-wise median time from the final quarter of training updates, averaged across runs. Black error bars show 95\% confidence intervals for total update time across runs.}
 \label{fig:results_timing_breakdown}
 \end{figure}
 
@@ -61,7 +61,7 @@ Recompute every update & $20{,}877$ transitions/s & $1.00\times$ \\
 Cache for $64$ updates & $100{,}173$ transitions/s & $4.83\times$ \\
 \hline
 \end{fitwidthtabular}
-\caption{Gate-median microbenchmark. Throughput is the median across nine trials for the same workload. Caching medians improves throughput but can make gate decisions depend on slightly stale global references.}
+\caption[Gate-median microbenchmark]{Gate-median microbenchmark. Throughput is the median across nine trials for the same workload. Caching medians improves throughput but can make gate decisions depend on slightly stale global references.}
 \label{tab:results_gate_median_benchmark}
 \end{table}
 

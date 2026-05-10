@@ -29,7 +29,7 @@ Environment & $B$ & $T$ & $N$ & Total steps & Seeds \\
 \textsc{Humanoid-v5}      &  4 & 4{,}096 & 16{,}384 & 30{,}000{,}000 &  5 \\
 \hline
 \end{fitwidthtabular}
-\caption{Benchmark suite and training budgets. $B$ is the number of parallel environment instances, $T$ is the rollout horizon per instance, and $N=B\times T$ is the nominal PPO update batch size.}
+\caption[Benchmark suite and training budgets]{Benchmark suite and training budgets. $B$ is the number of parallel environment instances, $T$ is the rollout horizon per instance, and $N=B\times T$ is the nominal PPO update batch size.}
 \label{tab:methodology_env_suite}
 \end{table}
 
@@ -58,7 +58,7 @@ Environment & $\eta$ & $r_{\max}$ & $\alpha_{\mathrm{LP}}$ & $p_{\mathrm{start}}
 \textsc{Humanoid-v5}      & 0.06 & 5.0 & 0.5 & 0.05 & 0.80 & 256 & 12 & 0.998 & 0.92 & 0.010 & 2.0 & 5 & 32 \\
 \hline
 \end{fitwidthtabular}
-\caption{GLPE hyperparameters by environment. The impact weight was fixed at $\alpha_{\mathrm{impact}}=1.0$, and the hysteresis multiplier was fixed at $h=2.0$. GLPE (no gate) used the same settings but disabled the gate.}
+\caption[GLPE hyperparameters]{GLPE hyperparameters by environment. The impact weight was fixed at $\alpha_{\mathrm{impact}}=1.0$, and the hysteresis multiplier was fixed at $h=2.0$. GLPE (no gate) used the same settings but disabled the gate.}
 \label{tab:methodology_glpe_hparams}
 \end{table}
 
