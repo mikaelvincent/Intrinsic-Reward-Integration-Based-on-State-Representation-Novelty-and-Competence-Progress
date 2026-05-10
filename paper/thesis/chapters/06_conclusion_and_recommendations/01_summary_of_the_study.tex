@@ -1,0 +1,50 @@
+\section{Summary of the Study}
+\label{sec:conclusion_summary_of_the_study}
+
+This study addressed the exploration problem in reinforcement learning under sparse, delayed, and heterogeneous reward conditions.
+The central problem was that conventional intrinsic-reward signals can encourage exploration but may also reward unproductive behavior when novelty, surprise, or prediction error remains high in regions that are noisy, difficult to model, or weakly related to task progress.
+To address this issue, the study developed and evaluated Gated Learning-Progress Exploration (GLPE), an intrinsic-reward method that combines feature-space impact with region-local learning progress and optionally suppresses regions that exhibit persistently high prediction error with low improvement.
+
+The proposed method was formulated for episodic Markov decision processes and integrated with Proximal Policy Optimization through reward augmentation.
+For each transition, an encoder maps observations to a latent representation, a forward dynamics model estimates the next latent state, and an inverse dynamics model regularizes the representation toward action-relevant features.
+Feature-space impact is measured as the latent displacement
+\begin{equation}
+    I_t = \lVert z_{t+1}-z_t\rVert_2,
+\end{equation}
+while local learning progress is computed from the difference between long- and short-horizon exponential moving averages of forward prediction error in the assigned latent region:
+\begin{equation}
+    \mathrm{LP}(r)=\max\!\left(0,\mu_r^{\mathrm{long}}-\mu_r^{\mathrm{short}}\right).
+\end{equation}
+After component-wise scale normalization, these quantities form the base intrinsic score
+\begin{equation}
+    u_t=\alpha_{\mathrm{impact}}\widetilde{I}_t+
+    \alpha_{\mathrm{LP}}\widetilde{\mathrm{LP}}_t.
+\end{equation}
+The ungated variant uses this score directly, whereas the gated variant multiplies it by a region-specific binary gate that disables intrinsic reward in regions classified as high-error and low-progress.
+The resulting augmented reward used for policy optimization is
+\begin{equation}
+    r_t=r_t^{\mathrm{ext}}+
+    \eta_t\,\mathrm{clip}\!\left(r_t^{\mathrm{int}},-r_{\max},r_{\max}\right),
+\end{equation}
+with an intrinsic coefficient schedule that reduces auxiliary shaping later in training.
+
+The empirical evaluation compared GLPE and GLPE without gating against PPO, ICM, RND, RIDE, and RIAC on five Gymnasium control benchmarks: \textsc{MountainCar-v0}, \textsc{BipedalWalker-v3}, \textsc{Ant-v5}, \textsc{HalfCheetah-v5}, and \textsc{Humanoid-v5}.
+These environments were selected to cover low-dimensional sparse-reward exploration, contact-rich locomotion, dense continuous-control reward structures, and high-dimensional high-variance dynamics.
+The evaluation used deterministic offline checkpoints and reported extrinsic return only, ensuring that performance reflected the environment objective rather than the magnitude of intrinsic reward.
+The analysis included learning curves, final-checkpoint return, step-normalized area under the curve, thresholded reliability, component ablations, gate visualizations, intrinsic reward dynamics, and wall-clock efficiency.
+
+The results show that GLPE is most effective in sparse-reward exploration.
+On \textsc{MountainCar-v0}, the gated method achieved the strongest final return among the compared methods, the strongest step-AUC, and complete solved-threshold reliability across all seeds.
+This supports the hypothesis that combining impact and learning progress can identify transitions that are both behaviorally meaningful and locally learnable.
+The ungated method was generally more competitive in dense-reward and high-variance environments, especially where the gate became conservative or where extrinsic reward already supplied frequent guidance.
+In \textsc{BipedalWalker-v3} and \textsc{Humanoid-v5}, GLPE without gating produced stronger final performance than the gated method, indicating that suppressing intrinsic reward can be harmful when local progress estimates are noisy or when difficult regions remain useful for control learning.
+
+The ablation results further clarify the role of the two intrinsic components.
+In the sparse-reward setting, the full combination outperformed both the impact-only and learning-progress-only variants, showing that neither component alone was sufficient to reproduce the main result.
+In contrast, impact-only exploration was competitive on \textsc{Ant-v5}, and learning-progress-only exploration was strong on \textsc{BipedalWalker-v3}.
+These outcomes indicate that the usefulness of each component depends on the structure of the environment and that fixed component weights may not be optimal across all tasks.
+
+The wall-clock analysis showed that intrinsic rewards must be evaluated not only by sample efficiency but also by computational cost.
+The ungated variant often achieved a more favorable runtime-performance balance because it retains the combined impact--learning-progress signal without the additional median computations and gate updates required by the gated method.
+The gated variant remains most justified when the benefit of suppressing unproductive curiosity compensates for the added overhead, as observed most clearly in the sparse-reward environment.
+Overall, the study demonstrated that learning progress and feature-space impact can be combined into a practical intrinsic-reward family, but it also showed that gating should be treated as a selective guardrail rather than as a universally beneficial modification.

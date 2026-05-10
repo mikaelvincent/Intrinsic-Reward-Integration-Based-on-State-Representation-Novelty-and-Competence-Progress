@@ -1,0 +1,67 @@
+\section{Gated Learning-Progress Exploration}
+\label{sec:gated_learning_progress_exploration}
+
+The base intrinsic score combines normalized feature-space impact and normalized region-local learning progress:
+\begin{equation}
+    u_t
+    = \alpha_{\mathrm{impact}}\widetilde{I}_t
+    + \alpha_{\mathrm{LP}}\widetilde{\mathrm{LP}}_t,
+    \label{eq:base_intrinsic_score}
+\end{equation}
+where $\alpha_{\mathrm{impact}}\ge 0$ and $\alpha_{\mathrm{LP}}\ge 0$ determine the relative contribution of the two components.
+The ungated form of the intrinsic reward is simply
+\begin{equation}
+    r_t^{\mathrm{int}}=u_t.
+\end{equation}
+This form rewards transitions that both alter the learned representation and occur in regions with recent model improvement.
+
+The gated form adds a binary region-specific variable $g_r\in\{0,1\}$ for each visited region $r$.
+The intrinsic reward becomes
+\begin{equation}
+    r_t^{\mathrm{int}}=g_{\rho_t}u_t.
+    \label{eq:gated_intrinsic_reward}
+\end{equation}
+A gate value of one allows the base intrinsic score to shape the policy update, while a gate value of zero suppresses intrinsic reward for transitions assigned to that region.
+The purpose of the gate is not to remove difficult regions generally, but to suppress regions that appear unproductive: high prediction error persists while local learning progress remains low.
+
+Let $\mathcal{R}_t$ be the set of regions that have received at least one transition.
+The gate uses robust global references computed from the current region statistics:
+\begin{align}
+    \mathrm{LP}_{\mathrm{med}}
+    &= \mathrm{median}_{r\in\mathcal{R}_t}\,\mathrm{LP}(r), \\
+    e_{\mathrm{med}}
+    &= \mathrm{median}_{r\in\mathcal{R}_t}\,\mu_r^{\mathrm{short}}.
+\end{align}
+The learning-progress threshold is
+\begin{equation}
+    \tau_{\mathrm{LP}}=\kappa\,\mathrm{LP}_{\mathrm{med}},
+\end{equation}
+where $\kappa>0$ is a multiplier.
+The normalized error score for region $r$ is
+\begin{equation}
+    s_r=\frac{\mu_r^{\mathrm{short}}}{e_{\mathrm{med}}+\varepsilon}.
+\end{equation}
+A region is classified as unproductive on a visit when
+\begin{equation}
+    \mathrm{LP}(r)<\tau_{\mathrm{LP}}
+    \quad\text{and}\quad
+    s_r>\tau_s,
+    \label{eq:unproductive_region_condition}
+\end{equation}
+where $\tau_s>0$ is a high-error threshold.
+
+The gate update includes persistence and hysteresis.
+Gating is applied only after at least $R_{\min}$ regions have been visited, so that the median reference values are meaningful.
+If fewer than $R_{\min}$ regions have statistics, all gates remain enabled.
+When gating is active and a region with $g_r=1$ satisfies the unproductive condition for $K$ consecutive visits, the gate is set to zero.
+When $g_r=0$, the gate is re-enabled only after the region satisfies
+\begin{equation}
+    \mathrm{LP}(r)>h\tau_{\mathrm{LP}}
+\end{equation}
+for two consecutive visits, with hysteresis multiplier $h>1$.
+The stricter reactivation criterion reduces rapid switching caused by noise in the progress estimate.
+
+The gated formulation treats unproductive curiosity as a local property.
+A single stochastic or poorly learnable region can be suppressed without reducing intrinsic motivation everywhere else.
+This differs from a purely global intrinsic-reward schedule, which can only reduce the overall strength of curiosity.
+The theoretical expectation is that the ungated reward provides a low-overhead exploration signal, while the gated reward is most useful when high-error low-progress regions would otherwise attract the policy repeatedly.

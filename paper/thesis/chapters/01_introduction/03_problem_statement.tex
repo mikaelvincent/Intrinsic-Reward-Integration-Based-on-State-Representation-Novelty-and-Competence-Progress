@@ -1,0 +1,36 @@
+\section{Problem Statement}
+\label{sec:problem_statement}
+
+Sparse and delayed rewards make reinforcement learning difficult because the agent may not receive enough external feedback to discover useful behavior during early training.
+Intrinsic-reward methods address this problem by adding auxiliary exploration signals, but these signals can introduce their own failure modes.
+In particular, novelty- and prediction-error-based rewards may remain large in regions where the dynamics are noisy, difficult to predict, or not useful for solving the task.
+The technical problem addressed in this study is how to construct an intrinsic reward that promotes useful exploration while reducing the influence of unproductive curiosity.
+
+The study focuses on the following research question:
+
+\begin{quote}
+How can feature-space impact and region-local learning progress be combined, and selectively gated, to improve reinforcement-learning exploration under sparse and continuous-control settings?
+\end{quote}
+
+This question is investigated through the design and evaluation of a PPO-compatible intrinsic-reward method that estimates impact and learning progress from on-policy experience.
+The method is assessed against standard reinforcement-learning baselines and intrinsic-reward approaches using sample-efficiency, reliability, and wall-clock efficiency criteria.
+
+\subsection{General Objective}
+\label{subsec:general_objective}
+
+The general objective of this study is to develop and evaluate a gated learning-progress intrinsic-reward method for reinforcement learning that encourages productive exploration by combining feature-space impact with localized model-improvement estimates.
+
+\subsection{Specific Objectives}
+\label{subsec:specific_objectives}
+
+The specific objectives of the study are as follows:
+
+\begin{enumerate}
+    \item Formulate an intrinsic-reward function that combines representation-space transition impact with region-local learning progress.
+    \item Develop an online latent-space partitioning procedure for maintaining local prediction-error statistics during policy training.
+    \item Define a gating mechanism that suppresses intrinsic reward in regions characterized by persistently high prediction error and low learning progress.
+    \item Integrate the proposed intrinsic reward with PPO using augmented rewards and scheduled intrinsic-reward scaling.
+    \item Compare the proposed method against PPO, ICM, RND, RIDE, and RIAC on a benchmark suite containing sparse-reward and continuous-control environments.
+    \item Evaluate performance using learning curves, final-checkpoint return, step-normalized area under the curve, thresholded reliability, and wall-clock efficiency.
+    \item Analyze ablations that isolate the roles of impact, learning progress, and gating in the resulting exploration behavior.
+\end{enumerate}

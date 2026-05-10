@@ -1,0 +1,34 @@
+\section{Conclusions}
+\label{sec:conclusion_conclusions}
+
+The study concludes that feature-space impact and region-local learning progress provide complementary information for intrinsic-reward exploration.
+Impact identifies transitions that cause meaningful change in the learned representation, while learning progress distinguishes regions where the predictive model is improving from regions that are already predictable or persistently difficult.
+When combined after independent scale normalization, the two components form an intrinsic signal that is more robust in sparse-reward exploration than either component alone.
+This conclusion is supported most directly by \textsc{MountainCar-v0}, where the combined method outperformed the single-component ablations and achieved reliable solved-threshold performance.
+
+The second conclusion is that local learning progress is a useful corrective to prediction-error curiosity but is not sufficient as a complete exploration objective in all environments.
+A high prediction error can indicate either an informative opportunity or an unproductive region.
+By estimating progress as a local reduction in forward-model error, GLPE favors regions where additional experience appears to improve predictive competence.
+However, the learning-progress-only ablation did not dominate across the benchmark suite, which shows that model improvement alone can omit behaviorally important transitions when it is not paired with an impact term.
+
+The third conclusion is that gating is valuable primarily as a targeted safeguard against unproductive curiosity.
+The gated method improved the sparse-reward result by suppressing intrinsic shaping in selected high-error low-progress regions, and gate visualizations indicated that suppression was localized rather than global.
+However, the same mechanism reduced performance in some dense-reward and high-variance settings.
+This pattern shows that a gate based on local progress statistics can be too conservative when difficult regions remain useful or when high-dimensional dynamics make progress estimates unstable.
+Therefore, gating should not be interpreted as a universally superior extension of the base reward.
+It is best understood as an optional guardrail whose value depends on the environment's reward sparsity, stochasticity, and representation stability.
+
+The fourth conclusion is that GLPE without gating is the stronger default when computational cost and cross-environment robustness are considered together.
+The ungated variant preserves the principal technical contribution of the method: the combination of normalized feature-space impact and region-local learning progress.
+It avoids the additional overhead of robust gate thresholding and performed competitively under both step-based and wall-clock-normalized views.
+In environments with dense extrinsic feedback, the ungated variant often matched or exceeded the gated variant, suggesting that the base intrinsic reward already provides useful shaping without requiring suppression.
+
+The fifth conclusion is that intrinsic-reward methods require multidimensional evaluation.
+Learning curves and final returns alone do not fully characterize exploration performance.
+Step-AUC identifies early and sustained learning, thresholded reliability distinguishes consistent success from isolated high-return seeds, ablations reveal component-level behavior, and wall-clock AUC accounts for computational overhead.
+The findings of this study would be less precise if evaluated only by final mean return, because some methods reached partial competence reliably without consistently reaching solved thresholds, while others imposed runtime costs that changed their practical value.
+
+The final conclusion is that the proposed method improves exploration under the conditions for which it was designed but does not establish universal dominance over all intrinsic-reward approaches.
+Its strongest evidence appears in sparse-reward exploration, where the auxiliary signal must compensate for limited external feedback.
+In dense locomotion and high-variance control, standard baselines remain competitive, and the gate may suppress useful exploration.
+Consequently, GLPE should be viewed as a contribution to targeted intrinsic motivation: it provides a principled way to combine controllable representation change with local model improvement while exposing clear tradeoffs in gating and computational cost.

@@ -1,0 +1,87 @@
+\RequirePackage{xcolor}
+
+\newsavebox{\fitwidthtabularbox}
+\newenvironment{fitwidthtabular}[1]{%
+  \begin{lrbox}{\fitwidthtabularbox}%
+  \begin{tabular}{#1}%
+}{%
+  \end{tabular}%
+  \end{lrbox}%
+  \ifdim\wd\fitwidthtabularbox>\linewidth
+    \resizebox{\linewidth}{!}{\usebox{\fitwidthtabularbox}}%
+  \else
+    \usebox{\fitwidthtabularbox}%
+  \fi
+}
+
+\makeatletter
+\newcommand{\glpefigwidth}{%
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\newcommand{\glpefigheight}{%
+  \ifdim\Gin@nat@height>0.78\textheight
+    0.78\textheight
+  \else
+    \Gin@nat@height
+  \fi
+}
+\newcommand{\thesispageformat}{\normalfont\normalsize\thepage}
+\renewcommand{\ps@plain}{%
+  \renewcommand{\@oddhead}{}%
+  \renewcommand{\@evenhead}{}%
+  \renewcommand{\@oddfoot}{\hfil\thesispageformat}%
+  \renewcommand{\@evenfoot}{\hfil\thesispageformat}%
+}
+\makeatother
+\makeatletter
+\renewcommand{\chaptername}{CHAPTER}
+\renewcommand{\abstractname}{ABSTRACT}
+\defbibheading{thesisbibliography}[\bibname]{%
+  \phantomsection
+  \addcontentsline{toc}{chapter}{#1}%
+  \chapter*{#1}%
+  \vspace{-22\p@}%
+}
+\def\@makechapterhead#1{%
+  \vspace*{-0.35in}%
+  {\parindent \z@ \centering \normalfont\normalsize\bfseries
+    \ifnum \c@secnumdepth >\m@ne
+      \@chapapp\space \thechapter
+      \par\nobreak
+    \fi
+    #1\par\nobreak
+    \vskip 40\p@
+  }}
+\def\@makeschapterhead#1{%
+  \vspace*{-0.35in}%
+  {\parindent \z@ \centering \normalfont\normalsize\bfseries
+    #1\par\nobreak
+    \vskip 40\p@
+  }}
+\renewcommand\section{\@startsection{section}{1}{\z@}%
+  {-3.5ex \@plus -1ex \@minus -.2ex}%
+  {2.3ex \@plus .2ex}%
+  {\normalfont\normalsize\bfseries}}
+\renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
+  {-3.25ex\@plus -1ex \@minus -.2ex}%
+  {1.5ex \@plus .2ex}%
+  {\normalfont\normalsize\bfseries}}
+\renewcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
+  {-3.25ex\@plus -1ex \@minus -.2ex}%
+  {1.5ex \@plus .2ex}%
+  {\normalfont\normalsize\bfseries}}
+\renewenvironment{abstract}{%
+  \thispagestyle{plain}%
+  \@beginparpenalty\@lowpenalty
+  \begin{center}%
+    \normalfont\normalsize\bfseries \abstractname
+    \@endparpenalty\@M
+  \end{center}%
+}{%
+  \par\clearpage
+}
+\makeatother

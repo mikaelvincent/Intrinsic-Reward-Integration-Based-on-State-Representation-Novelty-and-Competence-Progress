@@ -1,0 +1,34 @@
+\section{Feature-Space Impact}
+\label{sec:feature_space_impact}
+
+Feature-space impact measures how much a transition changes the learned latent representation.
+For transition $(o_t,a_t,o_{t+1})$, the impact term is defined as
+\begin{equation}
+    I_t=\left\lVert z_{t+1}-z_t\right\rVert_2.
+    \label{eq:feature_space_impact}
+\end{equation}
+A transition with small $I_t$ leaves the representation nearly unchanged, while a transition with large $I_t$ moves the agent to a different region of latent space.
+This quantity is related to impact-driven exploration, where exploration is encouraged through meaningful changes in learned features rather than only through novelty counts \parencite{raileanu-2020}.
+
+Impact is not equivalent to reward, novelty, or prediction error.
+A transition can be novel but have little behavioral consequence, such as a small perturbation in an irrelevant observation component.
+A transition can also have high prediction error because of stochasticity while not producing a useful change in controllable state.
+The role of $I_t$ is to favor actions that induce represented state change, thereby complementing the learning-progress signal defined from prediction-error reduction.
+
+The use of a learned feature space is essential to the definition.
+If impact were computed directly in raw observation space, visually or numerically large differences could dominate the signal even when they are not relevant to control.
+Computing impact in $\mathbb{R}^{d}$ instead makes the signal depend on the representation learned by the dynamics module.
+The inverse-model component of the representation objective further encourages the feature space to retain information about action-dependent transitions.
+
+Because the scale of $I_t$ can vary across environments and throughout training, impact is treated as a component of a normalized intrinsic score rather than as a standalone reward.
+Let $v_I$ be an exponential moving estimate of the second moment of $I_t$,
+\begin{equation}
+    v_I \leftarrow \beta_{\mathrm{rms}}v_I+(1-\beta_{\mathrm{rms}})I_t^2,
+\end{equation}
+with $0<\beta_{\mathrm{rms}}<1$.
+The normalized impact component is
+\begin{equation}
+    \widetilde{I}_t=\frac{I_t}{\sqrt{v_I+\varepsilon}},
+\end{equation}
+where $\varepsilon>0$ prevents division by zero.
+This normalization makes the impact term comparable to the learning-progress term in the combined intrinsic reward.

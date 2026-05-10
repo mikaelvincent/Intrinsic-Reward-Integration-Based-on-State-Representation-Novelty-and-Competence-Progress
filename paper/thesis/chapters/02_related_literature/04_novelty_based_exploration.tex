@@ -1,0 +1,38 @@
+\section{Novelty-Based Exploration}
+\label{sec:novelty_based_exploration}
+
+Novelty-based exploration encourages the agent to visit states or features that have been encountered infrequently.
+In tabular settings, a simple exploration bonus can be defined from a visitation count $N(s)$, for example
+\begin{equation}
+    r_t^{\mathrm{int}} = \frac{\beta}{\sqrt{N(s_t)}},
+\end{equation}
+where $\beta>0$ controls the magnitude of the bonus.
+The reward is large when a state is new and decreases as the state is revisited.
+This mechanism promotes broad coverage of the state space and can help an agent discover sparse external rewards.
+
+Direct state counting is not feasible in high-dimensional or continuous observation spaces because exact revisits are rare.
+Count-based exploration has therefore been extended through density models, hashing, and learned abstractions.
+Pseudo-count methods estimate how much a density model's probability for an observation changes after training on that observation, thereby generalizing count-based bonuses beyond discrete tables \parencite{bellemare-2016}.
+Hash-based approaches discretize learned or hand-designed features so that approximate counts can be maintained efficiently in deep reinforcement learning \parencite{tang-2016}.
+Neural density models similarly estimate novelty by assigning low probability to unfamiliar observations \parencite{ostrovski-2017}.
+
+Novelty can also be estimated episodically rather than across the entire training history.
+Episodic curiosity mechanisms compare the current observation with observations already encountered in the same episode and reward states that are not easily reachable from recent memory \parencite{savinov-2018}.
+Directed exploration methods can combine episodic and lifelong novelty signals so that agents continue seeking unfamiliar states while also avoiding repeated short-term behavior loops \parencite{badia-2020}.
+Related self-supervised exploration methods have also used model disagreement as a signal for unfamiliar or informative transitions \parencite{pathak-2019}.
+These methods recognize that exploration has multiple time scales: an agent should avoid immediate repetition within an episode, but it should also learn a long-term representation of what parts of the environment remain unfamiliar.
+
+Novelty-based methods are attractive because they are conceptually simple and do not require the environment reward to be informative.
+They are particularly effective when task success is correlated with reaching rarely visited regions.
+However, novelty is an imperfect proxy for usefulness.
+A state can be novel but irrelevant to the task, and repeated visits to an initially novel region may stop receiving reward even if the agent has not yet learned a useful skill there.
+Conversely, a familiar region may still support important improvement if the agent is learning a precise control strategy.
+
+Another limitation is that novelty depends strongly on the representation in which counts or densities are computed.
+A poor representation may treat irrelevant observation differences as novel or merge distinct control-relevant states into the same region.
+In continuous-control tasks, small changes in position or velocity can make exact observations appear unique even when they belong to the same behavioral regime.
+This can cause novelty bonuses to remain high without reflecting genuine exploration progress.
+
+Novelty-based exploration is therefore a useful foundation but not a complete solution to sparse-reward reinforcement learning.
+It addresses where the agent has not been, but it does not directly measure whether the agent is learning from the region, whether the transition is controllable, or whether the experience is likely to improve future task performance.
+These limitations motivate prediction-error, impact-driven, and learning-progress approaches, which attempt to define more informative exploration signals.

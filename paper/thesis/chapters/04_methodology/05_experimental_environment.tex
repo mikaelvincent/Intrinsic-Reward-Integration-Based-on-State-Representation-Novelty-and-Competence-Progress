@@ -1,0 +1,71 @@
+\section{Experimental Environment}
+\label{sec:methodology_experimental_environment}
+
+\subsection{Benchmark Suite}
+\label{subsec:methodology_benchmark_suite}
+
+The benchmark suite consisted of five standard reinforcement-learning control environments: \textsc{MountainCar-v0}, \textsc{BipedalWalker-v3}, \textsc{Ant-v5}, \textsc{HalfCheetah-v5}, and \textsc{Humanoid-v5}.
+The suite was selected to cover both sparse-reward and continuous-control settings.
+\textsc{MountainCar-v0} provides a sparse and delayed success signal in a low-dimensional discrete-action task.
+\textsc{BipedalWalker-v3} requires coordinated continuous control and contains failure states.
+The three MuJoCo locomotion tasks provide higher-dimensional continuous-control settings with denser reward feedback and different morphology complexities.
+
+The default reward functions and termination conditions were used in all environments.
+No domain randomization was applied.
+No additional frame skipping was introduced beyond the environment configuration.
+Training used synchronous vectorized environments, with the number of parallel instances selected to obtain a nominal PPO batch size of $N=16{,}384$ transitions per update.
+
+\begin{table}[!htbp]
+\centering
+\small
+\begin{fitwidthtabular}{lrrrrr}
+\hline
+Environment & $B$ & $T$ & $N$ & Total steps & Seeds \\
+\hline
+\textsc{MountainCar-v0}   & 16 & 1{,}024 & 16{,}384 & 3{,}000{,}000  & 10 \\
+\textsc{BipedalWalker-v3} &  8 & 2{,}048 & 16{,}384 & 7{,}000{,}000  &  8 \\
+\textsc{Ant-v5}           &  8 & 2{,}048 & 16{,}384 & 15{,}000{,}000 &  8 \\
+\textsc{HalfCheetah-v5}   &  8 & 2{,}048 & 16{,}384 & 15{,}000{,}000 &  8 \\
+\textsc{Humanoid-v5}      &  4 & 4{,}096 & 16{,}384 & 30{,}000{,}000 &  5 \\
+\hline
+\end{fitwidthtabular}
+\caption[Benchmark suite and training budgets]{Benchmark suite and training budgets. $B$ is the number of parallel environment instances, $T$ is the rollout horizon per instance, and $N=B\times T$ is the nominal PPO update batch size.}
+\label{tab:methodology_env_suite}
+\end{table}
+
+\subsection{Training Budgets}
+\label{subsec:methodology_training_budgets}
+
+The total environment-step budgets in Table~\ref{tab:methodology_env_suite} were chosen to extend beyond the early learning phase.
+This allowed the evaluation to measure both rapid initial improvement and long-horizon stability.
+The final PPO update in a run was allowed to contain fewer than $N$ transitions if the remaining step budget was smaller than a full rollout batch.
+
+The GLPE hyperparameters used for each environment are shown in Table~\ref{tab:methodology_glpe_hparams}.
+The same intrinsic scaling coefficient $\eta$ and intrinsic clipping range $r_{\max}$ were used by all intrinsic methods within a given environment.
+This kept the reward-scale comparison consistent across ICM, RND, RIDE, RIAC, GLPE, and GLPE (no gate).
+
+\begin{table}[!htbp]
+\centering
+\small
+\begin{fitwidthtabular}{lrrrrrrrrrrrrr}
+\hline
+Environment & $\eta$ & $r_{\max}$ & $\alpha_{\mathrm{LP}}$ & $p_{\mathrm{start}}$ & $p_{\mathrm{end}}$ & $C$ & $D_{\max}$ & $\beta_{\mathrm{long}}$ & $\beta_{\mathrm{short}}$ & $\kappa$ & $\tau_s$ & $K$ & $R_{\min}$ \\
+\hline
+\textsc{MountainCar-v0}   & 0.05 & 4.0 & 0.5 & 0.05 & 0.80 & 128 & 10 & 0.995 & 0.90 & 0.010 & 2.0 & 5 &  8 \\
+\textsc{BipedalWalker-v3} & 0.08 & 4.0 & 0.5 & 0.12 & 0.75 & 200 & 12 & 0.995 & 0.90 & 0.010 & 2.0 & 5 & 16 \\
+\textsc{Ant-v5}           & 0.06 & 4.0 & 0.6 & 0.10 & 0.70 & 256 & 12 & 0.997 & 0.92 & 0.012 & 2.5 & 8 & 64 \\
+\textsc{HalfCheetah-v5}   & 0.04 & 5.0 & 0.5 & 0.05 & 0.75 & 256 & 12 & 0.995 & 0.90 & 0.010 & 2.0 & 5 & 32 \\
+\textsc{Humanoid-v5}      & 0.06 & 5.0 & 0.5 & 0.05 & 0.80 & 256 & 12 & 0.998 & 0.92 & 0.010 & 2.0 & 5 & 32 \\
+\hline
+\end{fitwidthtabular}
+\caption[GLPE hyperparameters]{GLPE hyperparameters by environment. The impact weight was fixed at $\alpha_{\mathrm{impact}}=1.0$, and the hysteresis multiplier was fixed at $h=2.0$. GLPE (no gate) used the same settings but disabled the gate.}
+\label{tab:methodology_glpe_hparams}
+\end{table}
+
+\subsection{Random Seeds and Determinism}
+\label{subsec:methodology_random_seeds_and_determinism}
+
+Each method was evaluated using the same seed set within each environment.
+The seed counts are shown in Table~\ref{tab:methodology_env_suite}.
+The experiments enabled deterministic execution where supported by the software stack and environment backend.
+The purpose of fixed seed sets was not to remove randomness from reinforcement learning, but to ensure that method comparisons were paired as closely as practical across independent training runs.

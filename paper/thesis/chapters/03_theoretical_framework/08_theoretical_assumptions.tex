@@ -1,0 +1,35 @@
+\section{Theoretical Assumptions}
+\label{sec:theoretical_assumptions}
+
+The framework relies on several assumptions that define the intended interpretation of the intrinsic reward.
+These assumptions do not guarantee global optimality of the learned policy, but they specify the conditions under which feature-space impact, learning progress, and gating are expected to provide useful exploration guidance.
+
+First, the environment is assumed to provide bounded episodic interaction.
+Extrinsic rewards, intrinsic rewards after clipping, and episode horizons are finite, so the discounted returns used by the policy optimizer are well defined.
+This assumption is necessary because the augmented reward in Equation~\ref{eq:reward_augmentation} changes the value targets and advantages used during training.
+
+Second, the learned representation is assumed to preserve action-relevant transition structure.
+The latent vector $z_t$ need not reconstruct the observation or represent the full environment state, but distances in latent space should be meaningful enough for $\lVert z_{t+1}-z_t\rVert_2$ to indicate transition impact.
+The inverse-dynamics objective supports this assumption by encouraging features that retain information about actions that caused observed transitions.
+
+Third, the forward prediction error is assumed to be a usable proxy for local model competence.
+A decreasing forward error in a region is interpreted as evidence that the model is learning the local dynamics.
+The framework does not assume that all uncertainty is reducible.
+Instead, it explicitly allows regions with high error and low progress, which are candidates for gate suppression.
+
+Fourth, region-local statistics are assumed to receive enough samples to become meaningful.
+The online partition should be neither so coarse that unrelated dynamics are mixed nor so fine that most regions lack sufficient data.
+The capacity and maximum-depth parameters of the partition control this tradeoff.
+The requirement of a minimum number of visited regions before gating further prevents early median estimates from controlling exploration prematurely.
+
+Fifth, the exponential moving averages are assumed to operate on a slower time scale than individual transition noise.
+The inequality $\beta_{\mathrm{short}}<\beta_{\mathrm{long}}$ ensures that the short-horizon estimate reacts faster than the long-horizon estimate.
+Learning progress is therefore interpreted as a relative improvement signal, not as an absolute measure of environment difficulty.
+
+Sixth, component-wise normalization is assumed to stabilize relative scaling without changing the qualitative meaning of the components.
+The normalized quantities $\widetilde{I}_t$ and $\widetilde{\mathrm{LP}}_t$ are scale-adjusted versions of impact and learning progress.
+The weights $\alpha_{\mathrm{impact}}$ and $\alpha_{\mathrm{LP}}$ then determine the intended tradeoff rather than compensating for arbitrary units.
+
+Finally, the framework assumes that intrinsic reward is a training aid rather than a separate task objective.
+The augmented objective may alter the policy optimization path and is not claimed to preserve the optimal policy of the original MDP in the strict reward-shaping sense.
+The method is therefore evaluated by whether the resulting policy achieves higher or more reliable extrinsic return, not by the magnitude of accumulated intrinsic reward.

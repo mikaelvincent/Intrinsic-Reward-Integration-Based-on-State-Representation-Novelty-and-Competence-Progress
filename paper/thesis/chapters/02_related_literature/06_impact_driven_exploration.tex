@@ -1,0 +1,33 @@
+\section{Impact-Driven Exploration}
+\label{sec:impact_driven_exploration}
+
+Impact-driven exploration rewards actions that produce meaningful change in the environment or in a learned representation.
+The motivation is that useful exploration should not only reach unfamiliar observations, but should also involve transitions that the agent can influence.
+A simple feature-space impact measure is
+\begin{equation}
+    I_t = \left\lVert \phi(o_{t+1})-\phi(o_t)\right\rVert_2,
+\end{equation}
+where $\phi$ maps observations into a representation space.
+Large values indicate that the transition changed the representation substantially.
+
+Rewarding Impact-Driven Exploration (RIDE) uses this principle to encourage agents to take actions that lead to significant feature-space changes \parencite{raileanu-2020}.
+RIDE combines a learned representation with an impact reward and an episodic state-count correction.
+The count correction reduces the reward for repeatedly producing the same transition pattern, while the impact term encourages behavior that changes the agent's represented state.
+This differs from pure novelty because the reward is tied to transition magnitude rather than only to whether a state has been visited rarely.
+
+Impact rewards are useful in environments where the agent must learn to control movement, manipulate objects, or otherwise cause structured changes before reaching task reward.
+For example, in locomotion tasks, an agent that remains stationary may avoid penalties or unstable dynamics but will not learn useful movement.
+A feature-space impact term can provide pressure toward dynamic behavior even when extrinsic reward is initially weak.
+In sparse-reward tasks, impact can help the agent escape local regions of the state space by valuing transitions that produce substantial state changes.
+
+However, impact alone is not sufficient to define productive exploration.
+A transition can have high impact while being harmful, random, or disconnected from task success.
+Large representational changes may occur because of falls, collisions, or other unstable behavior that does not improve competence.
+Furthermore, if the learned representation is poorly calibrated, the impact signal may emphasize dimensions that are easy to change but not useful for solving the task.
+Impact-driven exploration therefore benefits from being combined with additional criteria that indicate whether the resulting experience supports learning.
+
+Impact and learning progress are complementary.
+Impact identifies transitions that change the representation, while learning progress identifies regions where prediction or understanding is improving.
+A combined intrinsic reward can prefer transitions that are both consequential and learnable.
+This distinction is important because an agent may otherwise learn to seek either low-impact predictable transitions that show small model improvement or high-impact transitions that remain unproductive.
+The literature on impact-driven exploration therefore provides a key component for exploration objectives that seek to connect behavioral change with model improvement.

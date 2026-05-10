@@ -1,0 +1,42 @@
+\section{Recommendations for Future Work}
+\label{sec:conclusion_recommendations_for_future_work}
+
+Future work should first investigate adaptive weighting between feature-space impact and learning progress.
+The ablation results indicate that the most useful component varies across environments: the combined reward is strongest in sparse-reward exploration, impact alone can be competitive in dense locomotion, and learning progress alone can be effective in contact-rich control.
+An adaptive mechanism could adjust $\alpha_{\mathrm{impact}}$ and $\alpha_{\mathrm{LP}}$ according to observed reward sparsity, progress stability, or the correlation between intrinsic reward and later extrinsic improvement.
+Such a mechanism may reduce the need for environment-specific tuning.
+
+A second direction is to improve the gate so that it is less conservative in high-variance environments.
+The current binary gate suppresses a region when local statistics indicate persistent high error and low progress.
+Future variants could use a continuous attenuation factor rather than a hard zero-one decision, uncertainty-aware thresholds, or a recovery rule that reactivates regions when later evidence indicates renewed progress.
+A softer gate could preserve protection against unproductive curiosity while reducing the risk of suppressing difficult but useful parts of the state space.
+
+A third direction is to extend the method beyond vector observations.
+Image-based environments would require encoders that produce stable action-relevant latent spaces under visual variation, partial observability, and irrelevant background changes.
+The impact term and latent partition should be evaluated with convolutional or transformer-based encoders, and the progress signal should be tested under representations learned jointly from high-dimensional observations.
+This extension would clarify whether GLPE's assumptions about latent distances and forward-model error hold in richer perception settings.
+
+A fourth direction is to evaluate GLPE under other reinforcement-learning backbones.
+Off-policy actor-critic methods, replay-based algorithms, and distributed training may interact differently with learning-progress statistics because the data distribution is no longer purely on-policy.
+Future work should examine whether region-local EMAs should be updated from the most recent behavior policy, from replay samples, or from importance-weighted statistics.
+This would determine whether the intrinsic reward can be generalized beyond PPO while preserving the interpretation of local model improvement.
+
+A fifth direction is to study more principled region construction.
+The current online partition uses bounded recursive splitting in latent space, which is simple and computationally controlled.
+Alternative region definitions could use clustering, density models, learned prototypes, successor features, or uncertainty-aware partitioning.
+These alternatives may produce regions that better align with local dynamics, especially in high-dimensional environments where axis-aligned splitting may not capture the geometry of behaviorally meaningful transitions.
+
+A sixth direction is to reduce computational overhead.
+The wall-clock results show that the practical value of intrinsic rewards depends on training cost as well as sample efficiency.
+Future implementations could approximate robust gate references incrementally, update gates less frequently with error bounds, share computation between intrinsic modules and policy networks, or use lightweight learned summaries of region statistics.
+The objective should be to preserve the exploration signal while improving return per unit of wall-clock time.
+
+A seventh direction is to expand the empirical evaluation.
+Additional sparse-reward tasks, stochastic environments, long-horizon navigation problems, and tasks with distractor dynamics would provide a stronger test of the method's intended purpose.
+More seeds should be used in high-variance domains to separate true method differences from training noise.
+Evaluation should continue to include both step-based and wall-clock-normalized metrics, because computational overhead is an essential part of practical reinforcement-learning performance.
+
+Finally, future work should investigate stronger links between intrinsic reward and downstream extrinsic value.
+Learning progress identifies where the model is improving, but improvement in prediction does not always imply improvement in task performance.
+A promising extension is to estimate whether intrinsically rewarded transitions increase the probability of later extrinsic return, threshold crossing, or value-function improvement.
+Such an extension could preserve the benefits of curiosity-driven exploration while more directly aligning intrinsic motivation with the external objective.

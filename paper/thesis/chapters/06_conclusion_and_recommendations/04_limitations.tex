@@ -1,0 +1,43 @@
+\section{Limitations}
+\label{sec:conclusion_limitations}
+
+The first limitation is the restricted environment scope.
+The experiments used five vector-observation control benchmarks and did not include image observations, language-conditioned environments, multi-agent settings, offline reinforcement learning, model-based planning, or real-world robotic deployment.
+The conclusions therefore apply most directly to online, on-policy, simulated control tasks with vector observations.
+Tasks with richer sensory input may require different representation-learning assumptions, larger auxiliary models, or different mechanisms for estimating local progress.
+
+The second limitation is that the method was evaluated with PPO as the reinforcement-learning backbone.
+PPO provides a stable on-policy setting for controlled comparison, but the behavior of the intrinsic reward may differ under off-policy algorithms, replay buffers, distributed actors, or value-based methods.
+The local progress statistics in GLPE are computed from on-policy experience, and their interpretation may change if transitions are repeatedly sampled from a replay buffer or collected by many asynchronous policies.
+
+The third limitation concerns reward shaping.
+The augmented reward used during training is not a potential-based transformation of the environment reward and is not guaranteed to preserve the optimal policy of the original task.
+Although evaluation uses extrinsic return only, the intrinsic component can still change the policy optimization trajectory and may favor behaviors that are not aligned with the final task objective.
+The intrinsic coefficient schedule and clipping range reduce this risk but do not eliminate it.
+
+The fourth limitation is sensitivity to representation quality.
+Feature-space impact assumes that distances in the learned latent representation correspond to meaningful transition changes.
+Learning progress assumes that forward-model prediction error reflects local competence.
+If the encoder fails to preserve action-relevant structure, if the inverse model is insufficiently informative, or if the latent partition mixes unrelated dynamics, then both impact and progress can become unreliable.
+This limitation is especially relevant for high-dimensional environments where many different behaviors may map to nearby latent regions.
+
+The fifth limitation is the fixed design of component weights and gate thresholds.
+The experiments used a fixed impact weight and environment-specific settings for the learning-progress weight and other hyperparameters.
+The ablation results show that different environments favor different components, suggesting that static weights cannot be optimal for all tasks.
+Similarly, the gate relies on median-based references, persistence rules, and hysteresis parameters that may not adapt well to every reward structure or dynamics distribution.
+
+The sixth limitation is the computational cost of intrinsic-reward computation.
+The method requires an auxiliary encoder, forward model, inverse model, online region statistics, component normalization, and optional gating.
+The overhead is especially visible in inexpensive environments where environment interaction is fast.
+The gated variant adds further cost through robust threshold computation and gate-state updates.
+Although caching can improve throughput, it introduces stale references and can alter gate decisions.
+
+The seventh limitation is the number of random seeds and benchmark scale.
+The study reports multiple seeds and uncertainty-aware summaries, but high-variance environments such as \textsc{Humanoid-v5} still exhibit wide confidence intervals.
+A larger seed count or a broader benchmark suite would provide stronger evidence about method rankings in difficult continuous-control settings.
+The current results are sufficient to identify qualitative behavior and tradeoffs, but they do not prove that small differences between methods are stable across all possible training configurations.
+
+The final limitation is that the study analyzes unproductive curiosity through prediction-error and learning-progress statistics rather than through a formal guarantee.
+The gate is designed to suppress regions that empirically appear high-error and low-progress, but this classification can be incorrect.
+A region may temporarily show low progress while still being necessary for later task success, or it may appear learnable under the model while remaining irrelevant to extrinsic return.
+Thus, the method reduces a known failure mode of curiosity-driven exploration but does not fully solve the broader problem of aligning intrinsic objectives with task objectives.

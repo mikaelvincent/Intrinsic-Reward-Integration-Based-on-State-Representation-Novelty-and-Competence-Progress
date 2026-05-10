@@ -1,0 +1,89 @@
+\section{Evaluation Methodology}
+\label{sec:methodology_evaluation_methodology}
+
+\subsection{Offline Checkpoint Evaluation}
+\label{subsec:methodology_offline_checkpoint_evaluation}
+
+Training performance was evaluated from saved checkpoints rather than from online training rollouts.
+A checkpoint was saved at step 0, at additional warmup points early in training, at regular intervals equal to 10\% of the environment's total step budget, and at the final step.
+Each evaluated checkpoint was run for 20 episodes in a separate evaluation environment.
+The policy used deterministic action selection: categorical mode for discrete policies and distribution mode for continuous policies.
+Episode seeds for evaluation were fixed functions of the corresponding training seed, making checkpoint comparisons repeatable.
+
+Only extrinsic environment return was used for evaluation.
+Intrinsic reward was excluded from all evaluation metrics because the objective of the study is to improve task performance, not to maximize the auxiliary reward itself.
+
+\subsection{Primary Performance Metric}
+\label{subsec:methodology_primary_performance_metric}
+
+The primary performance metric was undiscounted episodic return from the environment:
+\begin{equation}
+    G = \sum_{t=0}^{T_{\mathrm{ep}}-1} r_t^{\mathrm{ext}},
+\end{equation}
+where $T_{\mathrm{ep}}$ is the episode length.
+For each checkpoint and seed, the mean return over 20 evaluation episodes was recorded.
+For each method--environment pair, mean learning curves were obtained by averaging checkpoint returns across training seeds.
+
+\subsection{Sample Efficiency Metrics}
+\label{subsec:methodology_sample_efficiency_metrics}
+
+Sample efficiency was measured by the relationship between evaluation return and cumulative environment steps.
+In addition to plotting learning curves, the study used step-AUC as a scalar summary.
+Let $\bar{G}(s_i)$ denote the mean evaluation return at checkpoint step $s_i$, with checkpoints indexed as $s_0,\ldots,s_K$.
+For an environment-step budget $S=s_K-s_0$, step-AUC was computed by trapezoidal integration and normalized by the budget:
+\begin{equation}
+    \mathrm{AUC}_{\mathrm{step}}
+    = \frac{1}{S}\sum_{i=1}^{K}
+    \frac{\bar{G}(s_i)+\bar{G}(s_{i-1})}{2}
+    (s_i-s_{i-1}).
+\end{equation}
+Higher step-AUC indicates either faster early learning, higher sustained return, or both.
+
+\subsection{Reliability Metrics}
+\label{subsec:methodology_reliability_metrics}
+
+Reliability was evaluated using threshold-reaching statistics across seeds.
+For each environment, a solved-return threshold $G_{\mathrm{solve}}$ was specified as follows:
+\begin{equation}
+\begin{aligned}
+    \text{\textsc{MountainCar-v0}:} &\ -110, &
+    \text{\textsc{BipedalWalker-v3}:} &\ 300,\\
+    \text{\textsc{Ant-v5}:} &\ 5{,}000, &
+    \text{\textsc{HalfCheetah-v5}:} &\ 6{,}000,\\
+    \text{\textsc{Humanoid-v5}:} &\ 3{,}000.
+\end{aligned}
+\end{equation}
+For each seed, the first checkpoint crossing a threshold was identified.
+When the threshold was crossed between two checkpoints, the crossing step was estimated by linear interpolation between the adjacent checkpoint returns.
+
+The study reported reach counts and median steps-to-threshold at 25\%, 50\%, and 100\% of the solved threshold.
+For positive solved thresholds, the fractional threshold was $qG_{\mathrm{solve}}$ for $q\in\{0.25,0.50,1.00\}$.
+For \textsc{MountainCar-v0}, whose solved threshold is negative and whose poor-return regime is near $-200$, the monotonic fractional thresholds were computed as
+\begin{equation}
+    G_q = G_{\mathrm{solve}}(2-q).
+\end{equation}
+This gives thresholds that become easier as $q$ decreases while preserving the direction that higher return is better.
+Medians were computed over successful seeds only, and the reach count was reported alongside each median to avoid hiding failures.
+
+\subsection{Wall-Clock Efficiency Metrics}
+\label{subsec:methodology_wall_clock_efficiency_metrics}
+
+Wall-clock efficiency was measured from end-to-end training time.
+For each PPO iteration, time was recorded for environment interaction, policy inference, intrinsic-reward computation, intrinsic-module updates, advantage computation, and PPO optimization.
+Cumulative wall-clock time was then associated with each checkpoint.
+
+The wall-clock AUC metric integrated mean evaluation return against cumulative training time.
+For each environment, the common wall-clock budget was defined as the smallest final training time among the methods being compared.
+Learning curves were integrated only up to this common budget, preventing slower methods from being rewarded by extrapolation beyond the measured time available to faster methods.
+
+\subsection{Statistical Reporting}
+\label{subsec:methodology_statistical_reporting}
+
+Results were aggregated across independent training seeds.
+Learning curves report the mean across seeds at each checkpoint.
+Scalar summaries such as final-checkpoint return and AUC were reported with 95\% nonparametric bootstrap confidence intervals over seeds when interval estimates were required.
+The bootstrap procedure resampled seeds with replacement and recomputed the statistic on each resample.
+
+For thresholded reliability, the principal quantities were reach count and median steps-to-threshold.
+Reach count measures robustness across seeds, while the median crossing step measures speed among the successful runs.
+These two quantities were reported together because a method that reaches a threshold quickly in only a small number of seeds is less reliable than a method that reaches it consistently.

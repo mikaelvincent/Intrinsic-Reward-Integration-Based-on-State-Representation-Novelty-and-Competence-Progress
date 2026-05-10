@@ -1,0 +1,30 @@
+\section{Contributions}
+\label{sec:conclusion_contributions}
+
+The first contribution of this study is the formulation of a learning-progress intrinsic-reward family that combines latent transition impact with local predictive improvement.
+The method does not reward prediction error directly.
+Instead, it rewards transitions in which the learned representation changes and the corresponding latent region shows evidence of decreasing forward-model error.
+This formulation addresses the limitation of curiosity signals that treat surprise as intrinsically valuable even when additional experience does not lead to improved prediction.
+
+The second contribution is an online latent-space partitioning procedure for estimating local learning progress during on-policy reinforcement learning.
+The partition stores region-specific prediction-error statistics and increases resolution in visited portions of the latent space through bounded recursive splitting.
+This allows the method to distinguish heterogeneous dynamics without requiring a fixed hand-designed state abstraction.
+The use of short- and long-horizon exponential moving averages provides a compact estimate of whether predictive competence is improving within each region.
+
+The third contribution is a region-wise gating mechanism for suppressing unproductive intrinsic reward.
+The gate compares each region's learning progress and recent prediction error against robust references computed over visited regions, and it suppresses the base intrinsic score when a region remains high-error and low-progress for a sufficient duration.
+This mechanism operationalizes the distinction between learnable difficulty and unproductive unpredictability.
+The empirical results show that this guardrail can support strong sparse-reward performance while also revealing the conditions under which it may become overly conservative.
+
+The fourth contribution is a PPO-compatible integration of the proposed intrinsic reward with explicit reward-scale controls.
+The method uses component-wise normalization, intrinsic clipping, terminal-transition suppression, and a cosine taper for the intrinsic coefficient.
+These design choices make the intrinsic reward usable as a transient training aid rather than as a permanent replacement for the task objective.
+The resulting procedure can be compared directly with established intrinsic-reward baselines under the same policy-optimization backbone.
+
+The fifth contribution is an empirical evaluation that considers performance, reliability, ablation behavior, gate dynamics, and computational efficiency together.
+The benchmark suite covers both sparse-reward and continuous-control regimes, and the evaluation reports deterministic extrinsic return from offline checkpoints rather than training reward.
+The inclusion of step-AUC, final-checkpoint return, thresholded reliability, wall-clock AUC, and timing breakdowns provides a broad assessment of how intrinsic rewards affect both learning quality and training cost.
+
+The sixth contribution is the characterization of when the proposed components are useful.
+The results show that the combined impact--learning-progress reward is most beneficial in sparse-reward exploration, that single components can be competitive in some dense-control settings, and that gating is advantageous only when suppression of unproductive regions outweighs its conservatism and overhead.
+This characterization is important because it frames the method as an environment-dependent exploration mechanism rather than as a universally dominant algorithm.

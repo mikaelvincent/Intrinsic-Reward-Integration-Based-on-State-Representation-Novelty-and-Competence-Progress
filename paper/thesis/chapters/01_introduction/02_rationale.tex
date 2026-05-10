@@ -1,0 +1,31 @@
+\section{Rationale}
+\label{sec:rationale}
+
+The central motivation for this study is the need for intrinsic rewards that remain useful under sparse, delayed, or unreliable external feedback without encouraging persistent interaction with unproductive regions of the environment.
+Many existing intrinsic-reward methods use prediction error, novelty, or state visitation as a proxy for exploration value.
+These proxies are effective when unfamiliar states are likely to be informative, but they can be insufficient when high intrinsic reward is caused by noise, stochastic transitions, or representational change that is not associated with task-relevant learning.
+
+A prediction-error bonus, for example, rewards transitions that a learned model currently predicts poorly.
+This can guide the agent toward unfamiliar dynamics, but it does not by itself determine whether additional experience in the same region will reduce future error.
+If the error is high because the region is inherently stochastic or only weakly controllable, the agent may continue to receive intrinsic reward without acquiring useful competence.
+Similarly, novelty-oriented bonuses can favor broad coverage but may not prioritize transitions that change the agent's ability to predict or control the environment.
+
+Learning progress offers a more selective signal because it depends on temporal improvement rather than absolute surprise.
+If $e_t$ denotes a forward-model prediction error, a simple progress measure can be viewed as the positive reduction between a longer-term and a shorter-term estimate of error:
+\begin{equation}
+    \mathrm{LP}_t = \max(0, \mu^{\mathrm{long}}_t - \mu^{\mathrm{short}}_t).
+\end{equation}
+A high value indicates that recent prediction error has fallen below the longer-term baseline, suggesting that additional experience in the corresponding region has been productive.
+However, global learning-progress estimates are too coarse for environments with heterogeneous dynamics.
+Progress must be localized so that improvement in one part of the observation space does not mask stagnation in another.
+
+Feature-space impact is also important because exploration should favor actions that produce meaningful changes in the learned representation.
+An agent that receives progress-based reward without regard to transition impact may overvalue small changes in predictable regions.
+Conversely, an agent that receives impact reward without regard to learning progress may overvalue large but unlearnable changes.
+Combining both signals supports an intrinsic objective that rewards transitions that are both behaviorally consequential and associated with model improvement.
+
+The proposed method is therefore motivated by three design principles.
+First, the intrinsic reward should be computed in a learned latent representation so that it can be applied to continuous observations without requiring hand-designed state abstractions.
+Second, learning progress should be estimated locally, using region-specific statistics, so that the method can distinguish productive and unproductive parts of the environment.
+Third, intrinsic shaping should be limited when evidence suggests persistent high error without corresponding progress.
+These principles lead to an intrinsic-reward family in which a base reward combines impact and learning progress, while an optional gate suppresses the reward in regions that satisfy a high-error low-progress criterion.

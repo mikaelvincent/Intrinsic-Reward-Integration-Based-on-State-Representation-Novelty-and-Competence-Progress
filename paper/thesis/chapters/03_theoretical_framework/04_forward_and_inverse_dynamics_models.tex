@@ -1,0 +1,60 @@
+\section{Forward and Inverse Dynamics Models}
+\label{sec:forward_and_inverse_dynamics_models}
+
+The latent dynamics module contains a forward predictor and an inverse predictor.
+The forward predictor
+\begin{equation}
+    f_\psi:\mathbb{R}^{d}\times\mathcal{A}\rightarrow\mathbb{R}^{d}
+\end{equation}
+receives the current latent representation and action, then predicts the next latent representation.
+The inverse predictor
+\begin{equation}
+    g_\xi:\mathbb{R}^{d}\times\mathbb{R}^{d}\rightarrow\mathcal{D}(\mathcal{A})
+\end{equation}
+receives consecutive latent representations and predicts a distribution over the action that caused the transition.
+Here $\mathcal{D}(\mathcal{A})$ denotes an action-distribution family.
+For discrete action spaces, this family is a categorical distribution over actions.
+For continuous action spaces, the inverse model is represented as a diagonal Gaussian likelihood over real-valued actions.
+
+The per-transition forward loss is the mean-squared prediction error in feature space,
+\begin{equation}
+    \mathcal{L}_{\mathrm{fwd}}(t)
+    = \frac{1}{d}\left\lVert f_\psi(z_t,a_t)-z_{t+1}\right\rVert_2^2.
+    \label{eq:forward_loss}
+\end{equation}
+This quantity is also used as the transition-level prediction error,
+\begin{equation}
+    e_t=\mathcal{L}_{\mathrm{fwd}}(t).
+    \label{eq:prediction_error}
+\end{equation}
+The scalar $e_t$ is not used directly as the final intrinsic reward, because high prediction error alone may correspond to stochastic or unlearnable dynamics.
+Instead, it is used to estimate learning progress inside local regions of the latent space.
+
+The inverse loss depends on the action space.
+For a discrete action $a_t$, the inverse model produces logits over actions and is trained with cross-entropy,
+\begin{equation}
+    \mathcal{L}_{\mathrm{inv}}(t)
+    = -\log g_\xi(a_t\mid z_t,z_{t+1}).
+\end{equation}
+For a continuous action $a_t\in\mathbb{R}^{m}$, the inverse model produces a mean vector $\mu_\xi(z_t,z_{t+1})$ and diagonal log-standard-deviation vector $\ell_\xi(z_t,z_{t+1})$.
+With $\sigma_\xi=\exp(\ell_\xi)$, the negative log-likelihood is
+\begin{equation}
+    \mathcal{L}_{\mathrm{inv}}(t)
+    = \frac{1}{2}\sum_{j=1}^{m}
+    \left[
+        \frac{(a_{t,j}-\mu_{\xi,j})^2}{\sigma_{\xi,j}^2}
+        +2\ell_{\xi,j}
+        +\log(2\pi)
+    \right].
+\end{equation}
+
+The combined dynamics loss is
+\begin{equation}
+    \mathcal{L}_{\mathrm{dyn}}(t)
+    = \beta_{\mathrm{fwd}}\mathcal{L}_{\mathrm{fwd}}(t)
+    + \beta_{\mathrm{inv}}\mathcal{L}_{\mathrm{inv}}(t),
+    \label{eq:dynamics_loss}
+\end{equation}
+where $\beta_{\mathrm{fwd}}>0$ and $\beta_{\mathrm{inv}}>0$ are weighting coefficients.
+The forward term supplies a predictive error signal for learning-progress estimation, while the inverse term discourages representations that ignore action-relevant information.
+This combination supports an intrinsic reward based on model improvement without making raw prediction error the sole driver of exploration.

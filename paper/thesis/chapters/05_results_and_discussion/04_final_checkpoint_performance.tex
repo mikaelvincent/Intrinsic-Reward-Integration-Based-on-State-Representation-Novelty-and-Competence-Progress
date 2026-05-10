@@ -1,0 +1,36 @@
+\section{Final-Checkpoint Performance}
+\label{sec:results_final_checkpoint}
+
+Final-checkpoint return measures the quality of the policy at the end of the fixed training budget.
+It complements step-AUC by emphasizing asymptotic performance within the allotted interactions.
+Table~\ref{tab:results_final_checkpoint} reports final deterministic evaluation returns for GLPE, GLPE without gating, and the strongest baseline in each environment.
+
+\begin{table}[!htbp]
+\centering
+\small
+\begin{fitwidthtabular}{lccc}
+\hline
+Environment & GLPE & GLPE (no gate) & Best baseline \\
+\hline
+\textsc{MountainCar-v0} & $-96.2\;[-96.5,-95.9]$ & $-97.1\;[-99.0,-96.0]$ & RIAC: $-106.6\;[-127.5,-95.9]$ \\
+\textsc{BipedalWalker-v3} & $266.5\;[214.0,301.3]$ & $294.4\;[285.9,303.7]$ & PPO: $302.2\;[291.2,309.4]$ \\
+\textsc{Ant-v5} & $4{,}961\;[4{,}421,5{,}359]$ & $4{,}961\;[4{,}436,5{,}349]$ & RIAC: $5{,}384\;[5{,}118,5{,}625]$ \\
+\textsc{HalfCheetah-v5} & $6{,}889\;[6{,}565,7{,}285]$ & $6{,}908\;[6{,}548,7{,}280]$ & RIDE: $7{,}106\;[6{,}901,7{,}299]$ \\
+\textsc{Humanoid-v5} & $1{,}970\;[546,4{,}355]$ & $2{,}858\;[1{,}428,4{,}454]$ & ICM: $2{,}874\;[770,4{,}956]$ \\
+\hline
+\end{fitwidthtabular}
+\caption[Final-checkpoint returns]{Final-checkpoint mean extrinsic return under deterministic offline evaluation. Brackets show 95\% bootstrap confidence intervals over seeds. Higher values are better.}
+\label{tab:results_final_checkpoint}
+\end{table}
+
+The final-checkpoint results reinforce the environment-dependent character of the method.
+GLPE is the strongest method on \textsc{MountainCar-v0}, where the return interval is narrow and close to the maximum observed solution quality.
+The reliability of this result is important because \textsc{MountainCar-v0} contains limited extrinsic feedback until the agent has already learned an effective control strategy.
+
+In \textsc{BipedalWalker-v3}, the ungated variant is much closer to the strongest baseline than gated GLPE.
+The difference suggests that gate suppression can remove useful intrinsic shaping when the environment's dynamics are learnable but the progress signal fluctuates near the threshold.
+The same pattern appears more strongly in \textsc{Humanoid-v5}, where GLPE without gating is close to ICM while gated GLPE is lower.
+
+In \textsc{Ant-v5} and \textsc{HalfCheetah-v5}, the GLPE family achieves high returns but does not exceed the strongest baseline.
+These tasks provide dense reward components, so exploration bonuses mainly influence the path of optimization rather than enabling reward discovery from near-zero feedback.
+The results therefore suggest that GLPE is most appropriate when the exploration signal must compensate for sparse or delayed extrinsic feedback.

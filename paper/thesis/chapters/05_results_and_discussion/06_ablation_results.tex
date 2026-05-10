@@ -1,0 +1,68 @@
+\section{Ablation Results}
+\label{sec:results_ablation}
+
+Ablation experiments isolate the contribution of the two components in the base GLPE reward.
+The impact-only and learning-progress-only variants follow the definitions in Sections~\ref{subsec:methodology_impact_only_variant} and~\ref{subsec:methodology_learning_progress_only_variant}, respectively.
+Both ablations retain the same PPO backbone and evaluation protocol.
+Figure~\ref{fig:results_ablation_curves} shows the learning curves for the ablation methods.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=\glpefigwidth,height=\glpefigheight,keepaspectratio]{chapters/05_results_and_discussion/figures/eval-curves-ablations-curves.png}
+\caption[GLPE ablation learning curves]{Evaluation learning curves for GLPE component ablations. The impact-only variant removes the learning-progress term, and the learning-progress-only variant removes the impact term. Curves report deterministic extrinsic evaluation return.}
+\label{fig:results_ablation_curves}
+\end{figure}
+
+Table~\ref{tab:results_ablation_final_returns} reports final-checkpoint returns for the full method and the two single-component ablations.
+
+\begin{table}[!htbp]
+\centering
+\small
+\begin{fitwidthtabular}{lccc}
+\hline
+Environment & GLPE & Impact-only & Learning-progress-only \\
+\hline
+\textsc{MountainCar-v0} & $-96.2\;[-96.5,-95.9]$ & $-111.8\;[-137.0,-96.2]$ & $-106.6\;[-127.4,-96.0]$ \\
+\textsc{BipedalWalker-v3} & $266.5\;[214.0,301.3]$ & $277.5\;[256.0,296.5]$ & $298.8\;[285.5,308.1]$ \\
+\textsc{Ant-v5} & $4{,}961\;[4{,}421,5{,}359]$ & $5{,}233\;[4{,}544,5{,}663]$ & $4{,}599\;[3{,}617,5{,}401]$ \\
+\hline
+\end{fitwidthtabular}
+\caption[GLPE component ablation returns]{Final-checkpoint extrinsic return for GLPE and component ablations on representative environments. Brackets show 95\% bootstrap confidence intervals over seeds. Higher values are better.}
+\label{tab:results_ablation_final_returns}
+\end{table}
+
+\subsection{Impact-Only Performance}
+\label{subsec:results_impact_only}
+
+The impact-only variant performs competitively in dense locomotion but is weaker in the sparse-reward setting.
+On \textsc{Ant-v5}, impact-only reaches a final mean return of $5{,}233$, exceeding the full GLPE mean of $4{,}961$.
+This result indicates that feature-space displacement alone can provide a useful auxiliary signal when the environment already supplies dense extrinsic reward.
+In such a setting, encouraging controllable state change may complement the extrinsic locomotion objective without requiring local prediction-error improvement to be estimated accurately.
+
+On \textsc{MountainCar-v0}, impact-only reaches $-111.8$, substantially below full GLPE.
+The wide interval $[-137.0,-96.2]$ indicates inconsistent behavior across seeds.
+This supports the interpretation that impact without learning progress can reward motion that is energetic but not necessarily productive for discovering the goal-reaching trajectory.
+
+\subsection{Learning-Progress-Only Performance}
+\label{subsec:results_learning_progress_only}
+
+The learning-progress-only variant performs best among the ablations on \textsc{BipedalWalker-v3}, reaching a final mean return of $298.8$.
+This suggests that local model improvement can be informative in a task where the agent must coordinate contact-rich dynamics and where moderate exploration is useful.
+The result also indicates that impact can sometimes add noise when the relevant improvement signal is already captured by changes in model competence.
+
+On \textsc{Ant-v5}, learning-progress-only is lower than both full GLPE and impact-only.
+This outcome is consistent with the possibility that local progress estimates become noisy in higher-dimensional continuous locomotion, especially when extrinsic rewards already guide behavior.
+On \textsc{MountainCar-v0}, learning-progress-only improves over impact-only but remains below full GLPE, showing that progress alone is not sufficient to fully explain the sparse-reward result.
+
+\subsection{Combined Reward Interpretation}
+\label{subsec:results_combined_reward}
+
+The combined reward is most clearly justified by \textsc{MountainCar-v0}, where neither single-component ablation matches the full method.
+Feature-space impact identifies transitions that change the learned representation, while learning progress identifies regions where the predictive model is improving.
+The product of these ideas, implemented as a weighted sum after separate scale normalization, favors transitions that are both behaviorally consequential and locally learnable.
+
+The ablation results also show that the best intrinsic component is task-dependent.
+Impact-only is strong on \textsc{Ant-v5}, learning-progress-only is strong on \textsc{BipedalWalker-v3}, and the combined method is strongest on \textsc{MountainCar-v0}.
+This pattern motivates the combined score as a robust default for heterogeneous tasks, while also showing that future work may benefit from adaptive component weighting rather than fixed coefficients.
+
+\FloatBarrier

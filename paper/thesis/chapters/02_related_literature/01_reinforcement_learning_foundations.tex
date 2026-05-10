@@ -1,0 +1,39 @@
+\section{Reinforcement Learning Foundations}
+\label{sec:reinforcement_learning_foundations}
+
+Reinforcement learning provides a mathematical framework for learning behavior through interaction with an environment.
+The standard formulation is an episodic Markov decision process (MDP), defined by an observation or state space $\mathcal{S}$, an action space $\mathcal{A}$, a transition distribution $P(s_{t+1}\mid s_t,a_t)$, a reward function $r(s_t,a_t,s_{t+1})$, a discount factor $\gamma\in[0,1)$, and an episode horizon $T$.
+At each time step $t$, the agent observes $s_t$, samples or selects an action $a_t$, receives reward $r_t$, and transitions to $s_{t+1}$.
+The goal is to learn a policy $\pi_\theta(a\mid s)$, parameterized by $\theta$, that maximizes expected discounted return,
+\begin{equation}
+    J(\theta)=\mathbb{E}_{\pi_\theta}\left[\sum_{t=0}^{T-1}\gamma^t r_t\right].
+\end{equation}
+This interaction-based formulation makes reinforcement learning distinct from supervised learning because the data distribution depends on the policy being trained.
+Consequently, the agent must balance exploitation of currently rewarding actions with exploration of actions whose long-term consequences are uncertain.
+
+Value functions summarize the long-term utility of states and actions.
+The state-value function of a policy is
+\begin{equation}
+    V^\pi(s)=\mathbb{E}_{\pi}\left[\sum_{k=0}^{T-t-1}\gamma^k r_{t+k}\mid s_t=s\right],
+\end{equation}
+while the action-value function is
+\begin{equation}
+    Q^\pi(s,a)=\mathbb{E}_{\pi}\left[\sum_{k=0}^{T-t-1}\gamma^k r_{t+k}\mid s_t=s, a_t=a\right].
+\end{equation}
+The difference $A^\pi(s,a)=Q^\pi(s,a)-V^\pi(s)$ is the advantage function, which measures whether an action is better or worse than the policy's expected behavior at the same state.
+Advantage estimates are central in modern policy-gradient algorithms because they reduce variance while preserving the direction of policy improvement.
+
+Deep reinforcement learning extends this framework by using neural networks to approximate policies, value functions, and auxiliary models.
+This approximation is necessary in continuous-control and high-dimensional settings where tabular representations are infeasible.
+However, function approximation also makes exploration more difficult.
+A neural policy may repeatedly visit a narrow subset of the state space if initial rewards favor locally stable behavior, and a value function may generalize poorly when the agent has not collected diverse experience.
+Sparse-reward environments make the problem more severe because most early transitions may have identical or nearly identical external rewards.
+
+Reward design is therefore a central issue in reinforcement learning.
+Potential-based reward shaping can preserve optimal policies when it follows a restricted form, but arbitrary shaping terms may change the task objective  \parencite{ng-1999}.
+Intrinsic-motivation methods intentionally add such auxiliary shaping signals to improve exploration, especially when the original reward does not provide enough feedback during early training.
+These methods should therefore be evaluated not only by whether they increase the reward used for optimization, but also by whether they improve the extrinsic return of the learned policy.
+
+The exploration problem addressed in this study lies at the intersection of sparse feedback, function approximation, and reward augmentation.
+An effective intrinsic reward should encourage the agent to collect informative transitions without permanently distracting policy optimization from the external task.
+This requirement motivates related work on novelty, prediction error, impact, and learning progress, each of which defines a different proxy for the value of experience.

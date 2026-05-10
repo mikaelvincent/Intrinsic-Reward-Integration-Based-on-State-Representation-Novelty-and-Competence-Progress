@@ -1,0 +1,46 @@
+\section{Baseline Methods}
+\label{sec:methodology_baseline_methods}
+
+\subsection{PPO}
+\label{subsec:methodology_baseline_ppo}
+
+Vanilla PPO served as the extrinsic-reward baseline.
+It used the same policy architecture, value architecture, optimizer, rollout sizes, and evaluation protocol as all other methods, but the intrinsic coefficient was set to zero.
+This baseline measures the performance obtained without explicit intrinsic motivation.
+
+\subsection{ICM}
+\label{subsec:methodology_baseline_icm}
+
+The Intrinsic Curiosity Module (ICM) baseline used forward-model prediction error in a learned feature space as intrinsic reward \parencite{pathak-2017}.
+The module contained the same general encoder, forward model, and inverse model structure used by the GLPE latent dynamics module.
+For transition $(o_t,a_t,o_{t+1})$, the intrinsic signal was the mean-squared prediction error between the predicted and encoded next latent vector.
+The inverse dynamics loss encouraged the representation to retain action-relevant transition information.
+
+\subsection{RND}
+\label{subsec:methodology_baseline_rnd}
+
+Random Network Distillation (RND) used the prediction error between a trainable predictor network and a fixed randomly initialized target network as the intrinsic reward \parencite{burda-2018B,burda-2018A}.
+Both networks mapped observations to feature vectors of dimension 128 using two hidden layers of width 256.
+Only the predictor was updated during training.
+High prediction error indicated observations that remained unfamiliar under the predictor, while repeated exposure reduced the intrinsic reward.
+
+\subsection{RIDE}
+\label{subsec:methodology_baseline_ride}
+
+Rewarding Impact-Driven Exploration (RIDE) rewarded the magnitude of feature-space change between consecutive observations \parencite{raileanu-2020}.
+The impact term was
+\begin{equation}
+    \left\lVert \phi(o_{t+1})-\phi(o_t)\right\rVert_2.
+\end{equation}
+During rollout collection, this signal was divided by an episodic visitation count obtained by discretizing the learned feature vector with bin size 0.25.
+The episodic count was reset when an environment instance began a new episode.
+The RIDE encoder was trained with the same forward and inverse dynamics losses used by the ICM-style latent module.
+
+\subsection{RIAC}
+\label{subsec:methodology_baseline_riac}
+
+The RIAC baseline used region-local learning progress as the intrinsic signal \parencite{baranes-2009}.
+It maintained an adaptive latent-space partition and exponential moving averages of forward prediction error within each region.
+The intrinsic reward was the normalized positive difference between the long-horizon and short-horizon error estimates.
+Unlike GLPE, RIAC did not include a feature-space impact term and did not use the high-error low-progress gate.
+It therefore isolated the contribution of learning progress without impact weighting or explicit unproductive-region suppression.

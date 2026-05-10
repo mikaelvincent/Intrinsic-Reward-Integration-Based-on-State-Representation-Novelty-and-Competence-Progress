@@ -1,0 +1,23 @@
+\section{Ethical and Reproducibility Considerations}
+\label{sec:methodology_ethical_and_reproducibility_considerations}
+
+This study used simulated reinforcement-learning benchmarks and did not involve human participants, personal data, or deployment in a real-world control setting.
+The primary ethical concern is therefore indirect: reinforcement-learning algorithms developed in simulation can later be transferred to domains where unsafe exploration, reward misspecification, or unreliable evaluation may cause harm.
+For this reason, the study evaluated policies only in benchmark environments and interpreted intrinsic reward as a training aid rather than as an objective suitable for unrestricted deployment.
+
+The method changes the reward optimized during training by adding an auxiliary intrinsic component.
+Such augmentation can alter the policy search trajectory and is not guaranteed to preserve the optimal policy of the original environment reward.
+The evaluation therefore used extrinsic return only, ensuring that reported performance reflects the task objective rather than the magnitude of curiosity-driven reward.
+Intrinsic reward was also clipped, scheduled, and suppressed on terminal or invalid transitions to reduce avoidable reward-scale artifacts.
+
+Reproducibility was addressed through fixed environment-step budgets, explicit random seed sets, deterministic execution where supported, and offline checkpoint evaluation with fixed evaluation episode seeds.
+The same PPO hyperparameters and network architectures were used across methods within each environment.
+The same intrinsic scaling coefficient and clipping range were used for all intrinsic methods within a given environment, reducing the risk that differences were caused by reward-scale tuning rather than by the intrinsic signal itself.
+
+The reporting protocol emphasized aggregate behavior rather than isolated successful runs.
+Learning curves were averaged across seeds, scalar metrics were summarized with bootstrap confidence intervals where appropriate, and thresholded reliability reported both reach counts and median steps among successful seeds.
+This is important because reinforcement-learning experiments can exhibit substantial variance across seeds.
+
+The computational analysis also contributes to reproducibility by reporting wall-clock efficiency and runtime decomposition, not only sample efficiency.
+An intrinsic method that improves return per environment step but requires substantially more computation may be less practical under a fixed time budget.
+Including both step-based and time-based metrics provides a more complete account of the tradeoffs associated with the proposed exploration method.

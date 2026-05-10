@@ -1,0 +1,63 @@
+\section{Learning Curves}
+\label{sec:results_learning_curves}
+
+Figure~\ref{fig:results_eval_curves_baselines} shows the deterministic evaluation learning curves for GLPE, GLPE without gating, PPO, and the four intrinsic-reward baselines.
+Each curve reports mean extrinsic return over evaluation checkpoints, while the plotted seed markers indicate the spread of independently trained policies.
+The curves are the primary evidence for learning dynamics because they show whether a method improves early, plateaus below a target, collapses after initial progress, or continues improving throughout the training budget.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=\glpefigwidth,height=\glpefigheight,keepaspectratio]{chapters/05_results_and_discussion/figures/eval-curves-baselines-curves.png}
+\caption[Evaluation learning curves]{Evaluation learning curves for GLPE and baseline methods. Each panel plots mean extrinsic return against environment steps. Markers denote per-seed checkpoint means from deterministic offline evaluation. Horizontal dashed lines indicate the task-specific solved thresholds used in the threshold analyses.}
+\label{fig:results_eval_curves_baselines}
+\end{figure}
+
+\subsection{Sparse-Reward Environment Results}
+\label{subsec:results_sparse_reward}
+
+The sparse-reward task shows the clearest advantage for the proposed method.
+In \textsc{MountainCar-v0}, the agent must discover a sequence of energy-building actions before the goal reward becomes attainable.
+GLPE reaches the solved threshold reliably and stabilizes near the top of the observed return range.
+Its final mean return is $-96.2$ with a 95\% bootstrap interval of $[-96.5,-95.9]$, while GLPE without gating obtains $-97.1$ with interval $[-99.0,-96.0]$.
+The best baseline final mean is RIAC at $-106.6$, whose interval $[-127.5,-95.9]$ indicates that some seeds solve the task while others remain substantially worse.
+
+The shape of the \textsc{MountainCar-v0} curves indicates that the combined impact--learning-progress signal helps the policy discover useful transitions more consistently than prediction-error or impact-only signals.
+Prediction-error bonuses can remain large in regions that are difficult to model, and impact rewards can favor motion without necessarily identifying progress toward the goal.
+GLPE instead rewards latent change when local predictive competence is improving, which is aligned with the requirement to discover controllable transitions that make later reward possible.
+
+\subsection{Continuous-Control Environment Results}
+\label{subsec:results_continuous_control}
+
+The continuous-control environments produce a more mixed pattern.
+On \textsc{BipedalWalker-v3}, GLPE without gating learns rapidly and ends close to the solved threshold, obtaining a final mean return of $294.4$.
+PPO without intrinsic reward has the highest final mean among the primary baselines at $302.2$, while ICM and RND are also competitive.
+The result indicates that intrinsic rewards are not uniformly beneficial when the environment already provides enough shaped feedback to guide locomotion learning.
+
+On \textsc{Ant-v5}, the GLPE variants have nearly identical learning curves and final returns because the gate has little visible effect on the aggregate trajectory.
+Both GLPE and GLPE without gating obtain a final mean return of $4{,}961$.
+RIAC has the strongest final mean among the baselines at $5{,}384$.
+The gap suggests that, in this dense locomotion setting, the proposed intrinsic signal is useful but does not dominate the information already available from the extrinsic reward and other exploration mechanisms.
+
+On \textsc{HalfCheetah-v5}, GLPE and GLPE without gating achieve high final returns of $6{,}889$ and $6{,}908$, respectively.
+RIDE reaches the highest final mean at $7{,}106$.
+The learning curves show that most methods improve steadily, which is consistent with the dense velocity-based reward structure of the task.
+In such environments, the principal challenge is not discovering any reward signal but maintaining stable policy improvement over long horizons.
+
+\textsc{Humanoid-v5} is the most variable task in the suite.
+GLPE without gating obtains a final mean return of $2{,}858$, close to ICM at $2{,}874$, but the uncertainty intervals for all methods are wide.
+GLPE with gating has a lower mean of $1{,}970$, indicating that gate suppression can be too conservative when the high-dimensional dynamics produce noisy progress estimates.
+The large seed-to-seed variation prevents strong conclusions based solely on the final mean.
+
+\subsection{Cross-Environment Observations}
+\label{subsec:results_cross_environment}
+
+Across environments, the proposed method is strongest when the task requires exploration before reward becomes informative.
+This is most evident in \textsc{MountainCar-v0}, where GLPE solves all seeds and separates clearly from the baselines.
+In dense locomotion tasks, the benefit of GLPE is more modest because reward gradients already provide frequent feedback.
+The ungated variant is often comparable to or better than the gated variant in these settings, which suggests that the gate should be viewed as protection against unproductive curiosity rather than as a universally beneficial addition.
+
+The curves also show that final performance and learning speed can disagree.
+For example, a method may reach moderate returns early but fail to continue improving toward the solved threshold, while another method may learn more slowly but eventually reach higher returns.
+For this reason, Sections~\ref{sec:results_step_auc}--\ref{sec:results_wall_clock_efficiency} report step-AUC, final-checkpoint return, threshold reliability, ablations, and wall-clock efficiency rather than relying on a single curve-based interpretation.
+
+\FloatBarrier

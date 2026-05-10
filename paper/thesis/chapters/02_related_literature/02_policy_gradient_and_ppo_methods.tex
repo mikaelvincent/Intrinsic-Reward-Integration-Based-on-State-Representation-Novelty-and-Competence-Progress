@@ -1,0 +1,57 @@
+\section{Policy Gradient and PPO Methods}
+\label{sec:policy_gradient_and_ppo_methods}
+
+Policy-gradient methods optimize a parameterized policy directly by estimating the gradient of expected return with respect to the policy parameters.
+For a stochastic policy $\pi_\theta(a\mid s)$, the objective can be written as $J(\theta)=\mathbb{E}_{\pi_\theta}[G_t]$, where $G_t$ denotes the discounted return from time $t$.
+The policy-gradient estimator uses sampled trajectories to increase the log-probability of actions that produce positive advantage estimates:
+\begin{equation}
+    \nabla_\theta J(\theta)
+    = \mathbb{E}_{\pi_\theta}\left[\nabla_\theta \log \pi_\theta(a_t\mid s_t) A^{\pi_\theta}(s_t,a_t)\right].
+\end{equation}
+In practice, $A^{\pi_\theta}$ is replaced by an empirical estimate computed from rewards and a learned value function.
+This direct optimization is well suited to continuous action spaces because the policy can represent a probability distribution over real-valued actions.
+
+Generalized Advantage Estimation (GAE) improves the bias--variance tradeoff of advantage computation by combining temporal-difference residuals over multiple horizons \parencite{schulman-2015}.
+Let
+\begin{equation}
+    \delta_t = r_t + \gamma V_\varphi(s_{t+1}) - V_\varphi(s_t)
+\end{equation}
+be the one-step temporal-difference error for a value function $V_\varphi$.
+GAE forms the advantage estimate
+\begin{equation}
+    \hat{A}_t = \sum_{l=0}^{\infty}(\gamma\lambda)^l \delta_{t+l},
+\end{equation}
+where $\lambda\in[0,1]$ controls the interpolation between low-variance one-step estimates and higher-variance Monte Carlo returns.
+This mechanism is widely used in on-policy deep reinforcement learning because it stabilizes learning while allowing delayed rewards to influence earlier actions.
+
+Proximal Policy Optimization (PPO) is a policy-gradient method designed to constrain each policy update so that optimization remains stable under minibatch stochastic gradient descent \parencite{schulman-2017}.
+PPO uses the probability ratio
+\begin{equation}
+    \varrho_t(\theta)=\frac{\pi_\theta(a_t\mid s_t)}{\pi_{\theta_{\mathrm{old}}}(a_t\mid s_t)}
+\end{equation}
+between the new policy and the behavior policy that collected the data.
+The clipped surrogate objective is
+\begin{equation}
+    L^{\mathrm{CLIP}}(\theta)=
+    \mathbb{E}_t\left[
+    \min\!\Bigl(\varrho_t(\theta)\hat{A}_t,
+    \mathrm{clip}(\varrho_t(\theta),1-\epsilon,1+\epsilon)\hat{A}_t
+    \Bigr)
+    \right],
+\end{equation}
+where $\epsilon$ limits the incentive to move the new policy too far from the old policy.
+The minimum prevents policy updates from obtaining large objective improvements by exceeding the clipping range in the direction favored by the advantage estimate.
+
+PPO is commonly paired with a value-function loss and an entropy bonus.
+The value loss trains the critic to predict returns, while the entropy term encourages stochasticity and discourages premature policy collapse.
+The combined optimization problem is not a pure maximization of the clipped objective; it is a practical actor--critic training procedure that alternates between collecting on-policy rollouts and performing several optimization epochs over the collected batch.
+Because the data become stale after the policy changes, PPO remains fundamentally on-policy and typically requires repeated environment interaction.
+
+The use of PPO is relevant for intrinsic motivation because reward augmentation affects the advantage estimates used by the policy update.
+If the reward is changed to
+\begin{equation}
+    r_t = r_t^{\mathrm{ext}} + \eta_t r_t^{\mathrm{int}},
+\end{equation}
+then the value targets and advantages reflect both task reward and intrinsic shaping.
+A well-designed intrinsic signal can therefore guide the policy toward useful experience before extrinsic rewards are frequent, but a misleading signal can also dominate the optimization process.
+PPO provides a stable backbone for comparing intrinsic rewards because the same policy optimizer can be used while varying only the exploration objective.

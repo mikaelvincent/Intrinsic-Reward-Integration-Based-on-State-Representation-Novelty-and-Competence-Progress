@@ -1,0 +1,33 @@
+\section{Unproductive Curiosity and Noisy Dynamics}
+\label{sec:unproductive_curiosity_and_noisy_dynamics}
+
+Unproductive curiosity occurs when an intrinsic reward repeatedly attracts the agent toward experience that is surprising or novel but does not improve task performance or predictive competence.
+The most common example is the noisy-TV scenario, in which an agent can generate unpredictable observations that produce high curiosity reward without yielding useful control knowledge \parencite{mavor-parker-2021}.
+The problem illustrates a general limitation of intrinsic rewards based on novelty or prediction error: high uncertainty is not always reducible uncertainty.
+
+Noisy dynamics can arise for several reasons.
+The environment may contain stochastic transitions, random visual features, contact instability, partial observability, or dynamics that are too complex for the current model class.
+In these cases, a learned predictor may maintain high error even after extensive training.
+If the intrinsic reward is proportional to prediction error, the agent receives a persistent incentive to revisit the region.
+This effect can be especially harmful in sparse-reward tasks because the intrinsic reward may dominate the early training signal before the agent has discovered reliable extrinsic reward.
+
+Novelty-based rewards can also produce unproductive exploration.
+A density model or count estimator may treat irrelevant variation as new, causing the agent to chase observation differences that do not correspond to useful states.
+In continuous spaces, small but behaviorally insignificant differences can appear novel unless the representation abstracts them away.
+Episodic novelty mechanisms reduce immediate repetition, but they do not fully determine whether experience contributes to long-term competence.
+
+Several design strategies can reduce unproductive curiosity.
+One strategy is to learn representations that focus on controllable aspects of the environment, as in inverse-dynamics-based curiosity \parencite{pathak-2017}.
+Another is to estimate uncertainty types and avoid rewarding aleatoric uncertainty, which corresponds to irreducible randomness \parencite{mavor-parker-2021}.
+A third strategy is to use learning progress so that only error reduction, rather than error itself, produces reward \parencite{schmidhuber-1991,baranes-2009}.
+A fourth strategy is to combine multiple signals, such as novelty and impact, so that a single failure mode does not dominate exploration.
+
+Reward scheduling is also relevant.
+If intrinsic shaping remains strong throughout training, the learned policy may continue optimizing an auxiliary objective after the task reward is sufficient.
+Reducing the intrinsic coefficient over time can make curiosity act as an early exploration aid rather than a permanent substitute for the task objective.
+However, scheduling alone does not identify which specific regions are unproductive; it only reduces the global strength of the intrinsic term.
+A local mechanism can be more selective by suppressing reward only where the agent observes high error without learning progress.
+
+The noisy-dynamics problem therefore motivates exploration objectives with explicit safeguards.
+An intrinsic reward should distinguish between learnable and unlearnable uncertainty, should avoid overvaluing uncontrollable observation changes, and should preserve the role of extrinsic reward in final policy performance.
+These considerations are central to the research gap addressed by combining region-local learning progress, feature-space impact, and gated suppression of high-error low-progress regions.
