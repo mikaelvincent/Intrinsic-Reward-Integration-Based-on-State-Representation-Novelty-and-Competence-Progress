@@ -35,27 +35,29 @@
 
 \onehalfspacing
 \phantomsection
-\addcontentsline{toc}{chapter}{Acknowledgements}
+\addcontentsline{toc}{chapter}{ACKNOWLEDGEMENTS}
 \input{sections/00_acknowledgements}
 \clearpage
 
 \phantomsection
-\addcontentsline{toc}{chapter}{Abstract}
+\addcontentsline{toc}{chapter}{ABSTRACT}
 \input{sections/00_abstract}
 
-\renewcommand{\contentsname}{Table of Contents}
+\renewcommand{\contentsname}{TABLE OF CONTENTS}
 \phantomsection
-\addcontentsline{toc}{chapter}{Table of Contents}
+\addcontentsline{toc}{chapter}{TABLE OF CONTENTS}
 \tableofcontents
 \clearpage
 
+\renewcommand{\listfigurename}{LIST OF FIGURES}
 \phantomsection
-\addcontentsline{toc}{chapter}{List of Figures}
+\addcontentsline{toc}{chapter}{LIST OF FIGURES}
 \listoffigures
 \clearpage
 
+\renewcommand{\listtablename}{LIST OF TABLES}
 \phantomsection
-\addcontentsline{toc}{chapter}{List of Tables}
+\addcontentsline{toc}{chapter}{LIST OF TABLES}
 \listoftables
 \clearpage
 
@@ -68,8 +70,6 @@
 \input{chapters/06_conclusion_and_recommendations/chapter}
 
 \clearpage
-\phantomsection
-\addcontentsline{toc}{chapter}{Bibliography}
-\printbibliography
+\printbibliography[heading=thesisbibliography,title={BIBLIOGRAPHY}]
 
 \end{document}

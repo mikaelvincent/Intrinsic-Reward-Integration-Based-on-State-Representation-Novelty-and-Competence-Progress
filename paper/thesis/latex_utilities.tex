@@ -38,6 +38,14 @@
 }
 \makeatother
 \makeatletter
+\renewcommand{\chaptername}{CHAPTER}
+\renewcommand{\abstractname}{ABSTRACT}
+\defbibheading{thesisbibliography}[\bibname]{%
+  \phantomsection
+  \addcontentsline{toc}{chapter}{#1}%
+  \chapter*{#1}%
+  \vspace{-22\p@}%
+}
 \def\@makechapterhead#1{%
   \vspace*{-0.35in}%
   {\parindent \z@ \centering \normalfont\normalsize\bfseries
