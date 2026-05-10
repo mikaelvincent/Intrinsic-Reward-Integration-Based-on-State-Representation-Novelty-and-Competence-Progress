@@ -29,36 +29,48 @@
     \Gin@nat@height
   \fi
 }
-\newcommand{\thesispageformat}{\footnotesize\textcolor[gray]{0.45}{\thepage}}
+\newcommand{\thesispageformat}{\normalfont\normalsize\thepage}
 \renewcommand{\ps@plain}{%
   \renewcommand{\@oddhead}{}%
   \renewcommand{\@evenhead}{}%
-  \renewcommand{\@oddfoot}{\hfil\thesispageformat\hfil}%
-  \renewcommand{\@evenfoot}{\hfil\thesispageformat\hfil}%
+  \renewcommand{\@oddfoot}{\hfil\thesispageformat}%
+  \renewcommand{\@evenfoot}{\hfil\thesispageformat}%
 }
 \makeatother
 \makeatletter
 \def\@makechapterhead#1{%
   \vspace*{-0.35in}%
-  {\parindent \z@ \centering \normalfont
+  {\parindent \z@ \centering \normalfont\normalsize\bfseries
     \ifnum \c@secnumdepth >\m@ne
-      \huge\bfseries \@chapapp\space \thechapter
+      \@chapapp\space \thechapter
       \par\nobreak
     \fi
-    \Huge\bfseries #1\par\nobreak
+    #1\par\nobreak
     \vskip 40\p@
   }}
 \def\@makeschapterhead#1{%
   \vspace*{-0.35in}%
-  {\parindent \z@ \centering \normalfont
-    \Huge\bfseries #1\par\nobreak
+  {\parindent \z@ \centering \normalfont\normalsize\bfseries
+    #1\par\nobreak
     \vskip 40\p@
   }}
+\renewcommand\section{\@startsection{section}{1}{\z@}%
+  {-3.5ex \@plus -1ex \@minus -.2ex}%
+  {2.3ex \@plus .2ex}%
+  {\normalfont\normalsize\bfseries}}
+\renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
+  {-3.25ex\@plus -1ex \@minus -.2ex}%
+  {1.5ex \@plus .2ex}%
+  {\normalfont\normalsize\bfseries}}
+\renewcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
+  {-3.25ex\@plus -1ex \@minus -.2ex}%
+  {1.5ex \@plus .2ex}%
+  {\normalfont\normalsize\bfseries}}
 \renewenvironment{abstract}{%
   \thispagestyle{plain}%
   \@beginparpenalty\@lowpenalty
   \begin{center}%
-    \normalfont\Huge\bfseries \abstractname
+    \normalfont\normalsize\bfseries \abstractname
     \@endparpenalty\@M
   \end{center}%
 }{%
