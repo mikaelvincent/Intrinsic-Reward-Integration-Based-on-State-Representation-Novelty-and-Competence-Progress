@@ -1,0 +1,41 @@
+\section*{APPENDICES}
+\phantomsection
+\addcontentsline{toc}{section}{APPENDICES}
+
+\newcommand{\thesisappendiximage}[1]{%
+  \noindent\makebox[\textwidth][c]{%
+    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{#1}%
+  }%
+  \clearpage
+}
+
+\newcommand{\thesisappendixfirstimage}[1]{%
+  \noindent\makebox[\textwidth][c]{%
+    \includegraphics[width=\textwidth,height=\dimexpr\pagegoal-\pagetotal\relax,keepaspectratio]{#1}%
+  }%
+  \clearpage
+}
+
+\clearpage
+\phantomsection
+\subsection*{Technical Manuscript}
+\addcontentsline{toc}{subsection}{Technical Manuscript}
+\thesisappendixfirstimage{sections/images/pcsc/page_001.png}
+\thesisappendiximage{sections/images/pcsc/page_002.png}
+\thesisappendiximage{sections/images/pcsc/page_003.png}
+\thesisappendiximage{sections/images/pcsc/page_004.png}
+\thesisappendiximage{sections/images/pcsc/page_005.png}
+\thesisappendiximage{sections/images/pcsc/page_006.png}
+\thesisappendiximage{sections/images/pcsc/page_007.png}
+\thesisappendiximage{sections/images/pcsc/page_008.png}
+
+\phantomsection
+\subsection*{Peer Review Materials}
+\addcontentsline{toc}{subsection}{Peer Review Materials}
+\thesisappendixfirstimage{sections/images/pcsc_reviews/page_001.png}
+\thesisappendiximage{sections/images/pcsc_reviews/page_002.png}
+
+\phantomsection
+\subsection*{Presentation Certification}
+\addcontentsline{toc}{subsection}{Presentation Certification}
+\thesisappendixfirstimage{sections/images/pcsc_presentation_certificate/page_001.png}
