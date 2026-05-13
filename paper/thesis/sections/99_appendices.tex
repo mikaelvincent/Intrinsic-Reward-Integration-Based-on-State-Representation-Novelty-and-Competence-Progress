@@ -1,6 +1,7 @@
+\clearpage
 \section*{APPENDICES}
 \phantomsection
-\addcontentsline{toc}{section}{APPENDICES}
+\addcontentsline{toc}{chapter}{APPENDICES}
 
 \newcommand{\thesisappendiximage}[1]{%
   \noindent\makebox[\textwidth][c]{%
@@ -11,15 +12,14 @@
 
 \newcommand{\thesisappendixfirstimage}[1]{%
   \noindent\makebox[\textwidth][c]{%
-    \includegraphics[width=\textwidth,height=\dimexpr\pagegoal-\pagetotal\relax,keepaspectratio]{#1}%
+    \includegraphics[width=\textwidth,height=\dimexpr\pagegoal-\pagetotal-\baselineskip\relax,keepaspectratio]{#1}%
   }%
   \clearpage
 }
 
-\clearpage
-\phantomsection
 \subsection*{Technical Manuscript}
-\addcontentsline{toc}{subsection}{Technical Manuscript}
+\phantomsection
+\addcontentsline{toc}{section}{Technical Manuscript}
 \thesisappendixfirstimage{sections/images/pcsc/page_001.png}
 \thesisappendiximage{sections/images/pcsc/page_002.png}
 \thesisappendiximage{sections/images/pcsc/page_003.png}
@@ -29,13 +29,13 @@
 \thesisappendiximage{sections/images/pcsc/page_007.png}
 \thesisappendiximage{sections/images/pcsc/page_008.png}
 
-\phantomsection
 \subsection*{Peer Review Materials}
-\addcontentsline{toc}{subsection}{Peer Review Materials}
+\phantomsection
+\addcontentsline{toc}{section}{Peer Review Materials}
 \thesisappendixfirstimage{sections/images/pcsc_reviews/page_001.png}
 \thesisappendiximage{sections/images/pcsc_reviews/page_002.png}
 
-\phantomsection
 \subsection*{Presentation Certification}
-\addcontentsline{toc}{subsection}{Presentation Certification}
+\phantomsection
+\addcontentsline{toc}{section}{Presentation Certification}
 \thesisappendixfirstimage{sections/images/pcsc_presentation_certificate/page_001.png}
