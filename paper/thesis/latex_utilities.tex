@@ -18,6 +18,8 @@
 }
 
 \makeatletter
+\@addtoreset{algorithm}{chapter}
+\renewcommand{\thealgorithm}{\thechapter.\arabic{algorithm}}
 \newcommand{\glpefigwidth}{%
   \ifdim\Gin@nat@width>\linewidth
     \linewidth
