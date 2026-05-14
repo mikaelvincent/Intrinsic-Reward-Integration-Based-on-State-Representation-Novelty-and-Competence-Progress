@@ -2,6 +2,8 @@
 
 \newsavebox{\fitwidthtabularbox}
 \newenvironment{fitwidthtabular}[1]{%
+  \begingroup
+  \renewcommand{\arraystretch}{1.5}%
   \begin{lrbox}{\fitwidthtabularbox}%
   \begin{tabular}{#1}%
 }{%
@@ -12,6 +14,7 @@
   \else
     \usebox{\fitwidthtabularbox}%
   \fi
+  \endgroup
 }
 
 \makeatletter
@@ -29,6 +32,21 @@
     \Gin@nat@height
   \fi
 }
+\long\def\@makecaption#1#2{%
+  \vskip\abovecaptionskip
+  \begingroup
+  \onehalfspacing
+  \sbox\@tempboxa{\textit{#1.} #2}%
+  \ifdim \wd\@tempboxa >\hsize
+    \textit{#1.} #2\par
+  \else
+    \global\@minipagefalse
+    \hb@xt@\hsize{\hfil\box\@tempboxa\hfil}%
+  \fi
+  \endgroup
+  \vskip\belowcaptionskip
+}
+\renewcommand\floatc@ruled[2]{{\onehalfspacing\textit{#1.} #2\par}}
 \newcommand{\thesispageformat}{\normalfont\normalsize\thepage}
 \renewcommand{\ps@plain}{%
   \renewcommand{\@oddhead}{}%
