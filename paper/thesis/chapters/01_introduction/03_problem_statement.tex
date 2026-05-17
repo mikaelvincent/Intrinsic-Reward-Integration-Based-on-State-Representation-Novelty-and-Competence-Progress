@@ -29,8 +29,8 @@ The specific objectives of the study are as follows:
     \item Formulate an intrinsic-reward function that combines representation-space transition impact with region-local learning progress.
     \item Develop an online latent-space partitioning procedure for maintaining local prediction-error statistics during policy training.
     \item Define a gating mechanism that suppresses intrinsic reward in regions characterized by persistently high prediction error and low learning progress.
-    \item Integrate the proposed intrinsic reward with PPO using augmented rewards and scheduled intrinsic-reward scaling.
-    \item Compare the proposed method against PPO, ICM, RND, RIDE, and RIAC on a benchmark suite containing sparse-reward and continuous-control environments.
+    \item Integrate the GLPE intrinsic reward with PPO using augmented rewards and scheduled intrinsic-reward scaling.
+    \item Compare GLPE against PPO, ICM, RND, RIDE, and RIAC on a benchmark suite containing sparse-reward and continuous-control environments.
     \item Evaluate performance using learning curves, final-checkpoint return, step-normalized area under the curve, thresholded reliability, and wall-clock efficiency.
     \item Analyze ablations that isolate the roles of impact, learning progress, and gating in the resulting exploration behavior.
 \end{enumerate}

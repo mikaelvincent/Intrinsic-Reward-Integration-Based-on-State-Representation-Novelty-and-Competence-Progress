@@ -3,7 +3,7 @@
 
 This study contributes to reinforcement-learning research by examining an intrinsic-reward design that explicitly separates surprise from learning progress.
 The distinction is significant because high prediction error alone does not necessarily imply useful experience.
-By emphasizing local improvement in a dynamics model, the proposed method addresses a major limitation of curiosity-driven exploration: the tendency to reward transitions that are unpredictable but not productive.
+By emphasizing local improvement in a dynamics model, GLPE addresses a major limitation of curiosity-driven exploration: the tendency to reward transitions that are unpredictable but not productive.
 
 The study is also significant for sparse-reward learning.
 In environments where successful behavior requires long action sequences before substantial external reward is observed, an agent requires additional signals that make early learning possible.
@@ -17,7 +17,7 @@ An online partition of feature space allows the method to adapt its locality str
 The evaluation framework further contributes by considering both sample efficiency and computational efficiency.
 Intrinsic rewards can improve learning per environment step while increasing the time required for each update.
 Reporting both step-normalized and wall-clock-normalized performance gives a more complete view of whether an exploration method is practically useful.
-The inclusion of ablations also clarifies how each component of the proposed method affects learning, reliability, and computational tradeoffs.
+The inclusion of ablations also clarifies how each GLPE component affects learning, reliability, and computational tradeoffs.
 
 Finally, the study documents a complete reinforcement-learning research workflow: theoretical formulation, method design, experimental comparison, ablation analysis, and interpretation of results.
 The work is therefore relevant to research on exploration, intrinsic motivation, and empirical evaluation in deep reinforcement learning.

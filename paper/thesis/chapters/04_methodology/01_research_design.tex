@@ -2,7 +2,7 @@
 \label{sec:methodology_research_design}
 
 This study used a quantitative experimental research design to evaluate intrinsic-reward methods for reinforcement learning.
-The experiment compared a proposed intrinsic-reward family, Gated Learning-Progress Exploration (GLPE), against standard and intrinsic-motivation baselines under a fixed Proximal Policy Optimization (PPO) training backbone.
+The experiment compared an implemented intrinsic-reward family, Gated Learning-Progress Exploration (GLPE), against standard and intrinsic-motivation baselines under a fixed Proximal Policy Optimization (PPO) training backbone.
 The independent variable was the exploration method used during training.
 The dependent variables were extrinsic episodic return, sample efficiency, threshold-reaching reliability, and wall-clock efficiency.
 All reported performance measurements were based on environment reward only; intrinsic reward was used only as a training signal.
@@ -17,7 +17,7 @@ For a fixed environment, the PPO architecture, value architecture, optimizer set
 The intrinsic-reward coefficient and clipping range were also held constant across intrinsic methods within the same environment.
 This control was necessary so that observed differences could be attributed primarily to the exploration signal rather than to changes in the underlying policy optimizer.
 
-The proposed method was evaluated in two principal forms.
+GLPE was evaluated in two principal forms.
 The gated form, GLPE, suppresses intrinsic rewards in latent regions that exhibit high prediction error but low learning progress.
 The ungated form, GLPE (no gate), uses the same base intrinsic score without region suppression.
 Additional ablations removed either the feature-space impact component or the learning-progress component, allowing the contribution of each term to be isolated.

@@ -1,10 +1,10 @@
-\section{Proposed Method}
-\label{sec:methodology_proposed_method}
+\section{Gated Learning-Progress Exploration Method}
+\label{sec:methodology_method}
 
 \subsection{Method Overview}
 \label{subsec:method_overview}
 
-The proposed method constructs an intrinsic reward from two quantities computed in a learned latent space.
+The method constructs an intrinsic reward from two quantities computed in a learned latent space.
 The first quantity is feature-space impact, formalized in Section~\ref{sec:feature_space_impact}, which measures how much the latent representation changes between consecutive observations.
 The second quantity is region-local learning progress, formalized in Section~\ref{sec:region_local_learning_progress}, which measures whether a forward dynamics model is improving in the latent region currently visited by the agent.
 The two quantities are normalized separately and combined into a base intrinsic score.

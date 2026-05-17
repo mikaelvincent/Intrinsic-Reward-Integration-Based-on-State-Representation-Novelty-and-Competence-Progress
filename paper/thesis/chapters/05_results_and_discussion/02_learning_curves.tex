@@ -15,7 +15,7 @@ The curves are the primary evidence for learning dynamics because they show whet
 \subsection{Sparse-Reward Environment Results}
 \label{subsec:results_sparse_reward}
 
-The sparse-reward task shows the clearest advantage for the proposed method.
+The sparse-reward task shows the clearest advantage for GLPE.
 In \textsc{MountainCar-v0}, the agent must discover a sequence of energy-building actions before the goal reward becomes attainable.
 GLPE reaches the solved threshold reliably and stabilizes near the top of the observed return range.
 Its final mean return is $-96.2$ with a 95\% bootstrap interval of $[-96.5,-95.9]$, while GLPE without gating obtains $-97.1$ with interval $[-99.0,-96.0]$.
@@ -36,7 +36,7 @@ The result indicates that intrinsic rewards are not uniformly beneficial when th
 On \textsc{Ant-v5}, the GLPE variants have nearly identical learning curves and final returns because the gate has little visible effect on the aggregate trajectory.
 Both GLPE and GLPE without gating obtain a final mean return of $4{,}961$.
 RIAC has the strongest final mean among the baselines at $5{,}384$.
-The gap suggests that, in this dense locomotion setting, the proposed intrinsic signal is useful but does not dominate the information already available from the extrinsic reward and other exploration mechanisms.
+The gap suggests that, in this dense locomotion setting, the GLPE intrinsic signal is useful but does not dominate the information already available from the extrinsic reward and other exploration mechanisms.
 
 On \textsc{HalfCheetah-v5}, GLPE and GLPE without gating achieve high final returns of $6{,}889$ and $6{,}908$, respectively.
 RIDE reaches the highest final mean at $7{,}106$.
@@ -51,7 +51,7 @@ The large seed-to-seed variation prevents strong conclusions based solely on the
 \subsection{Cross-Environment Observations}
 \label{subsec:results_cross_environment}
 
-Across environments, the proposed method is strongest when the task requires exploration before reward becomes informative.
+Across environments, GLPE is strongest when the task requires exploration before reward becomes informative.
 This is most evident in \textsc{MountainCar-v0}, where GLPE solves all seeds and separates clearly from the baselines.
 In dense locomotion tasks, the benefit of GLPE is more modest because reward gradients already provide frequent feedback.
 The ungated variant is often comparable to or better than the gated variant in these settings, which suggests that the gate should be viewed as protection against unproductive curiosity rather than as a universally beneficial addition.

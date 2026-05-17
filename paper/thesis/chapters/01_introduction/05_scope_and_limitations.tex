@@ -2,7 +2,7 @@
 \label{sec:scope_and_limitations}
 
 The scope of this study is limited to intrinsic-reward exploration for episodic reinforcement learning with PPO as the policy-optimization backbone.
-The proposed method is evaluated on five Gymnasium control benchmarks: \textsc{MountainCar-v0}, \textsc{BipedalWalker-v3}, \textsc{Ant-v5}, \textsc{HalfCheetah-v5}, and \textsc{Humanoid-v5}.
+GLPE is evaluated on five Gymnasium control benchmarks: \textsc{MountainCar-v0}, \textsc{BipedalWalker-v3}, \textsc{Ant-v5}, \textsc{HalfCheetah-v5}, and \textsc{Humanoid-v5}.
 These environments cover sparse-reward exploration and continuous-control locomotion, but they do not exhaust the range of possible reinforcement-learning domains.
 The study uses the default environment reward functions and termination conditions for these benchmarks.
 
@@ -10,7 +10,7 @@ The method operates on vector observations and learns a latent representation th
 This study does not evaluate image-based observations, language-conditioned tasks, multi-agent environments, offline reinforcement learning, or model-based planning.
 The conclusions should therefore be interpreted as applying primarily to online, on-policy, vector-observation control tasks.
 
-The proposed intrinsic reward is evaluated as a shaping signal rather than as a policy-invariant transformation of the original reward.
+The GLPE intrinsic reward is evaluated as a shaping signal rather than as a policy-invariant transformation of the original reward.
 Because general intrinsic reward augmentation can change the optimal policy, the study emphasizes empirical performance under controlled comparisons rather than formal guarantees of optimality preservation.
 The reward used for policy optimization has the form
 \begin{equation}
@@ -18,7 +18,7 @@ The reward used for policy optimization has the form
 \end{equation}
 where the intrinsic coefficient, clipping range, and scheduling choices influence the resulting behavior.
 
-The experimental comparison is limited to PPO, ICM, RND, RIDE, RIAC, and the proposed GLPE variants.
+The experimental comparison is limited to PPO, ICM, RND, RIDE, RIAC, and the GLPE variants.
 All methods are evaluated using the same general reinforcement-learning backbone so that differences can be attributed primarily to the exploration objective.
 However, the results may depend on hyperparameter choices, benchmark selection, random seeds, and the computational setting used for training.
 The study reports multiple seeds and uncertainty-aware summaries where applicable, but it does not claim universal dominance over all possible exploration methods or training regimes.

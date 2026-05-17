@@ -5,7 +5,7 @@ This study addressed the exploration problem in reinforcement learning under spa
 The central problem was that conventional intrinsic-reward signals can encourage exploration but may also reward unproductive behavior when novelty, surprise, or prediction error remains high in regions that are noisy, difficult to model, or weakly related to task progress.
 To address this issue, the study developed and evaluated Gated Learning-Progress Exploration (GLPE), an intrinsic-reward method that combines feature-space impact with region-local learning progress and optionally suppresses regions that exhibit persistently high prediction error with low improvement.
 
-The proposed method was formulated for episodic Markov decision processes and integrated with Proximal Policy Optimization through reward augmentation.
+GLPE was formulated for episodic Markov decision processes and integrated with Proximal Policy Optimization through reward augmentation.
 For each transition, an encoder maps observations to a latent representation, a forward dynamics model estimates the next latent state, and an inverse dynamics model regularizes the representation toward action-relevant features.
 Feature-space impact is measured as the latent displacement
 \begin{equation}

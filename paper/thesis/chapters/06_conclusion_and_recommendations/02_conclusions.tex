@@ -28,7 +28,7 @@ Learning curves and final returns alone do not fully characterize exploration pe
 Step-AUC identifies early and sustained learning, thresholded reliability distinguishes consistent success from isolated high-return seeds, ablations reveal component-level behavior, and wall-clock AUC accounts for computational overhead.
 The findings of this study would be less precise if evaluated only by final mean return, because some methods reached partial competence reliably without consistently reaching solved thresholds, while others imposed runtime costs that changed their practical value.
 
-The final conclusion is that the proposed method improves exploration under the conditions for which it was designed but does not establish universal dominance over all intrinsic-reward approaches.
+The final conclusion is that GLPE improves exploration under the conditions for which it was designed but does not establish universal dominance over all intrinsic-reward approaches.
 Its strongest evidence appears in sparse-reward exploration, where the auxiliary signal must compensate for limited external feedback.
 In dense locomotion and high-variance control, standard baselines remain competitive, and the gate may suppress useful exploration.
 Consequently, GLPE should be viewed as a contribution to targeted intrinsic motivation: it provides a principled way to combine controllable representation change with local model improvement while exposing clear tradeoffs in gating and computational cost.

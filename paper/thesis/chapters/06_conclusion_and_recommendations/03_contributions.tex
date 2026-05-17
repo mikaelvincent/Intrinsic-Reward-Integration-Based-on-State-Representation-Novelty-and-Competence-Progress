@@ -16,7 +16,7 @@ The gate compares each region's learning progress and recent prediction error ag
 This mechanism operationalizes the distinction between learnable difficulty and unproductive unpredictability.
 The empirical results show that this guardrail can support strong sparse-reward performance while also revealing the conditions under which it may become overly conservative.
 
-The fourth contribution is a PPO-compatible integration of the proposed intrinsic reward with explicit reward-scale controls.
+The fourth contribution is a PPO-compatible integration of the GLPE intrinsic reward with explicit reward-scale controls.
 The method uses component-wise normalization, intrinsic clipping, terminal-transition suppression, and a cosine taper for the intrinsic coefficient.
 These design choices make the intrinsic reward usable as a transient training aid rather than as a permanent replacement for the task objective.
 The resulting procedure can be compared directly with established intrinsic-reward baselines under the same policy-optimization backbone.
@@ -25,6 +25,6 @@ The fifth contribution is an empirical evaluation that considers performance, re
 The benchmark suite covers both sparse-reward and continuous-control regimes, and the evaluation reports deterministic extrinsic return from offline checkpoints rather than training reward.
 The inclusion of step-AUC, final-checkpoint return, thresholded reliability, wall-clock AUC, and timing breakdowns provides a broad assessment of how intrinsic rewards affect both learning quality and training cost.
 
-The sixth contribution is the characterization of when the proposed components are useful.
+The sixth contribution is the characterization of when the GLPE components are useful.
 The results show that the combined impact--learning-progress reward is most beneficial in sparse-reward exploration, that single components can be competitive in some dense-control settings, and that gating is advantageous only when suppression of unproductive regions outweighs its conservatism and overhead.
 This characterization is important because it frames the method as an environment-dependent exploration mechanism rather than as a universally dominant algorithm.

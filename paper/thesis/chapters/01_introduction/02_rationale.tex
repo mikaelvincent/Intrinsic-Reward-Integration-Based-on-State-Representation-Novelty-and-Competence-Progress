@@ -24,7 +24,7 @@ An agent that receives progress-based reward without regard to transition impact
 Conversely, an agent that receives impact reward without regard to learning progress may overvalue large but unlearnable changes.
 Combining both signals supports an intrinsic objective that rewards transitions that are both behaviorally consequential and associated with model improvement.
 
-The proposed method is therefore motivated by three design principles.
+This method is therefore motivated by three design principles.
 First, the intrinsic reward should be computed in a learned latent representation so that it can be applied to continuous observations without requiring hand-designed state abstractions.
 Second, learning progress should be estimated locally, using region-specific statistics, so that the method can distinguish productive and unproductive parts of the environment.
 Third, intrinsic shaping should be limited when evidence suggests persistent high error without corresponding progress.
