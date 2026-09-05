@@ -339,10 +339,15 @@ def train(
                 if not is_image:
                     obs_seq[t] = obs_b_norm.astype(np.float32)
                 else:
-                    obs_seq_list.append(obs_b_norm.astype(np.float32))
+                    obs_seq_list.append(np.array(obs_b_norm, copy=True))
 
                 with torch.no_grad():
-                    obs_tensor = torch.as_tensor(obs_b_norm, device=device, dtype=torch.float32)
+                    if is_image:
+                        obs_tensor = torch.as_tensor(obs_b_norm, device=device)
+                    else:
+                        obs_tensor = torch.as_tensor(
+                            obs_b_norm, device=device, dtype=torch.float32
+                        )
                     a_tensor, _ = policy.act(obs_tensor)
                 a_np = a_tensor.detach().cpu().numpy()
                 if is_discrete:
@@ -367,7 +372,7 @@ def train(
                 if not is_image:
                     next_obs_seq[t] = next_obs_b_norm.astype(np.float32)
                 else:
-                    next_obs_seq_list.append(next_obs_b_norm.astype(np.float32))
+                    next_obs_seq_list.append(np.array(next_obs_b_norm, copy=True))
 
                 if r_int_raw_seq is not None:
                     r_step = intrinsic_module.compute_impact_binned(  # type: ignore[union-attr]
@@ -483,15 +488,21 @@ def train(
             # --- Logging ---
             with torch.no_grad():
                 # Last-step entropy (legacy)
-                last_obs = torch.as_tensor(
-                    obs_seq_final[-1], device=device, dtype=torch.float32
-                )  # [B,...]
+                if is_image:
+                    last_obs = torch.as_tensor(obs_seq_final[-1], device=device)
+                else:
+                    last_obs = torch.as_tensor(
+                        obs_seq_final[-1], device=device, dtype=torch.float32
+                    )  # [B,...]
                 ent_last = float(policy.entropy(last_obs).mean().item())
 
                 # NEW: mean policy entropy across the whole update (T*B samples)
-                obs_flat_t = torch.as_tensor(
-                    obs_flat_for_ppo, device=device, dtype=torch.float32
-                )
+                if is_image:
+                    obs_flat_t = torch.as_tensor(obs_flat_for_ppo, device=device)
+                else:
+                    obs_flat_t = torch.as_tensor(
+                        obs_flat_for_ppo, device=device, dtype=torch.float32
+                    )
                 ent_mean_update = float(policy.entropy(obs_flat_t).mean().item())
 
             log_payload = {

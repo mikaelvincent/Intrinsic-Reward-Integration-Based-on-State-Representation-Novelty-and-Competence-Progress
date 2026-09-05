@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import numpy as np
 import torch
 import gymnasium as gym
@@ -15,6 +17,20 @@ def test_gae_and_ppo_update_with_images():
 
     policy = PolicyNetwork(obs_space, act_space)
     value = ValueNetwork(obs_space)
+
+    policy_inputs: list[tuple[float, float, torch.dtype]] = []
+    value_inputs: list[tuple[float, float, torch.dtype]] = []
+
+    def _collect(module, inputs, storage):
+        (x,) = inputs
+        storage.append((float(x.min().item()), float(x.max().item()), x.dtype))
+
+    pol_hook = policy.cnn.register_forward_pre_hook(
+        lambda module, inputs: _collect(module, inputs, policy_inputs)
+    )
+    val_hook = value.cnn.register_forward_pre_hook(
+        lambda module, inputs: _collect(module, inputs, value_inputs)
+    )
 
     # Build small time-major batch of images: (T, B, H, W, C)
     T, B, H, W, C = 3, 2, 32, 32, 3
@@ -49,3 +65,16 @@ def test_gae_and_ppo_update_with_images():
     )
     batch = {"obs": obs_flat, "actions": actions}
     ppo_update(policy, value, batch, adv, v_targets, ppo_cfg)
+
+    pol_hook.remove()
+    val_hook.remove()
+
+    assert policy_inputs, "policy CNN should have received at least one batch"
+    assert value_inputs, "value CNN should have received at least one batch"
+
+    eps = 1e-6
+    for mn, mx, dtype in policy_inputs + value_inputs:
+        assert dtype == torch.float32
+        assert mn >= -eps
+        assert mx <= 1.0 + eps
+        assert mx >= mn

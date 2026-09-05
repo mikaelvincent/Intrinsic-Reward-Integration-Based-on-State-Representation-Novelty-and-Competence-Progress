@@ -30,7 +30,9 @@ def _pick(m: Mapping[str, Any], *keys: str, default: Any | None = None) -> Any:
 def _to_tensor(x: Any, device: torch.device, dtype: torch.dtype | None = None) -> Tensor:
     if torch.is_tensor(x):
         return x.to(device=device, dtype=dtype or x.dtype)
-    return torch.as_tensor(x, device=device, dtype=dtype or torch.float32)
+    if dtype is None:
+        return torch.as_tensor(x, device=device)
+    return torch.as_tensor(x, device=device, dtype=dtype)
 
 
 def _ensure_time_batch_layout(
